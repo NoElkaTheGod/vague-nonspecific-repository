@@ -1,0 +1,45 @@
+[gd_scene load_steps=7 format=3 uid="uid://cngojcq5ym5xq"]
+
+[ext_resource type="Script" path="res://scripts/repulsor.gd" id="1_dyy8k"]
+[ext_resource type="Texture2D" uid="uid://d1vdo56rpmjfw" path="res://sprites/amogi.png" id="2_sr7fe"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_so60q"]
+radius = 30.0
+
+[sub_resource type="Curve" id="Curve_c2jig"]
+_data = [Vector2(0.753333, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_ilkof"]
+curve = SubResource("Curve_c2jig")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_l0ku6"]
+particle_flag_disable_z = true
+emission_shape = 6
+emission_ring_axis = Vector3(0, 0, 1)
+emission_ring_height = 0.0
+emission_ring_radius = 0.0
+emission_ring_inner_radius = 30.0
+orbit_velocity_min = 0.0100001
+orbit_velocity_max = 0.0500001
+radial_velocity_min = 42.31
+radial_velocity_max = 42.31
+gravity = Vector3(0, 0, 0)
+alpha_curve = SubResource("CurveTexture_ilkof")
+
+[node name="repulsor" type="Area2D"]
+texture_filter = 1
+collision_layer = 4
+script = ExtResource("1_dyy8k")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_so60q")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+amount = 32
+process_material = SubResource("ParticleProcessMaterial_l0ku6")
+texture = ExtResource("2_sr7fe")
+lifetime = 2.0
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(0, -30, 8, -29, 15, -26, 21, -21, 26, -15, 29, -8, 30, 0, 29, 8, 26, 15, 21, 21, 15, 26, 8, 29, 0, 30, -8, 29, -15, 26, -21, 21, -26, 15, -29, 8, -30, 0, -29, -8, -26, -15, -21, -21, -15, -26, -8, -29)

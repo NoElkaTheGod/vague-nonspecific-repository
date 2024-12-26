@@ -1,0 +1,54 @@
+[gd_scene load_steps=7 format=3 uid="uid://dcid4y3ew70yn"]
+
+[ext_resource type="Script" path="res://scripts/GameManager.gd" id="1_psp8s"]
+[ext_resource type="Script" path="res://scripts/main_camera.gd" id="2_lkdnu"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_y22hj"]
+normal = Vector2(0, 1)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_3uncf"]
+normal = Vector2(1, 0)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_w8kx2"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_gb1h6"]
+normal = Vector2(-1, 0)
+
+[node name="Root" type="Node"]
+script = ExtResource("1_psp8s")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+anchor_mode = 0
+script = ExtResource("2_lkdnu")
+
+[node name="UpBound" type="StaticBody2D" parent="Camera2D"]
+position = Vector2(500, 0)
+collision_layer = 9
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Camera2D/UpBound"]
+shape = SubResource("WorldBoundaryShape2D_y22hj")
+
+[node name="LeftBound" type="StaticBody2D" parent="Camera2D"]
+position = Vector2(0, 300)
+collision_layer = 9
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Camera2D/LeftBound"]
+shape = SubResource("WorldBoundaryShape2D_3uncf")
+
+[node name="DownBound" type="StaticBody2D" parent="Camera2D"]
+position = Vector2(500, 600)
+collision_layer = 9
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Camera2D/DownBound"]
+shape = SubResource("WorldBoundaryShape2D_w8kx2")
+
+[node name="RightBound" type="StaticBody2D" parent="Camera2D"]
+position = Vector2(1000, 300)
+collision_layer = 9
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Camera2D/RightBound"]
+shape = SubResource("WorldBoundaryShape2D_gb1h6")

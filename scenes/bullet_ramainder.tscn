@@ -1,0 +1,38 @@
+[gd_scene load_steps=7 format=3 uid="uid://dp3pam36e44rj"]
+
+[ext_resource type="Script" path="res://scripts/bullet_ramainder.gd" id="1_36e40"]
+[ext_resource type="Texture2D" uid="uid://d1vdo56rpmjfw" path="res://sprites/amogi.png" id="2_35wpn"]
+[ext_resource type="AudioStream" uid="uid://ctg06qac4y73y" path="res://sounds/bullet_expire.wav" id="3_jwpcc"]
+
+[sub_resource type="Curve" id="Curve_yrba5"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_o2vfw"]
+curve = SubResource("Curve_yrba5")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_cwp3t"]
+particle_flag_disable_z = true
+spread = 180.0
+initial_velocity_min = 200.0
+initial_velocity_max = 300.0
+gravity = Vector3(0, 0, 0)
+damping_min = 100.0
+damping_max = 100.0
+alpha_curve = SubResource("CurveTexture_o2vfw")
+
+[node name="BulletRamainder" type="Node2D"]
+script = ExtResource("1_36e40")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+emitting = false
+amount = 32
+process_material = SubResource("ParticleProcessMaterial_cwp3t")
+texture = ExtResource("2_35wpn")
+lifetime = 0.3
+one_shot = true
+explosiveness = 1.0
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_jwpcc")
+volume_db = -20.0
