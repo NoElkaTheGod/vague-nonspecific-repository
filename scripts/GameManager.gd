@@ -3,7 +3,7 @@ class_name GameManager extends Node
 var players: Array[Player]
 var attractors: Array[Attractor]
 var repulsors: Array[Repulsor]
-var player_amount: int = 2
+var player_amount: int = 3
 var attractor_pairs: int = 3
 
 var idle_projectile_manager: IdleProjectileManager

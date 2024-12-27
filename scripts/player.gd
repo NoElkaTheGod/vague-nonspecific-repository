@@ -23,32 +23,41 @@ func init(number: int) -> void:
 	$Sprite2D.texture.atlas = load("res://sprites/player.png")
 	$Sprite2D.texture.region = Rect2(number * 48, 0, 48, 48)
 
-func _process(_delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	if Input.is_action_pressed("Player" + str(player) + "Left"):
-		angular_velocity_target = -5
+		angular_velocity_target = -30
 	elif Input.is_action_pressed("Player" + str(player) + "Right"):
-		angular_velocity_target = 5
+		angular_velocity_target = 30
 	else:
 		angular_velocity_target = 0
+	var joystick_direction := Vector2(Input.get_joy_axis(player, 0), Input.get_joy_axis(player, 1))
+	if (joystick_direction != Vector2.ZERO):
+		var target_direction: float = joystick_direction.angle()
+		if is_equal_approx(target_direction, rotation):
+			pass
+		elif rotation - 0.4 > target_direction and rotation - 4.0 < target_direction or rotation + 2.5 < target_direction:
+			angular_velocity_target = -30
+		elif rotation + 0.4 < target_direction or rotation - 2.5 > target_direction:
+			angular_velocity_target = 30
+		print(str(rotation) + ' ' + str(target_direction))
 	angular_velocity = lerp(angular_velocity, angular_velocity_target, 0.04)
 	if Input.is_action_pressed("Player" + str(player) + "Move") and move_cd == 0:
 		linear_velocity += Vector2(cos(rotation), sin(rotation)) * 100
 		thrust_sound_emitter.play()
-		move_cd = 10
+		move_cd = 5
 	elif move_cd > 0:
 		move_cd -= 1
 	if Input.is_action_pressed("Player" + str(player) + "Fire") and fire_cd == 0:
 		fire()
 		linear_velocity += Vector2(cos(rotation), sin(rotation)) * -200
-		fire_cd = 80
+		fire_cd = 40
 	elif fire_cd > 0:
 		fire_cd -= 1
 	thruster_particles.emitting = Input.is_action_pressed("Player" + str(player) + "Move")
-
-func _physics_process(_delta: float) -> void:
 	linear_velocity = game_manager.account_for_attractors(linear_velocity, position, 1)
 	if get_contact_count() > 0:
 		collision_sound_emitter.play()
+
 
 func fire() -> void:
 	shot_sound_emitter.play()
