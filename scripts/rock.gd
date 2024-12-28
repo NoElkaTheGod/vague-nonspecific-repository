@@ -4,7 +4,7 @@ class_name Rock extends RigidBody2D
 @onready var collision_sound_emitter := $WorldBound
 
 func _physics_process(_delta: float) -> void:
-	linear_velocity = game_manager.account_for_attractors(linear_velocity, position, 0.7)
+	linear_velocity = game_manager.account_for_attractors(linear_velocity, position, 0.3)
 	if get_contact_count() == 0: return
 	if get_colliding_bodies()[0] is StaticBody2D:
 		collision_sound_emitter.play()

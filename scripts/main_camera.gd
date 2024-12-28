@@ -27,6 +27,10 @@ func get_random_spot() -> Vector2:
 	var arena_size := Vector2(get_viewport_rect().size.x, get_viewport_rect().size.y)
 	return Vector2(randf_range(50, arena_size.x - 50), randf_range(50, arena_size.y - 50))
 
+func get_random_spot_offscreen(direction: int) -> Vector2:
+	var arena_size := Vector2(get_viewport_rect().size.x, get_viewport_rect().size.y)
+	return Vector2(randf_range(50, arena_size.x - 50), (arena_size.y * direction) + (50 * direction) - (50 * (-direction + 1)))
+
 func viewport_size_changed():
 	var new_size := Vector2(get_viewport_rect().size.x, get_viewport_rect().size.y)
 	$UpBound.position = Vector2(new_size.x / 2, 0)

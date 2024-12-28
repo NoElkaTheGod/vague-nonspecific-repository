@@ -5,11 +5,14 @@ var attractors: Array[Attractor]
 var repulsors: Array[Repulsor]
 var wormholes: Array[Wormhole]
 var rocks: Array[Rock]
+var powerups: Array[Powerup]
 var player_amount: int = 3
 var attractor_amount: int = 2
 var repulsor_amount: int = 2
 var wormhole_pairs: int = 2
 var rock_amount: int = 3
+var powerup_spawn_cd: int = 600
+var timer: int
 
 var idle_projectile_manager: IdleProjectileManager
 @onready var main_camera: MainCamera = $Camera2D
@@ -18,6 +21,7 @@ var idle_projectile_manager: IdleProjectileManager
 @onready var repulsor_scene: PackedScene = load("res://scenes/repulsor.tscn")
 @onready var wormhole_scene: PackedScene = load("res://scenes/wormhole.tscn")
 @onready var rock_scene: PackedScene = load("res://scenes/rock.tscn")
+@onready var powerup_scene: PackedScene = load("res://scenes/powerup.tscn")
 
 func _ready() -> void:
 	start_round()
@@ -33,6 +37,15 @@ func account_for_attractors(velocity: Vector2, position: Vector2, coefficient: f
 		velocity += (item.position - position).normalized() * item.power / item.position.distance_squared_to(position) * coefficient
 	return velocity
 
+func _physics_process(_delta: float) -> void:
+	if timer < powerup_spawn_cd:
+		timer += 1
+	else:
+		timer = 0
+		var new_powerup = powerup_scene.instantiate()
+		new_powerup.init(randi_range(0, 2), main_camera.get_random_spot_offscreen(1), main_camera.get_random_spot_offscreen(0))
+		powerups.append(new_powerup)
+		add_child(new_powerup)
 
 func start_round() -> void:
 	idle_projectile_manager = IdleProjectileManager.new()
@@ -90,4 +103,7 @@ func end_round() -> void:
 		item.queue_free()
 	for item in rocks:
 		item.queue_free()
+	for item in powerups:
+		item.queue_free()
+	timer = 0
 	start_round()
