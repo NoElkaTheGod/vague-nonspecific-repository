@@ -33,3 +33,5 @@ func viewport_size_changed():
 	$LeftBound.position = Vector2(0, new_size.y / 2)
 	$RightBound.position = Vector2(new_size.x, new_size.y / 2)
 	$DownBound.position = Vector2(new_size.x / 2, new_size.y)
+	var background_scale = max(new_size.x / 1024.0, new_size.y / 1024.0)
+	$TextureRect.scale = Vector2(background_scale, background_scale)

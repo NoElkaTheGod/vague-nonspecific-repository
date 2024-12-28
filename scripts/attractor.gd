@@ -3,15 +3,17 @@ class_name Attractor extends Area2D
 @onready var particle_processor: ParticleProcessMaterial = $GPUParticles2D.process_material
 @onready var sound = $AudioStreamPlayer
 var power: int = 50
-var linked_repulsor: Repulsor
 
 func _ready() -> void:
-	connect("body_entered", teleprot)
+	connect("body_entered", contact)
 
-func init(power_set: int, link: Repulsor) -> void:
+func init(power_set: int) -> void:
 	power = power_set
-	linked_repulsor = link
+	$AnimatedSprite2D.play()
 
-func teleprot(body: Node2D) -> void:
-	body.global_position = linked_repulsor.global_position + (global_position - body.global_position)
+func contact(body: Node2D) -> void:
+	if body is not RigidBody2D: return
+	var pebis := body as RigidBody2D
+	pebis.linear_velocity = (pebis.position - position) * 50 / pebis.mass
+	pebis.angular_velocity += 50 / pebis.mass
 	sound.play()

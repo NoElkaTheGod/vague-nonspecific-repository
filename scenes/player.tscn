@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://ddtwhvu0d1psn"]
+[gd_scene load_steps=25 format=3 uid="uid://ddtwhvu0d1psn"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_ngg73"]
 [ext_resource type="Texture2D" uid="uid://8084ru2awn7s" path="res://sprites/player.png" id="2_5kcq6"]
@@ -7,6 +7,11 @@
 [ext_resource type="Texture2D" uid="uid://d1vdo56rpmjfw" path="res://sprites/amogi.png" id="4_3h1j3"]
 [ext_resource type="AudioStream" uid="uid://bx2odwdl72ysg" path="res://sounds/dead.wav" id="5_4ftdm"]
 [ext_resource type="AudioStream" uid="uid://den1cg75s2y8m" path="res://sounds/collision.wav" id="7_2chic"]
+[ext_resource type="AudioStream" uid="uid://cn10qb75ar7hy" path="res://sounds/alarm.wav" id="7_3jieg"]
+[ext_resource type="Script" path="res://scripts/collision_sound_emitter.gd" id="7_lsnoe"]
+[ext_resource type="AudioStream" uid="uid://bc216qpmklpjs" path="res://sounds/collision1.wav" id="10_ox2nc"]
+[ext_resource type="AudioStream" uid="uid://bcct6j3y6757i" path="res://sounds/collision2.wav" id="11_34sp5"]
+[ext_resource type="AudioStream" uid="uid://b8rlhmt7ufxq6" path="res://sounds/collision3.wav" id="12_vwguv"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_bxxq3"]
 friction = 0.0
@@ -40,6 +45,7 @@ initial_velocity_max = 400.0
 gravity = Vector3(0, 0, 0)
 damping_min = 100.0
 damping_max = 100.0
+color = Color(1, 0.888206, 0.700291, 1)
 alpha_curve = SubResource("CurveTexture_gpkfx")
 
 [sub_resource type="Curve" id="Curve_iitcm"]
@@ -49,12 +55,23 @@ point_count = 3
 [sub_resource type="CurveTexture" id="CurveTexture_4jheo"]
 curve = SubResource("Curve_iitcm")
 
+[sub_resource type="Gradient" id="Gradient_adcct"]
+colors = PackedColorArray(1, 1, 1, 1, 0.851344, 0.369971, 5.77569e-07, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_xm4lr"]
+gradient = SubResource("Gradient_adcct")
+
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_7ai65"]
 particle_flag_disable_z = true
+angle_min = 1.07288e-05
+angle_max = 360.0
 spread = 180.0
 initial_velocity_min = 50.0
-initial_velocity_max = 200.0
+initial_velocity_max = 300.0
 gravity = Vector3(0, 0, 0)
+scale_max = 2.0
+color = Color(0.999573, 0.98654, 0.952228, 1)
+color_ramp = SubResource("GradientTexture1D_xm4lr")
 alpha_curve = SubResource("CurveTexture_4jheo")
 
 [node name="Player" type="RigidBody2D"]
@@ -64,7 +81,6 @@ physics_material_override = SubResource("PhysicsMaterial_bxxq3")
 contact_monitor = true
 max_contacts_reported = 1
 linear_damp = 1.0
-angular_damp = 8.0
 script = ExtResource("1_ngg73")
 player = 1
 
@@ -72,7 +88,7 @@ player = 1
 shape = SubResource("CircleShape2D_gfv2h")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(2, 0)
+position = Vector2(3, 0)
 rotation = 1.5708
 texture = SubResource("AtlasTexture_vj7gw")
 
@@ -130,8 +146,27 @@ texture = ExtResource("4_3h1j3")
 one_shot = true
 explosiveness = 1.0
 
-[node name="CollisionSoundEmitter" type="AudioStreamPlayer" parent="."]
+[node name="AlarmSoundEmitter" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_3jieg")
+volume_db = -10.0
+
+[node name="CollisionSoundEmitter" type="Node" parent="."]
+script = ExtResource("7_lsnoe")
+
+[node name="WorldBound" type="AudioStreamPlayer" parent="CollisionSoundEmitter"]
 stream = ExtResource("7_2chic")
+volume_db = -10.0
+
+[node name="GeneralCollision1" type="AudioStreamPlayer" parent="CollisionSoundEmitter"]
+stream = ExtResource("10_ox2nc")
+volume_db = -10.0
+
+[node name="GeneralCollision2" type="AudioStreamPlayer" parent="CollisionSoundEmitter"]
+stream = ExtResource("11_34sp5")
+volume_db = -10.0
+
+[node name="GeneralCollision3" type="AudioStreamPlayer" parent="CollisionSoundEmitter"]
+stream = ExtResource("12_vwguv")
 volume_db = -10.0
 
 [node name="Area2D" type="Area2D" parent="."]

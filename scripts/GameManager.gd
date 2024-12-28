@@ -3,14 +3,21 @@ class_name GameManager extends Node
 var players: Array[Player]
 var attractors: Array[Attractor]
 var repulsors: Array[Repulsor]
+var wormholes: Array[Wormhole]
+var rocks: Array[Rock]
 var player_amount: int = 3
-var attractor_pairs: int = 3
+var attractor_amount: int = 2
+var repulsor_amount: int = 2
+var wormhole_pairs: int = 2
+var rock_amount: int = 3
 
 var idle_projectile_manager: IdleProjectileManager
 @onready var main_camera: MainCamera = $Camera2D
 @onready var player_scene: PackedScene = load("res://scenes/player.tscn")
 @onready var attractor_scene: PackedScene = load("res://scenes/attractor.tscn")
 @onready var repulsor_scene: PackedScene = load("res://scenes/repulsor.tscn")
+@onready var wormhole_scene: PackedScene = load("res://scenes/wormhole.tscn")
+@onready var rock_scene: PackedScene = load("res://scenes/rock.tscn")
 
 func _ready() -> void:
 	start_round()
@@ -19,7 +26,7 @@ func _input(event: InputEvent) -> void:
 	if event.is_action("Restart round") and event.is_released():
 		end_round()
 
-func account_for_attractors(velocity: Vector2, position: Vector2, coefficient: int) -> Vector2:
+func account_for_attractors(velocity: Vector2, position: Vector2, coefficient: float) -> Vector2:
 	for item in attractors:
 		velocity += (item.position - position).normalized() * item.power / item.position.distance_squared_to(position) * coefficient
 	for item in repulsors:
@@ -38,17 +45,36 @@ func start_round() -> void:
 		players[i].position = main_camera.get_arena_corner(i)
 		players[i].rotation = main_camera.get_arena_corner_direction(i)
 		add_child(players[i])
-	attractors.resize(attractor_pairs)
-	repulsors.resize(attractor_pairs)
-	for i in range(attractor_pairs):
+	attractors.resize(attractor_amount)
+	for i in range(attractor_amount):
 		attractors[i] = attractor_scene.instantiate()
-		repulsors[i] = repulsor_scene.instantiate()
 		add_child(attractors[i])
-		add_child(repulsors[i])
-		attractors[i].init(120000, repulsors[i])
-		repulsors[i].init(-120000, attractors[i])
+		attractors[i].init(120000)
 		attractors[i].position = main_camera.get_random_spot()
+	repulsors.resize(repulsor_amount)
+	for i in range(repulsor_amount):
+		repulsors[i] = repulsor_scene.instantiate()
+		add_child(repulsors[i])
+		repulsors[i].init(-120000)
 		repulsors[i].position = main_camera.get_random_spot()
+	rocks.resize(rock_amount)
+	for i in range(rock_amount):
+		rocks[i] = rock_scene.instantiate()
+		add_child(rocks[i])
+		rocks[i].position = main_camera.get_random_spot()
+		rocks[i].linear_velocity = Vector2.RIGHT.rotated(randf_range(0, PI * 2)) * randf_range(50, 100)
+	wormholes.resize(wormhole_pairs * 2)
+	for i in range(wormhole_pairs):
+		wormholes[i * 2] = wormhole_scene.instantiate()
+		wormholes[i * 2 + 1] = wormhole_scene.instantiate()
+		add_child(wormholes[i * 2])
+		add_child(wormholes[i * 2 + 1])
+		wormholes[i * 2].linked_wormhole = wormholes[i * 2 + 1]
+		wormholes[i * 2 + 1].linked_wormhole = wormholes[i * 2]
+		wormholes[i * 2].modulate = Color(randf(), randf(), randf())
+		wormholes[i * 2 + 1].modulate = wormholes[i * 2].modulate
+		wormholes[i * 2].position = main_camera.get_random_spot()
+		wormholes[i * 2 + 1].position = main_camera.get_random_spot()
 
 func end_round() -> void:
 	for item in idle_projectile_manager.get_children():
@@ -59,5 +85,9 @@ func end_round() -> void:
 	for item in attractors:
 		item.queue_free()
 	for item in repulsors:
+		item.queue_free()
+	for item in wormholes:
+		item.queue_free()
+	for item in rocks:
 		item.queue_free()
 	start_round()

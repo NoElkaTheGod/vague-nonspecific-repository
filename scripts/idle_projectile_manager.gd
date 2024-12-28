@@ -18,6 +18,7 @@ func add_idle_projectile(item:projectile) -> void:
 	idle_projectiles.append(item)
 	item.visible = false
 	item.process_mode = Node.PROCESS_MODE_DISABLED
+	item.get_child(0).restart()
 
 func get_idle_projectile() -> projectile:
 	var result = idle_projectiles.pop_back()
