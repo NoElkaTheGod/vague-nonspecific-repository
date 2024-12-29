@@ -105,5 +105,7 @@ func end_round() -> void:
 		item.queue_free()
 	for item in powerups:
 		item.queue_free()
+		item = null
+	powerups.resize(0)
 	timer = 0
 	start_round()

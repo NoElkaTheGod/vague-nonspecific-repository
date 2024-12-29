@@ -8,12 +8,14 @@ func init(type: int, to: Vector2, from: Vector2) -> void:
 	powerup_type = type
 	position = from
 	destination = to
-	$Sprite2D.texture.region.position.x = type * 32
+	$Sprite2D.texture = AtlasTexture.new()
+	$Sprite2D.texture.atlas = load("res://sprites/powerups.png")
+	$Sprite2D.texture.region = Rect2(type * 32, 0, 32, 32)
 	connect("body_entered", consume)
 
 func _physics_process(_delta: float) -> void:
 	position = position.move_toward(destination, 1)
-	if position == destination: 
+	if position == destination:
 		game_manager.powerups.erase(self)
 		queue_free()
 

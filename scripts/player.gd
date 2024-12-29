@@ -3,14 +3,14 @@ class_name Player extends RigidBody2D
 var move_cd := 0
 var fire_cd := 0
 var max_move_cd := 5
-var turn_speed := 5
+var turn_speed := 6
 var charging := false
 var charge_cap := 0
 var death_timer := -1
 var angular_velocity_target := 0.0
 var active_powerup_type := -1
 var active_powerup_uses := 0
-var shitty_powerup_time_table: Dictionary = {0 : 30, 1: 10, 2: 1}
+var shitty_powerup_time_table: Dictionary = {0 : 30, 1: 5, 2: 1}
 @onready var sprite := $Sprite2D
 @onready var thrust_sound_emitter := $ThrustSoundEmitter
 @onready var thruster_particles := $ThrusterParticles
@@ -68,7 +68,7 @@ func _physics_process(_delta: float) -> void:
 	if active_powerup_uses == 0: active_powerup_type = -1
 	if charging:
 		charge_cap -= 1
-		if Input.is_action_just_released("Player" + str(player) + "Fire") or charge_cap == 0:
+		if charge_cap == 0:
 			chargeup_sound_emitter.stop()
 			caboom_sound_emitter.play()
 			$Explosion.stop_anim()
@@ -83,13 +83,13 @@ func _physics_process(_delta: float) -> void:
 				fire(1)
 				linear_velocity += Vector2(cos(rotation), sin(rotation)) * -200
 			0:
-				fire_cd = 9
+				fire_cd = 7
 				fire(1)
 				linear_velocity += Vector2(cos(rotation), sin(rotation)) * -100
 				active_powerup_uses -= 1
 			1:
-				fire_cd = 40
-				fire(7)
+				fire_cd = 50
+				fire(9)
 				linear_velocity += Vector2(cos(rotation), sin(rotation)) * -400
 				active_powerup_uses -= 1
 			2:
@@ -114,7 +114,7 @@ func handle_collisions() -> void:
 		var achtung = get_colliding_bodies()[0] as RigidBody2D
 		if (achtung.linear_velocity + linear_velocity).length() < 900.0 and (achtung.linear_velocity.length() + linear_velocity.length()) > 900.0:
 			collision_sound_emitter.play(3)
-			angular_velocity += pow(randf_range(-9, 9), 2)
+			start_dying()
 		elif (achtung.linear_velocity + linear_velocity).length() < 1500.0 and (achtung.linear_velocity.length() + linear_velocity.length()) > 500.0:
 			collision_sound_emitter.play(2)
 			angular_velocity += pow(randf_range(-5, 5), 2)
