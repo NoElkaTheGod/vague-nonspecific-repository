@@ -7,10 +7,10 @@ var repulsors: Array[Repulsor]
 var wormholes: Array[Wormhole]
 var rocks: Array[Rock]
 var powerups: Array[Powerup]
-var player_amount: int = 4
-var attractor_amount: int = randi_range(1, 3)
-var repulsor_amount: int = randi_range(1, 3)
-var wormhole_pairs: int = randi_range(1, 4)
+var player_amount: int = 3
+var attractor_amount: int = randi_range(0, 3)
+var repulsor_amount: int = randi_range(0, 3)
+var wormhole_pairs: int = randi_range(0, 2)
 var rock_amount: int = randi_range(1, 7)
 var powerup_spawn_cd: int = 500
 var timer: int
@@ -59,7 +59,6 @@ func _physics_process(_delta: float) -> void:
 	if timer_2 > 0: timer_2 -= 1
 	else:
 		end_round()
-		timer_2 = -1
 
 func start_round() -> void:
 	idle_projectile_manager = IdleProjectileManager.new()
@@ -127,9 +126,9 @@ func end_round() -> void:
 		item = null
 	powerups.resize(0)
 	timer = 0
+	timer_2 = -1
 	attractor_amount = randi_range(1, 3)
 	repulsor_amount = randi_range(1, 3)
 	wormhole_pairs = randi_range(1, 4)
 	rock_amount = randi_range(1, 7)
-	start_round()
 	start_round()

@@ -19,7 +19,7 @@ func teleprot(body: Node2D) -> void:
 	linked_wormhole.enter_cd()
 	body.global_position += linked_wormhole.global_position - global_position
 	sound.play()
-	displaying_line = 10
+	displaying_line = 20
 	queue_redraw()
 
 func _draw() -> void:

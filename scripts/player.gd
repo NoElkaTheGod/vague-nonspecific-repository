@@ -129,6 +129,7 @@ func start_dying(_body: Node2D = null):
 	death_timer = 75
 
 func fire(amount: int) -> void:
+	if idle_projectile_manager == null: return
 	shot_sound_emitter.play()
 	var additional_rotation: Array[float]
 	additional_rotation.resize(amount)
