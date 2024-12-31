@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://dkeli7ibv86mp"]
+[gd_scene load_steps=9 format=3 uid="uid://brmla0jhwlcbi"]
 
 [ext_resource type="Script" path="res://scripts/wormhole.gd" id="1_nsqem"]
 [ext_resource type="Texture2D" uid="uid://cq6eka4n26hwu" path="res://sprites/wowmhowe.png" id="2_6bb1q"]

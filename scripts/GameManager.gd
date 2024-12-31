@@ -1,17 +1,18 @@
 class_name GameManager extends Node
 
 var players: Array[Player]
+var alive_players: Array[Player]
 var attractors: Array[Attractor]
 var repulsors: Array[Repulsor]
 var wormholes: Array[Wormhole]
 var rocks: Array[Rock]
 var powerups: Array[Powerup]
-var player_amount: int = 3
-var attractor_amount: int = 2
-var repulsor_amount: int = 2
-var wormhole_pairs: int = 2
-var rock_amount: int = 3
-var powerup_spawn_cd: int = 600
+var player_amount: int = 4
+var attractor_amount: int = randi_range(1, 3)
+var repulsor_amount: int = randi_range(1, 3)
+var wormhole_pairs: int = randi_range(1, 4)
+var rock_amount: int = randi_range(1, 7)
+var powerup_spawn_cd: int = 500
 var timer: int
 var timer_2: int = -1
 var player_score: Array[int]
@@ -41,8 +42,8 @@ func account_for_attractors(velocity: Vector2, position: Vector2, coefficient: f
 	return velocity
 
 func im_dead_lol(player: Player) -> void:
-	players.erase(player)
-	if players.size() <= 1:
+	alive_players.erase(player)
+	if alive_players.size() <= 1:
 		timer_2 = 60
 
 func _physics_process(_delta: float) -> void:
@@ -71,6 +72,8 @@ func start_round() -> void:
 		players[i].position = main_camera.get_arena_corner(i)
 		players[i].rotation = main_camera.get_arena_corner_direction(i)
 		add_child(players[i])
+	alive_players.resize(player_amount)
+	alive_players = players
 	attractors.resize(attractor_amount)
 	for i in range(attractor_amount):
 		attractors[i] = attractor_scene.instantiate()
@@ -103,8 +106,8 @@ func start_round() -> void:
 		wormholes[i * 2 + 1].position = main_camera.get_random_spot()
 
 func end_round() -> void:
-	if players[0] != null:
-		player_score[players[0].player] += 1
+	if alive_players.size() > 0:
+		player_score[alive_players[0].player] += 1
 	scoreboard.update_player_score()
 	for item in idle_projectile_manager.get_children():
 		item.free()
@@ -124,4 +127,9 @@ func end_round() -> void:
 		item = null
 	powerups.resize(0)
 	timer = 0
+	attractor_amount = randi_range(1, 3)
+	repulsor_amount = randi_range(1, 3)
+	wormhole_pairs = randi_range(1, 4)
+	rock_amount = randi_range(1, 7)
+	start_round()
 	start_round()
