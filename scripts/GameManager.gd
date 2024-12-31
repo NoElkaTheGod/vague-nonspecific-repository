@@ -13,9 +13,12 @@ var wormhole_pairs: int = 2
 var rock_amount: int = 3
 var powerup_spawn_cd: int = 600
 var timer: int
+var timer_2: int = -1
+var player_score: Array[int]
 
 var idle_projectile_manager: IdleProjectileManager
 @onready var main_camera: MainCamera = $Camera2D
+@onready var scoreboard := $Scoreboard
 @onready var player_scene: PackedScene = load("res://scenes/player.tscn")
 @onready var attractor_scene: PackedScene = load("res://scenes/attractor.tscn")
 @onready var repulsor_scene: PackedScene = load("res://scenes/repulsor.tscn")
@@ -24,11 +27,11 @@ var idle_projectile_manager: IdleProjectileManager
 @onready var powerup_scene: PackedScene = load("res://scenes/powerup.tscn")
 
 func _ready() -> void:
+	player_score.resize(player_amount)
+	for i in range(player_amount):
+		player_score[i] = 0
 	start_round()
-
-func _input(event: InputEvent) -> void:
-	if event.is_action("Restart round") and event.is_released():
-		end_round()
+	scoreboard.update_player_score()
 
 func account_for_attractors(velocity: Vector2, position: Vector2, coefficient: float) -> Vector2:
 	for item in attractors:
@@ -36,6 +39,11 @@ func account_for_attractors(velocity: Vector2, position: Vector2, coefficient: f
 	for item in repulsors:
 		velocity += (item.position - position).normalized() * item.power / item.position.distance_squared_to(position) * coefficient
 	return velocity
+
+func im_dead_lol(player: Player) -> void:
+	players.erase(player)
+	if players.size() <= 1:
+		timer_2 = 60
 
 func _physics_process(_delta: float) -> void:
 	if timer < powerup_spawn_cd:
@@ -46,6 +54,11 @@ func _physics_process(_delta: float) -> void:
 		new_powerup.init(randi_range(0, 2), main_camera.get_random_spot_offscreen(1), main_camera.get_random_spot_offscreen(0))
 		powerups.append(new_powerup)
 		add_child(new_powerup)
+	if timer_2 == -1: return
+	if timer_2 > 0: timer_2 -= 1
+	else:
+		end_round()
+		timer_2 = -1
 
 func start_round() -> void:
 	idle_projectile_manager = IdleProjectileManager.new()
@@ -90,6 +103,9 @@ func start_round() -> void:
 		wormholes[i * 2 + 1].position = main_camera.get_random_spot()
 
 func end_round() -> void:
+	if players[0] != null:
+		player_score[players[0].player] += 1
+	scoreboard.update_player_score()
 	for item in idle_projectile_manager.get_children():
 		item.free()
 	idle_projectile_manager.free()
