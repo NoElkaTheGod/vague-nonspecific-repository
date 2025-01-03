@@ -114,7 +114,7 @@ func handle_collisions() -> void:
 		var achtung = get_colliding_bodies()[0] as RigidBody2D
 		if (achtung.linear_velocity + linear_velocity).length() < 900.0 and (achtung.linear_velocity.length() + linear_velocity.length()) > 900.0:
 			collision_sound_emitter.play(3)
-			start_dying()
+			#start_dying()
 		elif (achtung.linear_velocity + linear_velocity).length() < 1500.0 and (achtung.linear_velocity.length() + linear_velocity.length()) > 500.0:
 			collision_sound_emitter.play(2)
 			angular_velocity += pow(randf_range(-5, 5), 2)
@@ -129,6 +129,7 @@ func start_dying(_body: Node2D = null):
 	death_timer = 75
 
 func fire(amount: int) -> void:
+	if idle_projectile_manager == null: return
 	shot_sound_emitter.play()
 	var additional_rotation: Array[float]
 	additional_rotation.resize(amount)
@@ -148,6 +149,7 @@ func fucking_die(_body: Node2D) -> void:
 	thruster_particles.queue_free()
 	$Sprite2D.visible = false
 	call_deferred("KYS")
+	game_manager.im_dead_lol(self)
 
 func KYS():
 	process_mode = PROCESS_MODE_DISABLED

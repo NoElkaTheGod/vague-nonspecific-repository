@@ -15,6 +15,7 @@ func init(type: int, to: Vector2, from: Vector2) -> void:
 
 func _physics_process(_delta: float) -> void:
 	position = position.move_toward(destination, 1)
+	game_manager.account_for_attractors(position, position, 5)
 	if position == destination:
 		game_manager.powerups.erase(self)
 		queue_free()
