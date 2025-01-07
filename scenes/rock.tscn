@@ -1,8 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://dp1cbr33xuauf"]
+[gd_scene load_steps=4 format=3 uid="uid://dp1cbr33xuauf"]
 
 [ext_resource type="Script" path="res://scripts/rock.gd" id="1_0kc53"]
 [ext_resource type="Texture2D" uid="uid://b4poly3aptrl2" path="res://sprites/rock.png" id="2_u3xeq"]
-[ext_resource type="AudioStream" uid="uid://den1cg75s2y8m" path="res://sounds/collision.wav" id="3_hm7ta"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_mqawe"]
 radius = 40.0
@@ -23,7 +22,3 @@ shape = SubResource("CircleShape2D_mqawe")
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(0, 1)
 texture = ExtResource("2_u3xeq")
-
-[node name="WorldBound" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("3_hm7ta")
-volume_db = -10.0

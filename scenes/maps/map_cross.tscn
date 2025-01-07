@@ -1,0 +1,120 @@
+[gd_scene load_steps=9 format=3 uid="uid://1exbhi41pf6y"]
+
+[ext_resource type="Script" path="res://scripts/map_root.gd" id="1_ip2ub"]
+[ext_resource type="PackedScene" uid="uid://brmla0jhwlcbi" path="res://scenes/wormhole.tscn" id="2_64f4i"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_2iqby"]
+normal = Vector2(0, 1)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_mutn6"]
+normal = Vector2(1, 0)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_2xbgm"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_x05ui"]
+normal = Vector2(-1, 0)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3gf1l"]
+size = Vector2(1680, 50)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_slvmr"]
+size = Vector2(50, 980)
+
+[node name="MapRoot" type="Node2D"]
+script = ExtResource("1_ip2ub")
+
+[node name="Borders" type="Node2D" parent="."]
+
+[node name="Polygon2D" type="Polygon2D" parent="Borders"]
+color = Color(1, 1, 1, 0.784314)
+texture_scale = Vector2(0.1, 0.1)
+invert_enabled = true
+invert_border = 1000.0
+polygon = PackedVector2Array(1920, 0, 1920, 1280, 0, 1280, 0, 0)
+
+[node name="UpBound" type="StaticBody2D" parent="Borders"]
+position = Vector2(960, 0)
+collision_layer = 9
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Borders/UpBound"]
+shape = SubResource("WorldBoundaryShape2D_2iqby")
+
+[node name="LeftBound" type="StaticBody2D" parent="Borders"]
+position = Vector2(0, 640)
+collision_layer = 9
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Borders/LeftBound"]
+shape = SubResource("WorldBoundaryShape2D_mutn6")
+
+[node name="DownBound" type="StaticBody2D" parent="Borders"]
+position = Vector2(960, 1280)
+collision_layer = 9
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Borders/DownBound"]
+shape = SubResource("WorldBoundaryShape2D_2xbgm")
+
+[node name="RightBound" type="StaticBody2D" parent="Borders"]
+position = Vector2(1920, 640)
+collision_layer = 9
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Borders/RightBound"]
+shape = SubResource("WorldBoundaryShape2D_x05ui")
+
+[node name="PlayerSpawners" type="Node" parent="."]
+
+[node name="Marker2D1" type="Marker2D" parent="PlayerSpawners"]
+position = Vector2(300, 128)
+gizmo_extents = 20.0
+
+[node name="Marker2D2" type="Marker2D" parent="PlayerSpawners"]
+position = Vector2(1620, 128)
+gizmo_extents = 20.0
+
+[node name="Marker2D3" type="Marker2D" parent="PlayerSpawners"]
+position = Vector2(300, 1152)
+gizmo_extents = 20.0
+
+[node name="Marker2D4" type="Marker2D" parent="PlayerSpawners"]
+position = Vector2(1620, 1152)
+gizmo_extents = 20.0
+
+[node name="Wormhole1" parent="." node_paths=PackedStringArray("linked_wormhole") instance=ExtResource("2_64f4i")]
+position = Vector2(180, 1100)
+linked_wormhole = NodePath("../Wormhole4")
+
+[node name="Wormhole2" parent="." node_paths=PackedStringArray("linked_wormhole") instance=ExtResource("2_64f4i")]
+position = Vector2(180, 180)
+linked_wormhole = NodePath("../Wormhole1")
+
+[node name="Wormhole3" parent="." node_paths=PackedStringArray("linked_wormhole") instance=ExtResource("2_64f4i")]
+position = Vector2(1740, 180)
+linked_wormhole = NodePath("../Wormhole2")
+
+[node name="Wormhole4" parent="." node_paths=PackedStringArray("linked_wormhole") instance=ExtResource("2_64f4i")]
+position = Vector2(1740, 1100)
+linked_wormhole = NodePath("../Wormhole3")
+
+[node name="StaticBody2D1" type="StaticBody2D" parent="."]
+position = Vector2(960, 640)
+collision_layer = 9
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D1"]
+shape = SubResource("RectangleShape2D_3gf1l")
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="."]
+position = Vector2(960, 640)
+collision_layer = 9
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D2"]
+shape = SubResource("RectangleShape2D_slvmr")
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+position = Vector2(960, 640)
+color = Color(1, 1, 1, 0.784314)
+polygon = PackedVector2Array(-840, -25, -25, -25, -25, -490, 25, -490, 25, -25, 840, -25, 840, 25, 25, 25, 25, 490, -26, 490, -25, 25, -840, 25)

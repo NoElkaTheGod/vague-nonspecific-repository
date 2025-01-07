@@ -1,14 +1,9 @@
-class_name Attractor extends Area2D
+class_name Attractor extends Repulsor
 
-@onready var particle_processor: ParticleProcessMaterial = $GPUParticles2D.process_material
 @onready var sound = $AudioStreamPlayer
-var power: int = 50
 
 func _ready() -> void:
 	connect("body_entered", contact)
-
-func init(power_set: int) -> void:
-	power = power_set
 	$AnimatedSprite2D.play()
 
 func contact(body: Node2D) -> void:

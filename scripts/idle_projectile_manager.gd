@@ -2,9 +2,8 @@ class_name IdleProjectileManager extends Node
 
 var idle_projectiles: Array[projectile]
 @onready var projectile_scene: PackedScene = load("res://scenes/projectile.tscn")
-@onready var projectile_remainder_scene: PackedScene = load("res://scenes/bullet_ramainder.tscn")
+@onready var projectile_remainder_scene: PackedScene = load("res://scenes/bullet_remainder.tscn")
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	idle_projectiles.resize(10)
 	for i in range(10):

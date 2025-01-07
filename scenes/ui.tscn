@@ -1,0 +1,28 @@
+[gd_scene load_steps=5 format=3 uid="uid://c7hmuu2lpdj4w"]
+
+[ext_resource type="Script" path="res://scripts/ui.gd" id="1_iqpue"]
+[ext_resource type="Script" path="res://scripts/scoreboard.gd" id="1_o1h88"]
+[ext_resource type="Texture2D" uid="uid://8084ru2awn7s" path="res://sprites/player.png" id="2_h5kaj"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vx3q6"]
+atlas = ExtResource("2_h5kaj")
+
+[node name="UI" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_iqpue")
+
+[node name="Scoreboard" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_o1h88")
+
+[node name="TextureRect" type="TextureRect" parent="Scoreboard"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = SubResource("AtlasTexture_vx3q6")

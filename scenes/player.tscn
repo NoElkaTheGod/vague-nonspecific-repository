@@ -103,6 +103,7 @@ alpha_curve = SubResource("CurveTexture_o5gwv")
 radius = 130.0
 
 [node name="Player" type="RigidBody2D"]
+process_mode = 4
 collision_layer = 4
 collision_mask = 12
 physics_material_override = SubResource("PhysicsMaterial_bxxq3")
@@ -110,7 +111,6 @@ contact_monitor = true
 max_contacts_reported = 1
 linear_damp = 1.0
 script = ExtResource("1_ngg73")
-player = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_gfv2h")
@@ -125,6 +125,7 @@ stream = ExtResource("2_lq5ed")
 volume_db = -10.0
 
 [node name="ThrusterParticles" type="CPUParticles2D" parent="."]
+process_mode = 1
 texture_filter = 1
 position = Vector2(-19, 0)
 emitting = false

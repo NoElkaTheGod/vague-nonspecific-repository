@@ -1,12 +1,15 @@
 class_name Player extends RigidBody2D
 
+var is_player_active := false
+var is_input_connected := false
 var move_cd := 0
 var fire_cd := 0
-var max_move_cd := 5
+var max_move_cd := 8
 var turn_speed := 6
 var charging := false
 var charge_cap := 0
 var death_timer := -1
+var alive := false
 var angular_velocity_target := 0.0
 var active_powerup_type := -1
 var active_powerup_uses := 0
@@ -22,18 +25,45 @@ var shitty_powerup_time_table: Dictionary = {0 : 30, 1: 5, 2: 1}
 @onready var caboom_sound_emitter := $CaboomSoundEmitter
 @onready var death_particles := $DeathParticles
 @onready var collision_sound_emitter: CollisionSoundEmitter = $CollisionSoundEmitter
-@onready var idle_projectile_manager: IdleProjectileManager = get_parent().get_node("IdleProjectileManager")
-@onready var game_manager: GameManager = get_parent()
-@export var player: int
+@onready var idle_projectile_manager: IdleProjectileManager = get_parent().get_parent().get_node("IdleProjectileManager")
+@onready var game_manager: GameManager = get_parent().get_parent()
+var input_device := -1
+var character_color: int
+
+func set_active():
+	is_player_active = true
+	process_mode = PROCESS_MODE_INHERIT
+	$Sprite2D.visible = true
+	$ThrusterParticles.visible = true
+	alive = true
+	reset_player_state()
+
+func set_inactive():
+	is_player_active = false
+	process_mode = PROCESS_MODE_DISABLED
+	$Sprite2D.visible = false
+	$ThrusterParticles.visible = false
+	alive = false
+
+func reset_player_state():
+	$Sprite2D.position = Vector2(3, 0)
+	$Sprite2D.rotation = deg_to_rad(90)
+	$DeathParticles.position = Vector2(0, 0)
 
 func _ready() -> void:
 	$Area2D.connect("body_entered", start_dying)
+	$ThrusterParticles.visible = false
+	$Sprite2D.visible = false
 
-func init(number: int) -> void:
-	player = number
+func init(color: int, device: int) -> void:
+	is_input_connected = true
+	character_color = color
+	input_device = device
 	$Sprite2D.texture = AtlasTexture.new()
 	$Sprite2D.texture.atlas = load("res://sprites/player.png")
-	$Sprite2D.texture.region = Rect2(number * 48, 0, 48, 48)
+	$Sprite2D.texture.region = Rect2(color * 48, 0, 48, 48)
+	set_active()
+	game_manager.player_finished_initialisation()
 
 func _physics_process(_delta: float) -> void:
 	linear_velocity = game_manager.account_for_attractors(linear_velocity, position, 1)
@@ -45,22 +75,24 @@ func _physics_process(_delta: float) -> void:
 			fucking_die(null)
 		death_timer -= 1
 		return
-	if Input.is_action_pressed("Player" + str(player) + "Left"):
-		angular_velocity_target = -turn_speed
-	elif Input.is_action_pressed("Player" + str(player) + "Right"):
-		angular_velocity_target = turn_speed
-	else:
-		angular_velocity_target = 0
-	var joystick_direction := Vector2(Input.get_joy_axis(player, JOY_AXIS_LEFT_X), Input.get_joy_axis(player, JOY_AXIS_LEFT_Y))
-	if (joystick_direction != Vector2.ZERO):
-		var target_direction: float = joystick_direction.angle()
-		if rotation - 0.4 > target_direction and rotation - 4.0 < target_direction or rotation + 2.5 < target_direction:
+	if input_device > 7:
+		if Input.is_action_pressed("Player" + str(input_device) + "Left"):
 			angular_velocity_target = -turn_speed
-		elif rotation + 0.4 < target_direction or rotation - 2.5 > target_direction:
+		elif Input.is_action_pressed("Player" + str(input_device) + "Right"):
 			angular_velocity_target = turn_speed
+		else:
+			angular_velocity_target = 0
+	else:
+		var joystick_direction := Vector2(Input.get_joy_axis(input_device, JOY_AXIS_LEFT_X), Input.get_joy_axis(input_device, JOY_AXIS_LEFT_Y))
+		if (joystick_direction != Vector2.ZERO):
+			var target_direction: float = joystick_direction.angle()
+			if rotation - 0.4 > target_direction and rotation - 4.0 < target_direction or rotation + 2.5 < target_direction:
+				angular_velocity_target = -turn_speed
+			elif rotation + 0.4 < target_direction or rotation - 2.5 > target_direction:
+				angular_velocity_target = turn_speed
 	angular_velocity = move_toward(angular_velocity, angular_velocity_target, 0.5)
-	if Input.is_action_pressed("Player" + str(player) + "Move") and move_cd == 0:
-		linear_velocity += Vector2(cos(rotation), sin(rotation)) * 100
+	if Input.is_action_pressed("Player" + str(input_device) + "Move") and move_cd == 0:
+		linear_velocity += Vector2(cos(rotation), sin(rotation)) * 80
 		thrust_sound_emitter.play()
 		move_cd = max_move_cd
 	elif move_cd > 0:
@@ -74,9 +106,9 @@ func _physics_process(_delta: float) -> void:
 			$Explosion.stop_anim()
 			charging = false
 			fire_cd = 60
-			max_move_cd = 5
+			max_move_cd = 8
 			turn_speed = 5
-	elif Input.is_action_pressed("Player" + str(player) + "Fire") and fire_cd == 0:
+	elif Input.is_action_pressed("Player" + str(input_device) + "Fire") and fire_cd == 0:
 		match active_powerup_type:
 			-1:
 				fire_cd = 40
@@ -97,18 +129,18 @@ func _physics_process(_delta: float) -> void:
 				chargeup_sound_emitter.play()
 				charging = true
 				charge_cap = 240
-				max_move_cd = 3
+				max_move_cd = 4
 				turn_speed = 7
 				$Explosion.start_anim(240)
 	elif fire_cd > 0:
 		fire_cd -= 1
-	thruster_particles.emitting = Input.is_action_pressed("Player" + str(player) + "Move")
+	thruster_particles.emitting = Input.is_action_pressed("Player" + str(input_device) + "Move")
 
 func handle_collisions() -> void:
 	if get_colliding_bodies()[0] is StaticBody2D:
 		collision_sound_emitter.play(0)
-		if get_colliding_bodies()[0].get_child(0).shape is WorldBoundaryShape2D:
-			linear_velocity += get_colliding_bodies()[0].get_child(0).shape.normal * 50
+		if get_colliding_bodies()[0].get_node("CollisionShape2D").shape is WorldBoundaryShape2D:
+			linear_velocity += get_colliding_bodies()[0].get_node("CollisionShape2D").shape.normal * 50
 		return
 	if get_colliding_bodies()[0] is RigidBody2D:
 		var achtung = get_colliding_bodies()[0] as RigidBody2D
@@ -146,13 +178,9 @@ func fire(amount: int) -> void:
 func fucking_die(_body: Node2D) -> void:
 	death_sound_emitter.play()
 	death_particles.emitting = true
-	thruster_particles.queue_free()
 	$Sprite2D.visible = false
-	call_deferred("KYS")
+	call_deferred("set_inactive")
 	game_manager.im_dead_lol(self)
-
-func KYS():
-	process_mode = PROCESS_MODE_DISABLED
 
 func apply_powerup(powerup_type: int) -> void:
 	powerup_sound_emitter.play()

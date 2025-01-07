@@ -1,6 +1,6 @@
 class_name Wormhole extends Area2D
 
-var linked_wormhole: Wormhole
+@export var linked_wormhole: Wormhole
 var activation_cd := 30
 var displaying_line := 0
 @onready var particles := $GPUParticles2D

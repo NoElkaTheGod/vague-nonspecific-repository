@@ -1,79 +1,60 @@
-[gd_scene load_steps=11 format=3 uid="uid://dcid4y3ew70yn"]
+[gd_scene load_steps=8 format=3 uid="uid://dcid4y3ew70yn"]
 
 [ext_resource type="Script" path="res://scripts/GameManager.gd" id="1_psp8s"]
-[ext_resource type="Script" path="res://scripts/scoreboard.gd" id="2_fs0yj"]
 [ext_resource type="Script" path="res://scripts/main_camera.gd" id="2_lkdnu"]
-[ext_resource type="Texture2D" uid="uid://8084ru2awn7s" path="res://sprites/player.png" id="3_bpaxn"]
+[ext_resource type="PackedScene" uid="uid://c7hmuu2lpdj4w" path="res://scenes/ui.tscn" id="2_tol41"]
+[ext_resource type="Script" path="res://scripts/map_loader.gd" id="3_c8yh4"]
 [ext_resource type="Texture2D" uid="uid://d4b3170qpi5bv" path="res://sprites/yoink.png" id="3_kxlrm"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_vx3q6"]
-atlas = ExtResource("3_bpaxn")
-
-[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_y22hj"]
-normal = Vector2(0, 1)
-
-[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_3uncf"]
-normal = Vector2(1, 0)
-
-[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_w8kx2"]
-
-[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_gb1h6"]
-normal = Vector2(-1, 0)
+[ext_resource type="PackedScene" uid="uid://c1hvtim0lp634" path="res://scenes/map_empty.tscn" id="4_nfunt"]
+[ext_resource type="Script" path="res://scripts/idle_projectile_manager.gd" id="5_78sfb"]
 
 [node name="Root" type="Node"]
 script = ExtResource("1_psp8s")
 
-[node name="Scoreboard" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-script = ExtResource("2_fs0yj")
+[node name="PlayersContainer" type="Node" parent="."]
 
-[node name="TextureRect" type="TextureRect" parent="Scoreboard"]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-texture = SubResource("AtlasTexture_vx3q6")
+[node name="IdleProjectileManager" type="Node" parent="."]
+script = ExtResource("5_78sfb")
+
+[node name="MapLoader" type="Node" parent="."]
+script = ExtResource("3_c8yh4")
+
+[node name="MapRoot" parent="MapLoader" instance=ExtResource("4_nfunt")]
 
 [node name="Camera2D" type="Camera2D" parent="."]
-anchor_mode = 0
+position = Vector2(960, 640)
 script = ExtResource("2_lkdnu")
 
-[node name="UpBound" type="StaticBody2D" parent="Camera2D"]
-position = Vector2(500, 0)
-collision_layer = 9
-collision_mask = 0
+[node name="UI" parent="Camera2D" instance=ExtResource("2_tol41")]
+offset_left = -576.0
+offset_top = -326.0
+offset_right = -536.0
+offset_bottom = -286.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Camera2D/UpBound"]
-shape = SubResource("WorldBoundaryShape2D_y22hj")
+[node name="Parallax2D" type="Parallax2D" parent="Camera2D"]
+scale = Vector2(0.8, 0.8)
+scroll_scale = Vector2(0.2, 0.2)
 
-[node name="LeftBound" type="StaticBody2D" parent="Camera2D"]
-position = Vector2(0, 300)
-collision_layer = 9
-collision_mask = 0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Camera2D/LeftBound"]
-shape = SubResource("WorldBoundaryShape2D_3uncf")
-
-[node name="DownBound" type="StaticBody2D" parent="Camera2D"]
-position = Vector2(500, 600)
-collision_layer = 9
-collision_mask = 0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Camera2D/DownBound"]
-shape = SubResource("WorldBoundaryShape2D_w8kx2")
-
-[node name="RightBound" type="StaticBody2D" parent="Camera2D"]
-position = Vector2(1000, 300)
-collision_layer = 9
-collision_mask = 0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Camera2D/RightBound"]
-shape = SubResource("WorldBoundaryShape2D_gb1h6")
-
-[node name="TextureRect" type="TextureRect" parent="Camera2D"]
+[node name="Background" type="Sprite2D" parent="Camera2D/Parallax2D"]
 z_index = -10
-offset_right = 1024.0
-offset_bottom = 1024.0
+position = Vector2(-1024, -1024)
+scale = Vector2(2, 2)
+texture = ExtResource("3_kxlrm")
+
+[node name="Background2" type="Sprite2D" parent="Camera2D/Parallax2D"]
+z_index = -10
+position = Vector2(-1024, 1024)
+scale = Vector2(2, 2)
+texture = ExtResource("3_kxlrm")
+
+[node name="Background3" type="Sprite2D" parent="Camera2D/Parallax2D"]
+z_index = -10
+position = Vector2(1024, -1024)
+scale = Vector2(2, 2)
+texture = ExtResource("3_kxlrm")
+
+[node name="Background4" type="Sprite2D" parent="Camera2D/Parallax2D"]
+z_index = -10
+position = Vector2(1024, 1024)
+scale = Vector2(2, 2)
 texture = ExtResource("3_kxlrm")

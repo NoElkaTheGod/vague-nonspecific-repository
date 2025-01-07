@@ -1,8 +1,7 @@
 class_name Repulsor extends Area2D
 
 @onready var particle_processor: ParticleProcessMaterial = $GPUParticles2D.process_material
-var power: int = -50
+@export var power: int
 
-func init(power_set: int) -> void:
-	power = power_set
+func _ready() -> void:
 	$AnimatedSprite2D.play()
