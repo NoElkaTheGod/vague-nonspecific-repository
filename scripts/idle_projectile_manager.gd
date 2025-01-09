@@ -1,8 +1,11 @@
 class_name IdleProjectileManager extends Node
 
 var idle_projectiles: Array[projectile]
+var idle_mines: Array[Mine]
 @onready var projectile_scene: PackedScene = load("res://scenes/projectile.tscn")
+@onready var mine_scene: PackedScene = load("res://scenes/mine.tscn")
 @onready var projectile_remainder_scene: PackedScene = load("res://scenes/bullet_remainder.tscn")
+@onready var mine_remainder_scene: PackedScene = load("res://scenes/mine_remainder.tscn")
 
 func _ready() -> void:
 	idle_projectiles.resize(10)
@@ -13,11 +16,11 @@ func _ready() -> void:
 		idle_projectiles[i].process_mode = Node.PROCESS_MODE_DISABLED
 		idle_projectiles[i].visible = false
 
-func add_idle_projectile(item:projectile) -> void:
+func add_idle_projectile(item: projectile) -> void:
 	idle_projectiles.append(item)
 	item.visible = false
 	item.process_mode = Node.PROCESS_MODE_DISABLED
-	item.get_child(0).restart()
+	item.get_node("GPUParticles2D").restart()
 
 func get_idle_projectile() -> projectile:
 	var result = idle_projectiles.pop_back()
@@ -28,7 +31,27 @@ func get_idle_projectile() -> projectile:
 	result.idle_projectile_manager = self
 	return result
 
+func add_idle_mine(item: Mine) -> void:
+	idle_mines.append(item)
+	item.visible = false
+	item.process_mode = Node.PROCESS_MODE_DISABLED
+	#item.get_node("GPUParticles2D").restart()
+
+func get_idle_mine() -> Mine:
+	var result = idle_mines.pop_back()
+	if result != null:
+		return result
+	result = mine_scene.instantiate()
+	add_child(result)
+	result.idle_projectile_manager = self
+	return result
+
 func spawn_bullet_remainder(position: Vector2):
 	var spawn = projectile_remainder_scene.instantiate()
+	add_child(spawn)
+	spawn.position = position 
+
+func spawn_mine_remainder(position: Vector2):
+	var spawn = mine_remainder_scene.instantiate()
 	add_child(spawn)
 	spawn.position = position

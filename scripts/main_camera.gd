@@ -54,7 +54,7 @@ func recalculate_camera_bounds() -> void:
 		target_zoom.x = min(target_zoom.x, target_zoom.y)
 		target_zoom.y = min(target_zoom.x, target_zoom.y)
 		target_zoom -= Vector2(0.3, 0.3)
-		target_zoom = target_zoom.clamp(Vector2.ZERO, Vector2(0.9, 0.9))
+		target_zoom = target_zoom.clamp(Vector2.ZERO, Vector2.ONE)
 	else:
 		target_position = Vector2(960, 640)
 		target_zoom = get_viewport_rect().size / Vector2(1920, 1280) * Vector2(0.9, 0.9)
@@ -62,5 +62,6 @@ func recalculate_camera_bounds() -> void:
 		target_zoom.y = min(target_zoom.x, target_zoom.y)
 	zoom = zoom.lerp(target_zoom, 0.1)
 	zoom = zoom.move_toward(target_zoom, 0.001)
+	ui.scale = Vector2.ONE / zoom
 	position = position.lerp(target_position, 0.1)
 	position = position.move_toward(target_position, 5)

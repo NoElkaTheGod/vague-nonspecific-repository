@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://c1hvtim0lp634"]
+[gd_scene load_steps=8 format=3 uid="uid://c1hvtim0lp634"]
 
 [ext_resource type="Script" path="res://scripts/map_root.gd" id="1_hiln5"]
 
@@ -13,6 +13,12 @@ normal = Vector2(1, 0)
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_x05ui"]
 normal = Vector2(-1, 0)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_im747"]
+size = Vector2(1920, 768)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_c805l"]
+size = Vector2(1408, 1280)
+
 [node name="MapRoot" type="Node2D"]
 script = ExtResource("1_hiln5")
 
@@ -24,6 +30,7 @@ texture_scale = Vector2(0.1, 0.1)
 invert_enabled = true
 invert_border = 1000.0
 polygon = PackedVector2Array(1920, 0, 1920, 1280, 0, 1280, 0, 0)
+metadata/_edit_lock_ = true
 
 [node name="UpBound" type="StaticBody2D" parent="Borders"]
 position = Vector2(960, 0)
@@ -59,18 +66,47 @@ shape = SubResource("WorldBoundaryShape2D_x05ui")
 
 [node name="PlayerSpawners" type="Node" parent="."]
 
-[node name="Marker2D1" type="Marker2D" parent="PlayerSpawners"]
-position = Vector2(300, 128)
+[node name="1" type="Marker2D" parent="PlayerSpawners"]
+position = Vector2(128, 128)
 gizmo_extents = 20.0
 
-[node name="Marker2D2" type="Marker2D" parent="PlayerSpawners"]
-position = Vector2(1620, 128)
+[node name="2" type="Marker2D" parent="PlayerSpawners"]
+position = Vector2(1792, 128)
 gizmo_extents = 20.0
 
-[node name="Marker2D3" type="Marker2D" parent="PlayerSpawners"]
-position = Vector2(300, 1152)
+[node name="3" type="Marker2D" parent="PlayerSpawners"]
+position = Vector2(128, 1152)
 gizmo_extents = 20.0
 
-[node name="Marker2D4" type="Marker2D" parent="PlayerSpawners"]
-position = Vector2(1620, 1152)
+[node name="4" type="Marker2D" parent="PlayerSpawners"]
+position = Vector2(1792, 1152)
 gizmo_extents = 20.0
+
+[node name="Walls" type="Node" parent="."]
+
+[node name="StaticBody2D1" type="StaticBody2D" parent="Walls"]
+position = Vector2(960, 640)
+collision_layer = 9
+collision_mask = 0
+metadata/_edit_lock_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/StaticBody2D1"]
+shape = SubResource("RectangleShape2D_im747")
+metadata/_edit_lock_ = true
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="Walls"]
+position = Vector2(960, 640)
+collision_layer = 9
+collision_mask = 0
+metadata/_edit_lock_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls/StaticBody2D2"]
+shape = SubResource("RectangleShape2D_c805l")
+metadata/_edit_lock_ = true
+
+[node name="Polygon2D" type="Polygon2D" parent="Walls"]
+z_index = -2
+position = Vector2(960, 640)
+color = Color(1, 1, 1, 0.784314)
+polygon = PackedVector2Array(-960, -384, -704, -384, -704, -640, 704, -640, 704, -384, 960, -384, 960, 384, 704, 384, 704, 640, -704, 640, -704, 384, -960, 384)
+metadata/_edit_lock_ = true

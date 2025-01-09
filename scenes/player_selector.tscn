@@ -1,0 +1,121 @@
+[gd_scene load_steps=7 format=3 uid="uid://b20u12x06cxjh"]
+
+[ext_resource type="Script" path="res://scripts/player_selector.gd" id="2_bgvek"]
+[ext_resource type="Texture2D" uid="uid://cwgxchjrai87o" path="res://sprites/buppon.png" id="3_663ph"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6wayj"]
+atlas = ExtResource("3_663ph")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5l3p2"]
+atlas = ExtResource("3_663ph")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5nhsq"]
+atlas = ExtResource("3_663ph")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6cd4l"]
+atlas = ExtResource("3_663ph")
+region = Rect2(64, 0, 32, 32)
+
+[node name="Control" type="VBoxContainer"]
+offset_right = 409.0
+offset_bottom = 351.0
+script = ExtResource("2_bgvek")
+character_type_descriptions = Array[String](["RB-01 \"Устройство\".Средняя скорость.Высокая скорострельность.Стреляет одиночными снарядами.", "RB-02 \"Конструкция\".Низкая скорость.Низкая скорострельность.Устанавливает взрывающиеся мины.", "RB-03 \"Агрегат\".Крайне низкая скорость.Низкая скорострельность.Стреляет градом пуль.", "RB-04 \"Механизм\"Высокая скорость.Высокая скорострельность.Атакует в ближнем бою.Может паррировать снаряды."])
+
+[node name="Stats" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="Panel" type="Panel" parent="Stats"]
+z_index = -1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Buttons" type="Panel" parent="."]
+z_index = -1
+custom_minimum_size = Vector2(116, 116)
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+
+[node name="Player" type="TextureRect" parent="Buttons"]
+layout_mode = 0
+offset_left = 33.856
+offset_top = 34.0
+offset_right = 81.856
+offset_bottom = 82.0
+pivot_offset = Vector2(24, 24)
+
+[node name="Left" type="TextureRect" parent="Buttons"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 2.0
+offset_top = -16.0
+offset_right = 34.0
+offset_bottom = 16.0
+grow_vertical = 2
+texture = SubResource("AtlasTexture_6wayj")
+stretch_mode = 3
+
+[node name="Right" type="TextureRect" parent="Buttons"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -34.0
+offset_top = -16.0
+offset_right = -2.0
+offset_bottom = 16.0
+grow_horizontal = 0
+grow_vertical = 2
+texture = SubResource("AtlasTexture_5l3p2")
+stretch_mode = 3
+
+[node name="Up" type="TextureRect" parent="Buttons"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -16.0
+offset_top = 2.0
+offset_right = 16.0
+offset_bottom = 34.0
+grow_horizontal = 2
+texture = SubResource("AtlasTexture_5nhsq")
+stretch_mode = 3
+
+[node name="Down" type="TextureRect" parent="Buttons"]
+layout_mode = 2
+offset_left = 42.0
+offset_top = 82.0
+offset_right = 74.0
+offset_bottom = 114.0
+texture = SubResource("AtlasTexture_6cd4l")
+stretch_mode = 3
+
+[node name="Ready" type="Label" parent="."]
+self_modulate = Color(0.498039, 0, 0, 1)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Not ready"
+horizontal_alignment = 1
+
+[node name="Panel" type="Panel" parent="Ready"]
+z_index = -1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2

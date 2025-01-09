@@ -1,7 +1,6 @@
-[gd_scene load_steps=7 format=3 uid="uid://bmemkvbk2ihxq"]
+[gd_scene load_steps=6 format=3 uid="uid://c11lfhcjnmq4t"]
 
-[ext_resource type="Script" path="res://scripts/map_root.gd" id="1_3n1w7"]
-[ext_resource type="PackedScene" uid="uid://du073ms10ss4c" path="res://scenes/attractor.tscn" id="2_pohb3"]
+[ext_resource type="Script" path="res://scripts/map_root.gd" id="1_kmvck"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_2iqby"]
 normal = Vector2(0, 1)
@@ -15,7 +14,7 @@ normal = Vector2(1, 0)
 normal = Vector2(-1, 0)
 
 [node name="MapRoot" type="Node2D"]
-script = ExtResource("1_3n1w7")
+script = ExtResource("1_kmvck")
 
 [node name="Borders" type="Node2D" parent="."]
 
@@ -75,32 +74,3 @@ gizmo_extents = 20.0
 [node name="Marker2D4" type="Marker2D" parent="PlayerSpawners"]
 position = Vector2(1620, 1152)
 gizmo_extents = 20.0
-
-[node name="attractor" parent="." instance=ExtResource("2_pohb3")]
-position = Vector2(298, 648)
-power = 120000
-
-[node name="attractor2" parent="." instance=ExtResource("2_pohb3")]
-position = Vector2(788, 228)
-power = 120000
-
-[node name="attractor3" parent="." instance=ExtResource("2_pohb3")]
-position = Vector2(1552, 456)
-power = 120000
-
-[node name="attractor4" parent="." instance=ExtResource("2_pohb3")]
-position = Vector2(1049, 408)
-power = 120000
-
-[node name="attractor5" parent="." instance=ExtResource("2_pohb3")]
-position = Vector2(820, 1000)
-power = 120000
-
-[node name="attractor6" parent="." instance=ExtResource("2_pohb3")]
-position = Vector2(1769, 822)
-power = 120000
-
-[node name="attractor7" parent="." instance=ExtResource("2_pohb3")]
-position = Vector2(954, 688)
-scale = Vector2(1.385, 1.385)
-power = 320000

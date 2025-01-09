@@ -1,6 +1,6 @@
 extends Node2D
 
-var timer := 20
+var timer := 30
 
 func _ready() -> void:
 	$AudioStreamPlayer.play()

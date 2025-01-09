@@ -1,0 +1,50 @@
+[gd_scene load_steps=9 format=3 uid="uid://0i33nghna4er"]
+
+[ext_resource type="Script" path="res://scripts/mine.gd" id="1_nggjb"]
+[ext_resource type="Texture2D" uid="uid://ep0d7qfohf8d" path="res://sprites/mine.png" id="2_iuc7x"]
+[ext_resource type="Texture2D" uid="uid://b4fc5qtwvbjrv" path="res://sprites/epicness.png" id="3_yfujj"]
+[ext_resource type="Texture2D" uid="uid://0fs3o884tbo3" path="res://sprites/scary_red_circle.png" id="4_ir7ee"]
+[ext_resource type="AudioStream" uid="uid://pgqy3k4p8kjc" path="res://sounds/mine_trigger.wav" id="6_xytaw"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_bxxq3"]
+friction = 0.0
+bounce = 0.8
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_7ikc6"]
+radius = 15.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_jwnth"]
+radius = 100.0
+
+[node name="Mine" type="RigidBody2D"]
+collision_layer = 4
+collision_mask = 13
+mass = 5.0
+physics_material_override = SubResource("PhysicsMaterial_bxxq3")
+script = ExtResource("1_nggjb")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_iuc7x")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_7ikc6")
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_jwnth")
+
+[node name="Explosion" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0)
+scale = Vector2(0.75, 0.75)
+texture = ExtResource("3_yfujj")
+
+[node name="ScaryRedCircle" type="Sprite2D" parent="."]
+scale = Vector2(2, 2)
+texture = ExtResource("4_ir7ee")
+
+[node name="ActivationSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_xytaw")
+volume_db = -10.0

@@ -1,11 +1,9 @@
 class_name GameManager extends Node
 
 var gravity_effectors: Array[Repulsor]
-var player_spawns: Array[Vector2]
+var player_spawns: Array[Node2D]
 var powerups: Array[Powerup]
-var powerup_spawn_cd: int = 500
-var timer: int
-var timer_2: int = -1
+var timer: int = -1
 var player_score: Array[int]
 var round_is_going := false
 
@@ -13,16 +11,20 @@ var players: Array[Player]
 var player_input_devices: Array[bool]
 var player_color_numbers := [true, true, true, true]
 var player_count := 0
+var players_ready := 0
 
+@onready var player_selectors: Control = $PlayerSelectors
 @onready var players_container := $PlayersContainer
 @onready var idle_projectile_manager: IdleProjectileManager = $IdleProjectileManager
 @onready var main_camera: MainCamera = $Camera2D
 @onready var scoreboard := $Camera2D/UI/Scoreboard
 @onready var map_loader: MapLoader = $MapLoader
 @onready var player_scene: PackedScene = load("res://scenes/player.tscn")
-@onready var powerup_scene: PackedScene = load("res://scenes/powerup.tscn")
 
 func _input(event: InputEvent) -> void:
+	if event.is_action("Restart"):
+		end_round()
+		return
 	if round_is_going: return
 	if not event.is_action_type(): return
 	if player_count >= 4: return
@@ -39,10 +41,19 @@ func _input(event: InputEvent) -> void:
 				players[new_player_slot].init(get_available_color(), i)
 				return
 
-func player_finished_initialisation() -> void:
+func player_finished_initialisation(player: Player) -> void:
 	player_count += 1
 	player_score.resize(player_count)
 	scoreboard.new_player_joined(player_count)
+	move_to_spawn(player)
+
+func set_ready(state: bool) -> void:
+	if state: players_ready += 1
+	else: players_ready -= 1
+	if players_ready == player_count and player_count >= 2:
+		map_loader.unload_map()
+		players_ready = 0
+		start_round()
 
 func get_available_player_slot() -> int:
 	for i in range(players.size()):
@@ -64,6 +75,7 @@ func _ready() -> void:
 		players[i] = player_scene.instantiate()
 		players[i].position = main_camera.get_random_spot()
 		players_container.add_child(players[i])
+	map_loader.load_map(-1)
 
 func account_for_attractors(velocity: Vector2, position: Vector2, coefficient: float) -> Vector2:
 	for item in gravity_effectors:
@@ -80,22 +92,14 @@ func im_dead_lol(_player: Player) -> void:
 			alive_players -= 1
 	if alive_players <= 1:
 		main_camera.camera_return_to_center = true
-		timer_2 = 60
+		timer = 60
 
 func _physics_process(_delta: float) -> void:
-	if timer_2 == -1: return
-	if timer_2 > 0: timer_2 -= 1
+	if timer == -1: return
+	if timer > 0: timer -= 1
 	else:
 		end_round()
-	if not round_is_going: return
-	if timer < powerup_spawn_cd:
-		timer += 1
-	else:
-		timer = 0
-		var new_powerup = powerup_scene.instantiate()
-		new_powerup.init(randi_range(0, 2), main_camera.get_random_spot_offscreen(1), main_camera.get_random_spot_offscreen(0))
-		powerups.append(new_powerup)
-		map_loader.add_child(new_powerup)
+	#if not round_is_going: return
 
 func start_round() -> void:
 	main_camera.camera_return_to_center = false
@@ -103,16 +107,21 @@ func start_round() -> void:
 	map_loader.load_map(randi_range(0, map_loader.get_map_pool_size() - 1))
 	for i in players:
 		if i.input_device == -1: continue
-		i.set_active()
-		i.reset_player_state()
-		i.position = player_spawns.pick_random()
-		player_spawns.erase(i.position)
-		i.rotation = 0
+		i.is_round_going = true
+		i.bound_player_selector.round_started()
+		move_to_spawn(i)
+
+func move_to_spawn(player: Player) -> void:
+	if player_spawns.size() == 0: return
+	var spawn = player_spawns.pick_random()
+	player.position = spawn.position
+	player_spawns.erase(spawn)
+	player.rotation = (player.position - Vector2(960, 640)).rotated(PI).angle()
+	if not round_is_going:
+		player.bind_player_selector(get_node("PlayerSelectors/Player" + spawn.name))
 
 func end_round() -> void:
 	round_is_going = false
-	for i in range(player_count):
-		if players[i].alive: player_score[i] += 1
 	scoreboard.update_player_score()
 	for item in idle_projectile_manager.get_children():
 		item.free()
@@ -121,6 +130,11 @@ func end_round() -> void:
 		item = null
 	map_loader.unload_map()
 	powerups.resize(0)
-	timer = 0
-	timer_2 = -1
-	start_round()
+	timer = -1
+	map_loader.load_map(-1)
+	for i in range(player_count):
+		players[i].set_active()
+		players[i].reset_player_state()
+		players[i].is_round_going = false
+		move_to_spawn(players[i])
+		if players[i].alive: player_score[i] += 1

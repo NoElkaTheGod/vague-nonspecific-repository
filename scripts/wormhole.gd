@@ -15,7 +15,6 @@ func enter_cd() -> void:
 
 func teleprot(body: Node2D) -> void:
 	if activation_cd > 0: return
-	enter_cd()
 	linked_wormhole.enter_cd()
 	body.global_position += linked_wormhole.global_position - global_position
 	sound.play()

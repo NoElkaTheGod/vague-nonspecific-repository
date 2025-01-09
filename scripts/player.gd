@@ -2,33 +2,35 @@ class_name Player extends RigidBody2D
 
 var is_player_active := false
 var is_input_connected := false
+var is_round_going := false
 var move_cd := 0
 var fire_cd := 0
-var max_move_cd := 8
-var turn_speed := 6
-var charging := false
-var charge_cap := 0
+var max_move_cd := [5, 6, 8, 3]
+var turn_speed := [5, 5, 3, 7]
 var death_timer := -1
 var alive := false
 var angular_velocity_target := 0.0
-var active_powerup_type := -1
-var active_powerup_uses := 0
-var shitty_powerup_time_table: Dictionary = {0 : 30, 1: 5, 2: 1}
 @onready var sprite := $Sprite2D
 @onready var thrust_sound_emitter := $ThrustSoundEmitter
 @onready var thruster_particles := $ThrusterParticles
 @onready var shot_sound_emitter := $ShotSoundEmitter
+@onready var mine_release_sound_emitter := $MineReleaseSoundEmitter
 @onready var death_sound_emitter := $DeathSoundEmitter
-@onready var alarm_sound_emitter := $AlarmSoundEmitter
-@onready var powerup_sound_emitter := $PowerupSoundEmitter
-@onready var chargeup_sound_emitter := $ChargeupSoundEmitter
-@onready var caboom_sound_emitter := $CaboomSoundEmitter
 @onready var death_particles := $DeathParticles
+@onready var alarm_sound_emitter := $AlarmSoundEmitter
 @onready var collision_sound_emitter: CollisionSoundEmitter = $CollisionSoundEmitter
+@onready var melee_hit_animation: AnimatedSprite2D = $MeleeHit/AnimatedSprite2D
+@onready var melee_hit_sound_emitter := $MeleeHit/HitSoundEmitter
+@onready var melee_swing_sound_emitter := $MeleeHit/SwingSoundEmitter
+@onready var melee_parry_sound_emitter := $MeleeHit/ParrySoundEmitter
+@onready var melee_hit_area: Area2D = $MeleeHit/Area2D
 @onready var idle_projectile_manager: IdleProjectileManager = get_parent().get_parent().get_node("IdleProjectileManager")
 @onready var game_manager: GameManager = get_parent().get_parent()
+var bound_player_selector: PlayerSelector
 var input_device := -1
 var character_color: int
+var character_type: int
+var menu_input_cd := 20
 
 func set_active():
 	is_player_active = true
@@ -49,11 +51,23 @@ func reset_player_state():
 	$Sprite2D.position = Vector2(3, 0)
 	$Sprite2D.rotation = deg_to_rad(90)
 	$DeathParticles.position = Vector2(0, 0)
+	thruster_particles.emitting = false
+	angular_velocity = 0
+	linear_velocity = Vector2.ZERO
+	fire_cd = 60
 
 func _ready() -> void:
 	$Area2D.connect("body_entered", start_dying)
 	$ThrusterParticles.visible = false
 	$Sprite2D.visible = false
+	melee_hit_animation.connect("animation_finished", hide_swing_animation)
+
+func bind_player_selector(node: PlayerSelector) -> void:
+	bound_player_selector = node
+	node.yo_wassup(self)
+
+func change_appearence():
+	$Sprite2D.texture.region = Rect2(character_color * 48, character_type * 48, 48, 48)
 
 func init(color: int, device: int) -> void:
 	is_input_connected = true
@@ -63,9 +77,38 @@ func init(color: int, device: int) -> void:
 	$Sprite2D.texture.atlas = load("res://sprites/player.png")
 	$Sprite2D.texture.region = Rect2(color * 48, 0, 48, 48)
 	set_active()
-	game_manager.player_finished_initialisation()
+	$SpawnSoundEmitter.play()
+	game_manager.player_finished_initialisation(self)
 
 func _physics_process(_delta: float) -> void:
+	if not is_round_going:
+		linear_velocity = Vector2.ZERO
+		angular_velocity = PI
+		if menu_input_cd > 0:
+			menu_input_cd -= 1
+		if bound_player_selector == null: return
+		if Input.is_action_pressed("Player" + str(input_device) + "Left") or Input.get_joy_axis(input_device,JOY_AXIS_LEFT_X) < -0.5:
+			if menu_input_cd == 0:
+				bound_player_selector.left_pressed()
+				menu_input_cd = 20
+			return
+		if Input.is_action_pressed("Player" + str(input_device) + "Right") or Input.get_joy_axis(input_device,JOY_AXIS_LEFT_X) > 0.5:
+			if menu_input_cd == 0:
+				bound_player_selector.right_pressed()
+				menu_input_cd = 20
+			return
+		if Input.is_action_pressed("Player" + str(input_device) + "Fire"):
+			if menu_input_cd == 0:
+				bound_player_selector.fire_pressed()
+				menu_input_cd = 20
+			return
+		if Input.is_action_pressed("Player" + str(input_device) + "Move"):
+			if menu_input_cd == 0:
+				bound_player_selector.move_pressed()
+				menu_input_cd = 20
+			return
+		menu_input_cd = 0
+		return
 	linear_velocity = game_manager.account_for_attractors(linear_velocity, position, 1)
 	if get_contact_count() > 0:
 		handle_collisions()
@@ -77,9 +120,9 @@ func _physics_process(_delta: float) -> void:
 		return
 	if input_device > 7:
 		if Input.is_action_pressed("Player" + str(input_device) + "Left"):
-			angular_velocity_target = -turn_speed
+			angular_velocity_target = -turn_speed[character_type]
 		elif Input.is_action_pressed("Player" + str(input_device) + "Right"):
-			angular_velocity_target = turn_speed
+			angular_velocity_target = turn_speed[character_type]
 		else:
 			angular_velocity_target = 0
 	else:
@@ -87,52 +130,35 @@ func _physics_process(_delta: float) -> void:
 		if (joystick_direction != Vector2.ZERO):
 			var target_direction: float = joystick_direction.angle()
 			if rotation - 0.4 > target_direction and rotation - 4.0 < target_direction or rotation + 2.5 < target_direction:
-				angular_velocity_target = -turn_speed
+				angular_velocity_target = -turn_speed[character_type]
 			elif rotation + 0.4 < target_direction or rotation - 2.5 > target_direction:
-				angular_velocity_target = turn_speed
+				angular_velocity_target = turn_speed[character_type]
 	angular_velocity = move_toward(angular_velocity, angular_velocity_target, 0.5)
 	if Input.is_action_pressed("Player" + str(input_device) + "Move") and move_cd == 0:
-		linear_velocity += Vector2(cos(rotation), sin(rotation)) * 80
+		linear_velocity += Vector2(cos(rotation), sin(rotation)) * 70
 		thrust_sound_emitter.play()
-		move_cd = max_move_cd
+		move_cd = max_move_cd[character_type]
 	elif move_cd > 0:
 		move_cd -= 1
-	if active_powerup_uses == 0: active_powerup_type = -1
-	if charging:
-		charge_cap -= 1
-		if charge_cap == 0:
-			chargeup_sound_emitter.stop()
-			caboom_sound_emitter.play()
-			$Explosion.stop_anim()
-			charging = false
-			fire_cd = 60
-			max_move_cd = 8
-			turn_speed = 5
-	elif Input.is_action_pressed("Player" + str(input_device) + "Fire") and fire_cd == 0:
-		match active_powerup_type:
-			-1:
+	if Input.is_action_pressed("Player" + str(input_device) + "Fire") and fire_cd == 0:
+		match character_type:
+			0:
 				fire_cd = 40
 				fire(1)
 				linear_velocity += Vector2(cos(rotation), sin(rotation)) * -200
-			0:
-				fire_cd = 7
-				fire(1)
-				linear_velocity += Vector2(cos(rotation), sin(rotation)) * -100
-				active_powerup_uses -= 1
-			1:
-				fire_cd = 50
-				fire(9)
-				linear_velocity += Vector2(cos(rotation), sin(rotation)) * -400
-				active_powerup_uses -= 1
+			1: 
+				fire_cd = 80
+				spawn_mine()
+				linear_velocity += Vector2(cos(rotation), sin(rotation)) * 100
 			2:
-				active_powerup_uses -= 1
-				chargeup_sound_emitter.play()
-				charging = true
-				charge_cap = 240
-				max_move_cd = 4
-				turn_speed = 7
-				$Explosion.start_anim(240)
-	elif fire_cd > 0:
+				fire_cd = 60
+				fire(5)
+				linear_velocity += Vector2(cos(rotation), sin(rotation)) * -200
+			3:
+				fire_cd = 30
+				melee_hit()
+				linear_velocity += Vector2(cos(rotation), sin(rotation)) * 50
+	if fire_cd > 0:
 		fire_cd -= 1
 	thruster_particles.emitting = Input.is_action_pressed("Player" + str(input_device) + "Move")
 
@@ -156,9 +182,9 @@ func handle_collisions() -> void:
 
 func start_dying(_body: Node2D = null):
 	if death_timer != -1: return
-	if charging: return
 	alarm_sound_emitter.play()
 	death_timer = 75
+	thruster_particles.emitting = false
 
 func fire(amount: int) -> void:
 	if idle_projectile_manager == null: return
@@ -168,12 +194,46 @@ func fire(amount: int) -> void:
 	for i in range(amount):
 		additional_rotation[i] = deg_to_rad(((i - (amount / 2.0 - 0.5)) * 10))
 	for i in range(amount):
-		var proj = idle_projectile_manager.get_idle_projectile()
+		var proj := idle_projectile_manager.get_idle_projectile()
 		proj.init()
 		proj.visible = true
 		proj.process_mode = Node.PROCESS_MODE_PAUSABLE
 		proj.position = position + (Vector2(cos(rotation), sin(rotation)) * 50)
 		proj.velocity = (Vector2(cos(rotation + additional_rotation[i]), sin(rotation + additional_rotation[i])) * randf_range(550, 650)) + linear_velocity
+
+func hide_swing_animation():
+	melee_hit_animation.visible = false
+
+func spawn_mine() -> void:
+	mine_release_sound_emitter.play()
+	var mine := idle_projectile_manager.get_idle_mine()
+	mine.init()
+	mine.visible = true
+	mine.process_mode = Node.PROCESS_MODE_PAUSABLE
+	mine.position = position + (Vector2(cos(rotation), sin(rotation)) * -50)
+	mine.linear_velocity = (Vector2(cos(rotation), sin(rotation)) * randf_range(-200, -150)) + linear_velocity
+
+func melee_hit() -> void:
+	melee_hit_animation.flip_h = not melee_hit_animation.flip_h
+	melee_hit_animation.play()
+	melee_hit_animation.visible = true
+	melee_swing_sound_emitter.play()
+	var hit_sound := 0
+	var bodies := melee_hit_area.get_overlapping_bodies()
+	for body in bodies:
+		if body == self: continue
+		if body is RigidBody2D:
+			hit_sound = 1
+			body.linear_velocity = (body.position - position).normalized() * 200
+			if body is Player:
+				body.start_dying(self)
+		if body is CharacterBody2D:
+			hit_sound = 1
+			body.velocity = (body.position - position).normalized() * 600
+			if body is projectile:
+				hit_sound = 2
+		if hit_sound == 1: melee_hit_sound_emitter.play()
+		if hit_sound == 2: melee_parry_sound_emitter.play()
 
 func fucking_die(_body: Node2D) -> void:
 	death_sound_emitter.play()
@@ -181,8 +241,3 @@ func fucking_die(_body: Node2D) -> void:
 	$Sprite2D.visible = false
 	call_deferred("set_inactive")
 	game_manager.im_dead_lol(self)
-
-func apply_powerup(powerup_type: int) -> void:
-	powerup_sound_emitter.play()
-	active_powerup_uses = shitty_powerup_time_table[powerup_type]
-	active_powerup_type = powerup_type
