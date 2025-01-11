@@ -111,6 +111,7 @@ func _physics_process(_delta: float) -> void:
 			var player = players_to_spawn.pop_front()
 			move_to_spawn(player)
 			player.visible = true
+			player.reset_player_state()
 			var fx = spawning_fx_scene.instantiate()
 			fx.init(player)
 			add_child(fx)
