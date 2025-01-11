@@ -13,6 +13,10 @@ var player_color_numbers := [true, true, true, true]
 var player_count := 0
 var players_ready := 0
 
+var spawn_timer := -1
+var players_to_spawn: Array[Player]
+var round_start_countdown := -1
+
 @onready var player_selectors: Control = $PlayerSelectors
 @onready var players_container := $PlayersContainer
 @onready var idle_projectile_manager: IdleProjectileManager = $IdleProjectileManager
@@ -20,6 +24,7 @@ var players_ready := 0
 @onready var scoreboard := $Camera2D/UI/Scoreboard
 @onready var map_loader: MapLoader = $MapLoader
 @onready var player_scene: PackedScene = load("res://scenes/player.tscn")
+@onready var spawning_fx_scene: PackedScene = load("res://scenes/spawning_crosshair.tscn")
 
 func _input(event: InputEvent) -> void:
 	if event.is_action("Restart"):
@@ -44,7 +49,7 @@ func _input(event: InputEvent) -> void:
 func player_finished_initialisation(player: Player) -> void:
 	player_count += 1
 	player_score.resize(player_count)
-	scoreboard.new_player_joined(player_count)
+	scoreboard.new_player_joined(player)
 	move_to_spawn(player)
 
 func set_ready(state: bool) -> void:
@@ -95,21 +100,40 @@ func im_dead_lol(_player: Player) -> void:
 		timer = 60
 
 func _physics_process(_delta: float) -> void:
-	if timer == -1: return
-	if timer > 0: timer -= 1
-	else:
-		end_round()
-	#if not round_is_going: return
+	if timer != -1:
+		if timer > 0: timer -= 1
+		else:
+			end_round()
+	if spawn_timer != -1:
+		spawn_timer -= 1
+		if spawn_timer == 0:
+			spawn_timer = 10
+			var player = players_to_spawn.pop_front()
+			move_to_spawn(player)
+			player.visible = true
+			var fx = spawning_fx_scene.instantiate()
+			fx.init(player)
+			add_child(fx)
+			if players_to_spawn.size() == 0:
+				spawn_timer = -1
+				round_start_countdown = 81
+	if round_start_countdown != -1:
+		round_start_countdown -= 1
+		if round_start_countdown == 20:
+			main_camera.camera_return_to_center = false
+			for i in players:
+				if i.input_device == -1: continue
+				i.is_round_going = true
 
 func start_round() -> void:
-	main_camera.camera_return_to_center = false
 	round_is_going = true
 	map_loader.load_map(randi_range(0, map_loader.get_map_pool_size() - 1))
 	for i in players:
 		if i.input_device == -1: continue
-		i.is_round_going = true
+		players_to_spawn.append(i)
 		i.bound_player_selector.round_started()
-		move_to_spawn(i)
+		i.visible = false
+	spawn_timer = 15
 
 func move_to_spawn(player: Player) -> void:
 	if player_spawns.size() == 0: return
@@ -122,7 +146,6 @@ func move_to_spawn(player: Player) -> void:
 
 func end_round() -> void:
 	round_is_going = false
-	scoreboard.update_player_score()
 	for item in idle_projectile_manager.get_children():
 		item.free()
 	for item in powerups:
@@ -133,8 +156,9 @@ func end_round() -> void:
 	timer = -1
 	map_loader.load_map(-1)
 	for i in range(player_count):
+		if players[i].alive: player_score[i] += 1
 		players[i].set_active()
 		players[i].reset_player_state()
 		players[i].is_round_going = false
 		move_to_spawn(players[i])
-		if players[i].alive: player_score[i] += 1
+	scoreboard.update_player_score()

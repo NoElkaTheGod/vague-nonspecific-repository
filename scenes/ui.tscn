@@ -1,11 +1,14 @@
-[gd_scene load_steps=5 format=3 uid="uid://c7hmuu2lpdj4w"]
+[gd_scene load_steps=7 format=3 uid="uid://c7hmuu2lpdj4w"]
 
 [ext_resource type="Script" path="res://scripts/ui.gd" id="1_iqpue"]
 [ext_resource type="Script" path="res://scripts/scoreboard.gd" id="1_o1h88"]
-[ext_resource type="Texture2D" uid="uid://8084ru2awn7s" path="res://sprites/player.png" id="2_h5kaj"]
+[ext_resource type="Texture2D" uid="uid://bnx0ygeuexykh" path="res://sprites/countdown.png" id="4_fnws8"]
+[ext_resource type="AudioStream" uid="uid://c1asum85x0w5w" path="res://sounds/countdown.wav" id="5_dt8xj"]
+[ext_resource type="AudioStream" uid="uid://dxwcskefclwjq" path="res://sounds/countdown_end.wav" id="6_3ylvy"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_vx3q6"]
-atlas = ExtResource("2_h5kaj")
+[sub_resource type="AtlasTexture" id="AtlasTexture_0bi8f"]
+atlas = ExtResource("4_fnws8")
+region = Rect2(0, 0, 256, 128)
 
 [node name="UI" type="Control"]
 layout_mode = 3
@@ -14,19 +17,52 @@ offset_right = 1920.0
 offset_bottom = 1280.0
 script = ExtResource("1_iqpue")
 
+[node name="ScoreboardPanel" type="Panel" parent="."]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -32.0
+offset_top = -16.0
+offset_bottom = 16.0
+grow_horizontal = 0
+grow_vertical = 2
+
 [node name="Scoreboard" type="GridContainer" parent="."]
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -96.0
-offset_right = 96.0
-offset_bottom = 48.0
-grow_horizontal = 2
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+grow_horizontal = 0
+grow_vertical = 2
+columns = 2
 script = ExtResource("1_o1h88")
 
-[node name="TextureRect" type="TextureRect" parent="Scoreboard"]
-modulate = Color(1, 1, 1, 0)
-layout_mode = 2
-texture = SubResource("AtlasTexture_vx3q6")
-metadata/_edit_lock_ = true
+[node name="Countdown" type="TextureRect" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -128.0
+offset_top = -64.0
+offset_right = 128.0
+offset_bottom = 64.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("AtlasTexture_0bi8f")
+
+[node name="CountdownSoundEmitter" type="AudioStreamPlayer" parent="Countdown"]
+stream = ExtResource("5_dt8xj")
+volume_db = -10.0
+
+[node name="CountdownEndSoundEmitter" type="AudioStreamPlayer" parent="Countdown"]
+stream = ExtResource("6_3ylvy")
+volume_db = -10.0

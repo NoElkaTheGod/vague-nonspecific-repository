@@ -4,7 +4,6 @@ var bound_player: Player
 var color: int
 var type: int = 0
 var timer := 0
-var direction := Vector2.UP
 var player_ready := false
 var text_to_print: String
 var printing_progress: int = -1
@@ -13,11 +12,13 @@ var printing_progress: int = -1
 
 @onready var label_of_readiness := $Ready
 @onready var player_sprite := $Buttons/Player
+@onready var buttons := $Buttons
 @onready var button_up := $Buttons/Up
 @onready var button_down := $Buttons/Down
 @onready var button_left := $Buttons/Left
 @onready var button_right := $Buttons/Right
 @onready var stat_panel := $Stats
+@onready var sound := $PressDoundEmitter
 
 func _ready() -> void:
 	button_up.texture = AtlasTexture.new()
@@ -37,10 +38,18 @@ func yo_wassup(player: Player) -> void:
 	bound_player = player
 	visible = true
 	player_ready = false
+	label_of_readiness.self_modulate = Color(0.5, 0, 0)
+	label_of_readiness.text = "Not ready"
 	player_sprite.texture = AtlasTexture.new()
 	player_sprite.texture.atlas = load("res://sprites/player.png")
 	player_sprite.texture.region = Rect2(bound_player.character_color * 48, bound_player.character_type * 48, 48, 48)
 	update_stat_text(bound_player.character_type)
+	if position.x > 1000:
+		label_of_readiness.size_flags_horizontal = SIZE_SHRINK_END
+		buttons.size_flags_horizontal = SIZE_SHRINK_END
+	else:
+		label_of_readiness.size_flags_horizontal = SIZE_SHRINK_BEGIN
+		buttons.size_flags_horizontal = SIZE_SHRINK_BEGIN
 
 func round_started() -> void:
 	bound_player.bound_player_selector = null
@@ -48,16 +57,57 @@ func round_started() -> void:
 	visible = false
 
 func left_pressed():
-	direction = direction.rotated(-PI / 2)
-	direction.x = round(direction.x)
-	direction.y = round(direction.y)
+	sound.play()
+	timer = 6
+	button_left.texture.region.position.y = 32
+	var prev_color = bound_player.character_color
+	for i in range(4):
+		bound_player.character_color += 1
+		if bound_player.character_color > 3: bound_player.character_color = 0
+		if bound_player.game_manager.player_color_numbers[bound_player.character_color]:
+			bound_player.game_manager.player_color_numbers[prev_color] = true
+			break
+	bound_player.game_manager.player_color_numbers[bound_player.character_color] = false
+	bound_player.change_appearence()
+	player_sprite.texture.region = Rect2(bound_player.character_color * 48, bound_player.character_type * 48, 48, 48)
 
 func right_pressed():
-	direction = direction.rotated(PI / 2)
-	direction.x = round(direction.x)
-	direction.y = round(direction.y)
+	sound.play()
+	timer = 6
+	button_right.texture.region.position.y = 32
+	var prev_color = bound_player.character_color
+	for i in range(4):
+		bound_player.character_color -= 1
+		if bound_player.character_color < 0: bound_player.character_color = 3
+		if bound_player.game_manager.player_color_numbers[bound_player.character_color]:
+			bound_player.game_manager.player_color_numbers[prev_color] = true
+			break
+	bound_player.game_manager.player_color_numbers[bound_player.character_color] = false
+	bound_player.change_appearence()
+	player_sprite.texture.region = Rect2(bound_player.character_color * 48, bound_player.character_type * 48, 48, 48)
+
+func up_pressed():
+	sound.play()
+	timer = 6
+	button_up.texture.region.position.y = 32
+	bound_player.character_type += 1
+	if bound_player.character_type > 3: bound_player.character_type = 0
+	update_stat_text(bound_player.character_type)
+	bound_player.change_appearence()
+	player_sprite.texture.region = Rect2(bound_player.character_color * 48, bound_player.character_type * 48, 48, 48)
+
+func down_pressed():
+	sound.play()
+	timer = 6
+	button_down.texture.region.position.y = 32
+	bound_player.character_type -= 1
+	if bound_player.character_type < 0: bound_player.character_type = 3
+	update_stat_text(bound_player.character_type)
+	bound_player.change_appearence()
+	player_sprite.texture.region = Rect2(bound_player.character_color * 48, bound_player.character_type * 48, 48, 48)
 
 func fire_pressed():
+	sound.play()
 	player_ready = not player_ready
 	bound_player.game_manager.set_ready(player_ready)
 	if player_ready:
@@ -67,55 +117,20 @@ func fire_pressed():
 		label_of_readiness.self_modulate = Color(0.5, 0, 0)
 		label_of_readiness.text = "Not ready"
 
-func move_pressed():
-	timer = 6
-	match direction:
-		Vector2.UP:
-			button_up.texture.region.position.y = 32
-			bound_player.character_type += 1
-			if bound_player.character_type > 3: bound_player.character_type = 0
-			update_stat_text(bound_player.character_type)
-		Vector2.DOWN:
-			button_down.texture.region.position.y = 32
-			bound_player.character_type -= 1
-			if bound_player.character_type < 0: bound_player.character_type = 3
-			update_stat_text(bound_player.character_type)
-		Vector2.LEFT:
-			button_left.texture.region.position.y = 32
-			var prev_color = bound_player.character_color
-			for i in range(4):
-				bound_player.character_color += 1
-				if bound_player.character_color > 3: bound_player.character_color = 0
-				if bound_player.game_manager.player_color_numbers[bound_player.character_color]:
-					bound_player.game_manager.player_color_numbers[prev_color] = true
-					break
-				bound_player.game_manager.player_color_numbers[bound_player.character_color] = false
-		Vector2.RIGHT:
-			button_right.texture.region.position.y = 32
-			var prev_color = bound_player.character_color
-			for i in range(4):
-				bound_player.character_color -= 1
-				if bound_player.character_color < 0: bound_player.character_color = 3
-				if bound_player.game_manager.player_color_numbers[bound_player.character_color]:
-					bound_player.game_manager.player_color_numbers[prev_color] = true
-					break
-				bound_player.game_manager.player_color_numbers[bound_player.character_color] = false
-	bound_player.change_appearence()
-	player_sprite.texture.region = Rect2(bound_player.character_color * 48, bound_player.character_type * 48, 48, 48)
-
 func update_stat_text(c_type: int) -> void:
 	stat_panel.text = ""
 	text_to_print = character_type_descriptions[c_type]
 	printing_progress = 0
 
 func update_stat_text_process() -> void:
-	if printing_progress == -1: return
-	stat_panel.text += text_to_print[printing_progress]
-	if text_to_print[printing_progress] == ".":
-		stat_panel.text += "\r\n"
-	printing_progress += 1
-	if printing_progress == text_to_print.length():
-		printing_progress = -1
+	for i in range(2):
+		if printing_progress == -1: return
+		stat_panel.text += text_to_print[printing_progress]
+		if text_to_print[printing_progress] == ".":
+			stat_panel.text += "\r\n"
+		printing_progress += 1
+		if printing_progress == text_to_print.length():
+			printing_progress = -1
 
 func _physics_process(_delta: float) -> void:
 	update_stat_text_process()
@@ -126,4 +141,3 @@ func _physics_process(_delta: float) -> void:
 		button_down.texture.region.position.y = 0
 		button_left.texture.region.position.y = 0
 		button_right.texture.region.position.y = 0
-	player_sprite.rotation = rotate_toward(player_sprite.rotation, direction.angle() + (PI / 2), 0.3)

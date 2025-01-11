@@ -1,5 +1,7 @@
 class_name Player extends RigidBody2D
 
+var hit_points := 0
+var type_hit_points := [3, 2, 6, 1]
 var is_player_active := false
 var is_input_connected := false
 var is_round_going := false
@@ -23,6 +25,7 @@ var angular_velocity_target := 0.0
 @onready var melee_hit_sound_emitter := $MeleeHit/HitSoundEmitter
 @onready var melee_swing_sound_emitter := $MeleeHit/SwingSoundEmitter
 @onready var melee_parry_sound_emitter := $MeleeHit/ParrySoundEmitter
+@onready var hurt_sound_emitter := $HurtSoundEmitter
 @onready var melee_hit_area: Area2D = $MeleeHit/Area2D
 @onready var idle_projectile_manager: IdleProjectileManager = get_parent().get_parent().get_node("IdleProjectileManager")
 @onready var game_manager: GameManager = get_parent().get_parent()
@@ -55,6 +58,8 @@ func reset_player_state():
 	angular_velocity = 0
 	linear_velocity = Vector2.ZERO
 	fire_cd = 60
+	menu_input_cd = 20
+	hit_points = type_hit_points[character_type]
 
 func _ready() -> void:
 	$Area2D.connect("body_entered", start_dying)
@@ -104,7 +109,12 @@ func _physics_process(_delta: float) -> void:
 			return
 		if Input.is_action_pressed("Player" + str(input_device) + "Move"):
 			if menu_input_cd == 0:
-				bound_player_selector.move_pressed()
+				bound_player_selector.up_pressed()
+				menu_input_cd = 20
+			return
+		if Input.is_action_pressed("Player" + str(input_device) + "Down"):
+			if menu_input_cd == 0:
+				bound_player_selector.down_pressed()
 				menu_input_cd = 20
 			return
 		menu_input_cd = 0
@@ -180,7 +190,15 @@ func handle_collisions() -> void:
 			collision_sound_emitter.play(1)
 			angular_velocity += pow(randf_range(-3, 3), 2)
 
-func start_dying(_body: Node2D = null):
+func start_dying(body: Node2D = null, damage: int = 1):
+	if body is projectile:
+		body.you_have_to_kill_yourself = true
+	hit_points -= damage
+	linear_velocity += (body.position - position).normalized() * -100
+	if hit_points > 0:
+		hurt_sound_emitter.play()
+		angular_velocity += pow(randf_range(-5, 5), 2)
+		return
 	if death_timer != -1: return
 	alarm_sound_emitter.play()
 	death_timer = 75
@@ -224,9 +242,11 @@ func melee_hit() -> void:
 		if body == self: continue
 		if body is RigidBody2D:
 			hit_sound = 1
-			body.linear_velocity = (body.position - position).normalized() * 200
+			body.linear_velocity += (body.position - position).normalized() * 300
 			if body is Player:
-				body.start_dying(self)
+				body.start_dying(self, 2)
+			elif body is Mine:
+				body.linear_velocity += (body.position - position).normalized() * 400
 		if body is CharacterBody2D:
 			hit_sound = 1
 			body.velocity = (body.position - position).normalized() * 600

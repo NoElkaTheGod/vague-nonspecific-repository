@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://ddtwhvu0d1psn"]
+[gd_scene load_steps=42 format=3 uid="uid://ddtwhvu0d1psn"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_ngg73"]
 [ext_resource type="Texture2D" uid="uid://8084ru2awn7s" path="res://sprites/player.png" id="2_5kcq6"]
@@ -20,6 +20,7 @@
 [ext_resource type="AudioStream" uid="uid://bcct6j3y6757i" path="res://sounds/collision2.wav" id="11_34sp5"]
 [ext_resource type="AudioStream" uid="uid://hltyxioqe7er" path="res://sounds/player_spawn.wav" id="11_ypkmp"]
 [ext_resource type="AudioStream" uid="uid://b8rlhmt7ufxq6" path="res://sounds/collision3.wav" id="12_vwguv"]
+[ext_resource type="AudioStream" uid="uid://bj0wfpqhof1kk" path="res://sounds/hurt.wav" id="16_ac8i2"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_bxxq3"]
 friction = 0.0
@@ -246,6 +247,10 @@ volume_db = -10.0
 
 [node name="SpawnSoundEmitter" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("11_ypkmp")
+volume_db = -10.0
+
+[node name="HurtSoundEmitter" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("16_ac8i2")
 volume_db = -10.0
 
 [node name="CollisionSoundEmitter" type="Node" parent="."]

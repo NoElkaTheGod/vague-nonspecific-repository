@@ -1,7 +1,7 @@
 class_name Mine extends RigidBody2D
 
 var idle_projectile_manager: IdleProjectileManager
-var activation_timer := 120
+var activation_timer := 30
 var explosion_timer := -1
 @onready var game_manager = get_parent().get_parent()
 @onready var activation_area: Area2D = $Area2D
@@ -10,7 +10,7 @@ var explosion_timer := -1
 @onready var scary: Sprite2D = $ScaryRedCircle
 
 func init() -> void:
-	activation_timer = 120
+	activation_timer = 30
 	explosion_timer = -1
 	area_sprite.modulate = Color(1, 1, 1, 0)
 	scary.visible = false
@@ -26,7 +26,7 @@ func explode() -> void:
 	$ActivationSound.stop()
 	for body in activation_area.get_overlapping_bodies():
 		if body is Player:
-			body.start_dying()
+			body.start_dying(self, 3)
 		if body is Mine:
 			body.activate()
 	idle_projectile_manager.spawn_mine_remainder(position)
