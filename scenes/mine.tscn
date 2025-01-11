@@ -6,9 +6,9 @@
 [ext_resource type="Texture2D" uid="uid://0fs3o884tbo3" path="res://sprites/scary_red_circle.png" id="4_ir7ee"]
 [ext_resource type="AudioStream" uid="uid://pgqy3k4p8kjc" path="res://sounds/mine_trigger.wav" id="6_xytaw"]
 
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_bxxq3"]
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_pfiej"]
 friction = 0.0
-bounce = 0.8
+bounce = 1.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_7ikc6"]
 radius = 15.0
@@ -20,7 +20,7 @@ radius = 100.0
 collision_layer = 4
 collision_mask = 13
 mass = 3.0
-physics_material_override = SubResource("PhysicsMaterial_bxxq3")
+physics_material_override = SubResource("PhysicsMaterial_pfiej")
 script = ExtResource("1_nggjb")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

@@ -124,6 +124,7 @@ func _physics_process(_delta: float) -> void:
 			for i in players:
 				if i.input_device == -1: continue
 				i.is_round_going = true
+				i.is_spawning = false
 
 func start_round() -> void:
 	round_is_going = true
@@ -131,6 +132,7 @@ func start_round() -> void:
 	for i in players:
 		if i.input_device == -1: continue
 		players_to_spawn.append(i)
+		i.is_spawning = true
 		i.bound_player_selector.round_started()
 		i.visible = false
 	spawn_timer = 15

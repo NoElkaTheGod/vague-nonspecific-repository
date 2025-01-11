@@ -5,10 +5,11 @@ var type_hit_points := [3, 2, 6, 1]
 var is_player_active := false
 var is_input_connected := false
 var is_round_going := false
+var is_spawning := false
 var move_cd := 0
 var fire_cd := 0
 var max_move_cd := [5, 6, 8, 3]
-var turn_speed := [5, 5, 3, 7]
+var turn_speed := [5, 5, 3, 6]
 var death_timer := -1
 var alive := false
 var angular_velocity_target := 0.0
@@ -86,7 +87,7 @@ func init(color: int, device: int) -> void:
 	game_manager.player_finished_initialisation(self)
 
 func _physics_process(_delta: float) -> void:
-	if not is_round_going:
+	if not is_round_going and not is_spawning:
 		linear_velocity = Vector2.ZERO
 		angular_velocity = PI
 		if menu_input_cd > 0:
