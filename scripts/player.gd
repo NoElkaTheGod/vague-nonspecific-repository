@@ -93,33 +93,57 @@ func _physics_process(_delta: float) -> void:
 		if menu_input_cd > 0:
 			menu_input_cd -= 1
 		if bound_player_selector == null: return
-		if Input.is_action_pressed("Player" + str(input_device) + "Left") or Input.get_joy_axis(input_device,JOY_AXIS_LEFT_X) < -0.5:
-			if menu_input_cd == 0:
-				bound_player_selector.left_pressed()
-				menu_input_cd = 20
-			return
-		if Input.is_action_pressed("Player" + str(input_device) + "Right") or Input.get_joy_axis(input_device,JOY_AXIS_LEFT_X) > 0.5:
-			if menu_input_cd == 0:
-				bound_player_selector.right_pressed()
-				menu_input_cd = 20
-			return
 		if Input.is_action_pressed("Player" + str(input_device) + "Fire"):
 			if menu_input_cd == 0:
 				bound_player_selector.fire_pressed()
 				menu_input_cd = 20
 			return
-		if Input.is_action_pressed("Player" + str(input_device) + "Move"):
-			if menu_input_cd == 0:
-				bound_player_selector.up_pressed()
-				menu_input_cd = 20
+		if input_device <= 7:
+			if Input.get_joy_axis(input_device,JOY_AXIS_LEFT_X) < -0.5:
+				if menu_input_cd == 0:
+					bound_player_selector.left_pressed()
+					menu_input_cd = 20
+				return
+			if Input.get_joy_axis(input_device,JOY_AXIS_LEFT_X) > 0.5:
+				if menu_input_cd == 0:
+					bound_player_selector.right_pressed()
+					menu_input_cd = 20
+				return
+			if Input.get_joy_axis(input_device,JOY_AXIS_LEFT_Y) > 0.5:
+				if menu_input_cd == 0:
+					bound_player_selector.up_pressed()
+					menu_input_cd = 20
+				return
+			if Input.get_joy_axis(input_device,JOY_AXIS_LEFT_Y) < -0.5:
+				if menu_input_cd == 0:
+					bound_player_selector.down_pressed()
+					menu_input_cd = 20
+				return
+			menu_input_cd = 0
 			return
-		if Input.is_action_pressed("Player" + str(input_device) + "Down"):
-			if menu_input_cd == 0:
-				bound_player_selector.down_pressed()
-				menu_input_cd = 20
+		else:
+			if Input.is_action_pressed("Player" + str(input_device) + "Left"):
+				if menu_input_cd == 0:
+					bound_player_selector.left_pressed()
+					menu_input_cd = 20
+				return
+			if Input.is_action_pressed("Player" + str(input_device) + "Right"):
+				if menu_input_cd == 0:
+					bound_player_selector.right_pressed()
+					menu_input_cd = 20
+				return
+			if Input.is_action_pressed("Player" + str(input_device) + "Up"):
+				if menu_input_cd == 0:
+					bound_player_selector.up_pressed()
+					menu_input_cd = 20
+				return
+			if Input.is_action_pressed("Player" + str(input_device) + "Down"):
+				if menu_input_cd == 0:
+					bound_player_selector.down_pressed()
+					menu_input_cd = 20
+				return
+			menu_input_cd = 0
 			return
-		menu_input_cd = 0
-		return
 	linear_velocity = game_manager.account_for_attractors(linear_velocity, position, 1)
 	if get_contact_count() > 0:
 		handle_collisions()
