@@ -87,7 +87,8 @@ func init(color: int, device: int) -> void:
 	game_manager.player_finished_initialisation(self)
 
 func _physics_process(_delta: float) -> void:
-	if not is_round_going and not is_spawning:
+	if is_spawning: return
+	if not is_round_going:
 		linear_velocity = Vector2.ZERO
 		angular_velocity = PI
 		if menu_input_cd > 0:
@@ -164,11 +165,14 @@ func _physics_process(_delta: float) -> void:
 		var joystick_direction := Vector2(Input.get_joy_axis(input_device, JOY_AXIS_LEFT_X), Input.get_joy_axis(input_device, JOY_AXIS_LEFT_Y))
 		if (joystick_direction != Vector2.ZERO):
 			var target_direction: float = joystick_direction.angle()
-			if rotation - 0.4 > target_direction and rotation - 4.0 < target_direction or rotation + 2.5 < target_direction:
-				angular_velocity_target = -turn_speed[character_type]
-			elif rotation + 0.4 < target_direction or rotation - 2.5 > target_direction:
-				angular_velocity_target = turn_speed[character_type]
-	angular_velocity = move_toward(angular_velocity, angular_velocity_target, 0.5)
+			var direction_difference: float = wrapf(target_direction - rotation, -PI, PI)
+			if abs(direction_difference) > 0.1:
+				angular_velocity_target = sign(direction_difference) * turn_speed[character_type]
+			else:
+				angular_velocity_target = 0.0
+		else:
+			angular_velocity_target = 0.0
+	angular_velocity = move_toward(angular_velocity, angular_velocity_target, 1.0)
 	if Input.is_action_pressed("Player" + str(input_device) + "Move") and move_cd == 0:
 		linear_velocity += Vector2(cos(rotation), sin(rotation)) * 70
 		thrust_sound_emitter.play()

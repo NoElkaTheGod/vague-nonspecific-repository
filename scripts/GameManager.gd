@@ -36,9 +36,13 @@ func _input(event: InputEvent) -> void:
 	var new_player_slot = get_available_player_slot()
 	if new_player_slot == -1: return
 	if Input.get_connected_joypads().has(event.device) and not player_input_devices[event.device]:
-		player_input_devices[event.device] = true
-		players[new_player_slot].init(get_available_color(), event.device)
-		return
+		for i in range(7):
+			for j in ["Fire", "Move"]:
+				if event.is_action("Player" + str(i) + str(j)) and not player_input_devices[i]:
+					player_input_devices[event.device] = true
+					players[new_player_slot].init(get_available_color(), event.device)
+					return
+				return
 	for i in [8, 9]:
 		for j in ["Fire", "Move", "Left", "Right"]:
 			if event.is_action("Player" + str(i) + str(j)) and not player_input_devices[i]:
