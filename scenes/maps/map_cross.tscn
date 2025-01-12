@@ -26,7 +26,7 @@ script = ExtResource("1_ip2ub")
 [node name="Borders" type="Node2D" parent="."]
 
 [node name="Polygon2D" type="Polygon2D" parent="Borders"]
-color = Color(1, 1, 1, 0.784314)
+color = Color(0, 0, 0, 0.588235)
 texture_scale = Vector2(0.1, 0.1)
 invert_enabled = true
 invert_border = 1000.0

@@ -30,7 +30,6 @@ offset_right = -536.0
 offset_bottom = -286.0
 
 [node name="Parallax2D" type="Parallax2D" parent="Camera2D"]
-scale = Vector2(0.8, 0.8)
 scroll_scale = Vector2(0.2, 0.2)
 
 [node name="Background" type="Sprite2D" parent="Camera2D/Parallax2D"]
