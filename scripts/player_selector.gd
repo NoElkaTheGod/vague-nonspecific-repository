@@ -15,12 +15,18 @@ var is_in_lobby := true
 @onready var player_sprite := $LobbyButtons/Player
 @onready var buttons := $LobbyButtons
 @onready var other_buttons := $NotLobbyButtons
+@onready var inventory_container := $NotLobbyButtons/GridContainer
 @onready var button_up := $LobbyButtons/Up
 @onready var button_down := $LobbyButtons/Down
 @onready var button_left := $LobbyButtons/Left
 @onready var button_right := $LobbyButtons/Right
 @onready var stat_panel := $Stats
 @onready var sound := $PressDoundEmitter
+
+var inventory_panels: Array[Panel]
+var inventory_icons: Array[TextureRect]
+var selected_button := Vector2i.ZERO
+var selected_slot := Vector2i.ONE * -1
 
 func _ready() -> void:
 	button_up.texture = AtlasTexture.new()
@@ -61,6 +67,42 @@ func yo_wassup(player: Player, is_lobby: bool = true) -> void:
 	else:
 		buttons.visible = false
 		other_buttons.visible = true
+		inventory_container.columns = player.action_stack_size
+		inventory_panels.resize(player.action_stack_size * (player.inventory_rows + 1))
+		inventory_icons.resize(player.action_stack_size * (player.inventory_rows + 1))
+		for old in inventory_container.get_children():
+			old.queue_free()
+		for i in range(player.action_stack_size):
+			var new_slot = Panel.new()
+			new_slot.custom_minimum_size = Vector2(48, 48)
+			inventory_container.add_child(new_slot)
+			new_slot.z_index = 1
+			inventory_panels[i] = new_slot
+			var new_slot_sprite = TextureRect.new()
+			new_slot_sprite.custom_minimum_size = Vector2(48, 48)
+			new_slot.add_child(new_slot_sprite)
+			new_slot_sprite.z_index = 2
+			inventory_icons[i] = new_slot_sprite
+			if player.action_stack[i] == null: continue
+			new_slot_sprite.texture = player.action_stack[i].texture
+		for i in range(player.action_stack_size * player.inventory_rows):
+			var new_slot = Panel.new()
+			new_slot.custom_minimum_size = Vector2(48, 48)
+			inventory_container.add_child(new_slot)
+			new_slot.z_index = 1
+			inventory_panels[i + player.action_stack_size] = new_slot
+			var new_slot_sprite = TextureRect.new()
+			new_slot_sprite.custom_minimum_size = Vector2(48, 48)
+			new_slot.add_child(new_slot_sprite)
+			new_slot_sprite.z_index = 2
+			inventory_icons[i + player.action_stack_size] = new_slot_sprite
+			if player.inventory[i] == null: continue
+			new_slot_sprite.texture = player.inventory[i].texture
+		await inventory_container.sort_children
+		other_buttons.custom_minimum_size = inventory_container.size
+		selected_button = Vector2i.ZERO
+		update_inv_highlight(selected_button, Color(1.5, 1.5, 1.5))
+		selected_slot = Vector2i.ONE * -1
 
 func round_started() -> void:
 	bound_player.bound_player_selector = null
@@ -82,6 +124,11 @@ func left_pressed():
 		bound_player.game_manager.player_color_numbers[bound_player.character_color] = false
 		bound_player.change_appearence()
 		player_sprite.texture.region = Rect2(bound_player.character_color * 48, bound_player.character_type * 48, 48, 48)
+	else:
+		update_inv_highlight(selected_button, Color(1.0, 1.0, 1.0))
+		selected_button.x -= 1
+		if selected_button.x < 0: selected_button.x = bound_player.action_stack_size - 1
+		update_inv_highlight(selected_button, Color(1.5, 1.5, 1.5))
 
 func right_pressed():
 	sound.play()
@@ -98,6 +145,11 @@ func right_pressed():
 		bound_player.game_manager.player_color_numbers[bound_player.character_color] = false
 		bound_player.change_appearence()
 		player_sprite.texture.region = Rect2(bound_player.character_color * 48, bound_player.character_type * 48, 48, 48)
+	else:
+		update_inv_highlight(selected_button, Color(1.0, 1.0, 1.0))
+		selected_button.x += 1
+		if selected_button.x > bound_player.action_stack_size - 1: selected_button.x = 0
+		update_inv_highlight(selected_button, Color(1.5, 1.5, 1.5))
 
 func up_pressed():
 	sound.play()
@@ -109,6 +161,11 @@ func up_pressed():
 		update_stat_text(bound_player.character_type)
 		bound_player.change_appearence()
 		player_sprite.texture.region = Rect2(bound_player.character_color * 48, bound_player.character_type * 48, 48, 48)
+	else:
+		update_inv_highlight(selected_button, Color(1.0, 1.0, 1.0))
+		selected_button.y -= 1
+		if selected_button.y < -1: selected_button.y = bound_player.inventory_rows
+		update_inv_highlight(selected_button, Color(1.5, 1.5, 1.5))
 
 func down_pressed():
 	sound.play()
@@ -120,10 +177,37 @@ func down_pressed():
 		update_stat_text(bound_player.character_type)
 		bound_player.change_appearence()
 		player_sprite.texture.region = Rect2(bound_player.character_color * 48, bound_player.character_type * 48, 48, 48)
+	else:
+		update_inv_highlight(selected_button, Color(1.0, 1.0, 1.0))
+		selected_button.y += 1
+		if selected_button.y > bound_player.inventory_rows: selected_button.y = -1
+		update_inv_highlight(selected_button, Color(1.5, 1.5, 1.5))
 
 func fire_pressed():
 	sound.play()
-	if is_in_lobby:
+	if is_in_lobby or selected_button.y == -1:
+		toggle_ready()
+		selected_slot = Vector2i.ONE * -1
+	else:
+		if selected_button.y == -1: return
+		if selected_button.y == 0:
+			if selected_slot == Vector2i.ONE * -1 and bound_player.action_stack[selected_button.x] != null:
+				selected_slot = selected_button
+			elif selected_slot != Vector2i.ONE * -1:
+				#Я наебнул какао и хуярю костыли как долбоёб. Мог ли я просто переделать это всё в один массив? Да. Пожалею ли я о том, что не сделал этого? Да. Ебёт ли меня? К сожалению, нет.
+				var temp = null
+				if selected_slot.y == 0: 
+					temp = bound_player.action_stack[selected_slot.x]
+					if selected_button.y == 0: bound_player.action_stack[selected_slot.x] = bound_player.action_stack[selected_button.x]
+					if selected_button.y > 0: bound_player.action_stack[selected_slot.x] = bound_player.inventory[selected_button.x + (selected_button.y * bound_player.action_stack_size)]
+				if selected_slot.y > 0:
+					temp = bound_player.inventory[selected_slot.x + (selected_slot.y * bound_player.action_stack_size)]
+					if selected_button.y == 0: bound_player.inventory[selected_slot.x + (selected_slot.y * bound_player.action_stack_size)] = bound_player.action_stack[selected_button.x]
+					if selected_button.y > 0: bound_player.inventory[selected_slot.x + (selected_slot.y * bound_player.action_stack_size)] = bound_player.inventory[selected_button.x + (selected_button.y * bound_player.action_stack_size)]
+				if selected_button.y == 0: bound_player.action_stack[selected_button.x] = temp
+				if selected_button.y > 0: bound_player.inventory[selected_button.x + (selected_button.y * bound_player.action_stack_size)] = temp
+
+func toggle_ready() -> void:
 		player_ready = not player_ready
 		bound_player.game_manager.set_ready(player_ready)
 		if player_ready:
@@ -132,6 +216,12 @@ func fire_pressed():
 		else:
 			label_of_readiness.self_modulate = Color(0.5, 0, 0)
 			label_of_readiness.text = "Not ready"
+	
+func update_inv_highlight(pos: Vector2i, mod: Color):
+	if pos.y == -1:
+		label_of_readiness.modulate = mod
+	else:
+		inventory_panels[pos.x + (pos.y * bound_player.action_stack_size)].modulate = mod
 
 func update_stat_text(c_type: int) -> void:
 	stat_panel.text = ""

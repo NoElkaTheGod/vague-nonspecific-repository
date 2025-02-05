@@ -12,6 +12,7 @@ var player_input_devices: Array[bool]
 var player_color_numbers := [true, true, true, true]
 var player_count := 0
 var players_ready := 0
+var is_lobby := true
 
 var spawn_timer := -1
 var players_to_spawn: Array[Player]
@@ -132,6 +133,7 @@ func _physics_process(_delta: float) -> void:
 				i.is_spawning = false
 
 func start_round() -> void:
+	is_lobby = false
 	round_is_going = true
 	map_loader.load_map(randi_range(0, map_loader.get_map_pool_size() - 1))
 	for i in players:
@@ -149,7 +151,7 @@ func move_to_spawn(player: Player) -> void:
 	player_spawns.erase(spawn)
 	player.rotation = (player.position - Vector2(960, 640)).rotated(PI).angle()
 	if not round_is_going:
-		player.bind_player_selector(get_node("PlayerSelectors/Player" + spawn.name))
+		player.bind_player_selector(get_node("PlayerSelectors/Player" + spawn.name), is_lobby)
 
 func end_round() -> void:
 	round_is_going = false

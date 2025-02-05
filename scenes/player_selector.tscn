@@ -47,6 +47,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="LobbyButtons" type="Panel" parent="."]
+visible = false
 z_index = -1
 custom_minimum_size = Vector2(116, 116)
 layout_mode = 2
@@ -113,10 +114,14 @@ texture = SubResource("AtlasTexture_6cd4l")
 stretch_mode = 3
 
 [node name="NotLobbyButtons" type="Panel" parent="."]
-visible = false
 custom_minimum_size = Vector2(116, 116)
 layout_mode = 2
 size_flags_horizontal = 4
+
+[node name="GridContainer" type="GridContainer" parent="NotLobbyButtons"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
 
 [node name="Stats" type="Label" parent="."]
 custom_minimum_size = Vector2(200, 150)

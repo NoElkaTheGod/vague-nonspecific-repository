@@ -36,6 +36,11 @@ var character_color: int
 var character_type: int
 var menu_input_cd := 20
 
+var action_stack: Array[Action]
+const action_stack_size := 8
+var inventory: Array[Action]
+const inventory_rows := 2
+
 func set_active():
 	is_player_active = true
 	process_mode = PROCESS_MODE_INHERIT
@@ -67,10 +72,12 @@ func _ready() -> void:
 	$ThrusterParticles.visible = false
 	$Sprite2D.visible = false
 	melee_hit_animation.connect("animation_finished", hide_swing_animation)
+	action_stack.resize(action_stack_size)
+	inventory.resize(action_stack_size * inventory_rows)
 
-func bind_player_selector(node: PlayerSelector) -> void:
+func bind_player_selector(node: PlayerSelector, lobby: bool = false) -> void:
 	bound_player_selector = node
-	node.yo_wassup(self)
+	node.yo_wassup(self, lobby)
 
 func change_appearence():
 	$Sprite2D.texture.region = Rect2(character_color * 48, character_type * 48, 48, 48)
