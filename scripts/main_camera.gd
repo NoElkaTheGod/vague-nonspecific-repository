@@ -48,12 +48,13 @@ func recalculate_camera_bounds() -> void:
 			if player.position.y > max_position.y: max_position.y = player.position.y
 			if player.position.x < min_position.x: min_position.x = player.position.x
 			if player.position.y < min_position.y: min_position.y = player.position.y
+		max_position += Vector2(200, 200)
+		min_position -= Vector2(200, 200)
 		players_rect = Rect2(min_position, max_position - min_position)
 		target_position = players_rect.get_center()
 		target_zoom = get_viewport_rect().size / players_rect.size
 		target_zoom.x = min(target_zoom.x, target_zoom.y)
 		target_zoom.y = min(target_zoom.x, target_zoom.y)
-		target_zoom -= Vector2(0.3, 0.3)
 		target_zoom = target_zoom.clamp(Vector2.ZERO, Vector2.ONE)
 	else:
 		target_position = Vector2(960, 640)
