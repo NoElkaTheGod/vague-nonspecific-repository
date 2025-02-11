@@ -83,8 +83,8 @@ func yo_wassup(player: Player, is_lobby: bool = true) -> void:
 			new_slot.add_child(new_slot_sprite)
 			new_slot_sprite.z_index = 2
 			inventory_icons[i] = new_slot_sprite
-			if player.action_stack[i] == null: continue
-			new_slot_sprite.texture = player.action_stack[i].texture
+			if player.inventory[i] == null: continue
+			new_slot_sprite.texture = load(player.inventory[i].texture)
 		for i in range(player.action_stack_size * player.inventory_rows):
 			var new_slot = Panel.new()
 			new_slot.custom_minimum_size = Vector2(48, 48)
@@ -96,8 +96,8 @@ func yo_wassup(player: Player, is_lobby: bool = true) -> void:
 			new_slot.add_child(new_slot_sprite)
 			new_slot_sprite.z_index = 2
 			inventory_icons[i + player.action_stack_size] = new_slot_sprite
-			if player.inventory[i] == null: continue
-			new_slot_sprite.texture = player.inventory[i].texture
+			if player.inventory[i + player.action_stack_size] == null: continue
+			new_slot_sprite.texture = load(player.inventory[i + player.action_stack_size].texture)
 		await inventory_container.sort_children
 		other_buttons.custom_minimum_size = inventory_container.size
 		selected_button = Vector2i.ZERO
@@ -189,23 +189,26 @@ func fire_pressed():
 		toggle_ready()
 		selected_slot = Vector2i.ONE * -1
 	else:
-		if selected_button.y == -1: return
-		if selected_button.y == 0:
-			if selected_slot == Vector2i.ONE * -1 and bound_player.action_stack[selected_button.x] != null:
-				selected_slot = selected_button
-			elif selected_slot != Vector2i.ONE * -1:
-				#Я наебнул какао и хуярю костыли как долбоёб. Мог ли я просто переделать это всё в один массив? Да. Пожалею ли я о том, что не сделал этого? Да. Ебёт ли меня? К сожалению, нет.
-				var temp = null
-				if selected_slot.y == 0: 
-					temp = bound_player.action_stack[selected_slot.x]
-					if selected_button.y == 0: bound_player.action_stack[selected_slot.x] = bound_player.action_stack[selected_button.x]
-					if selected_button.y > 0: bound_player.action_stack[selected_slot.x] = bound_player.inventory[selected_button.x + (selected_button.y * bound_player.action_stack_size)]
-				if selected_slot.y > 0:
-					temp = bound_player.inventory[selected_slot.x + (selected_slot.y * bound_player.action_stack_size)]
-					if selected_button.y == 0: bound_player.inventory[selected_slot.x + (selected_slot.y * bound_player.action_stack_size)] = bound_player.action_stack[selected_button.x]
-					if selected_button.y > 0: bound_player.inventory[selected_slot.x + (selected_slot.y * bound_player.action_stack_size)] = bound_player.inventory[selected_button.x + (selected_button.y * bound_player.action_stack_size)]
-				if selected_button.y == 0: bound_player.action_stack[selected_button.x] = temp
-				if selected_button.y > 0: bound_player.inventory[selected_button.x + (selected_button.y * bound_player.action_stack_size)] = temp
+		if selected_slot != Vector2i.ONE * -1:
+			var first_slot: int = selected_slot.x + (selected_slot.y * bound_player.action_stack_size)
+			var second_slot: int = selected_button.x + (selected_button.y * bound_player.action_stack_size)
+			var temp: Action = bound_player.inventory[first_slot]
+			bound_player.inventory[first_slot] = bound_player.inventory[second_slot]
+			bound_player.inventory[second_slot] = temp
+
+			if bound_player.inventory[first_slot] == null:
+				inventory_icons[first_slot].texture = null
+			else:
+				inventory_icons[first_slot].texture = load(bound_player.inventory[first_slot].texture)
+
+			if bound_player.inventory[second_slot] == null:
+				inventory_icons[second_slot].texture = null
+			else:
+				inventory_icons[second_slot].texture = load(bound_player.inventory[second_slot].texture)
+
+			selected_slot = Vector2i.ONE * -1
+		elif bound_player.inventory[selected_button.x + (selected_button.y * bound_player.action_stack_size)] != null:
+			selected_slot = selected_button
 
 func toggle_ready() -> void:
 		player_ready = not player_ready

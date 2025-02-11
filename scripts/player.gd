@@ -36,9 +36,8 @@ var character_color: int
 var character_type: int
 var menu_input_cd := 20
 
-var action_stack: Array[Action]
-const action_stack_size := 8
 var inventory: Array[Action]
+const action_stack_size := 8
 const inventory_rows := 2
 
 func set_active():
@@ -72,8 +71,14 @@ func _ready() -> void:
 	$ThrusterParticles.visible = false
 	$Sprite2D.visible = false
 	melee_hit_animation.connect("animation_finished", hide_swing_animation)
-	action_stack.resize(action_stack_size)
-	inventory.resize(action_stack_size * inventory_rows)
+	inventory.resize(action_stack_size * (inventory_rows + 1))
+	test_fill_inv()
+
+func test_fill_inv() -> void:
+	inventory[0] = shot_item.new()
+	add_child(inventory[0])
+	inventory[1] = sword_item.new()
+	add_child(inventory[1])
 
 func bind_player_selector(node: PlayerSelector, lobby: bool = false) -> void:
 	bound_player_selector = node
