@@ -1,3 +1,8 @@
 class_name Action extends Node
 
-@export var texture: Texture2D
+var texture:= ""
+var item_name := ""
+var description := ""
+
+func action(_actor: Node2D) -> void:
+	pass
