@@ -34,7 +34,7 @@ var bound_player_selector: PlayerSelector
 var input_device := -1
 var character_color: int
 var character_type: int
-var menu_input_cd := 20
+var menu_input_cd := [15, 15, 15, 15, 15]
 
 var inventory: Array[Action]
 const action_stack_size := 8
@@ -63,7 +63,9 @@ func reset_player_state():
 	angular_velocity = 0
 	linear_velocity = Vector2.ZERO
 	fire_cd = 60
-	menu_input_cd = 20
+	for i in range(5):
+		if menu_input_cd[i] > 0:
+			menu_input_cd[i] -= 1
 	hit_points = type_hit_points[character_type]
 
 func _ready() -> void:
@@ -103,59 +105,60 @@ func _physics_process(_delta: float) -> void:
 	if not is_round_going:
 		linear_velocity = Vector2.ZERO
 		angular_velocity = PI
-		if menu_input_cd > 0:
-			menu_input_cd -= 1
+		for i in range(5):
+			if menu_input_cd[i] > 0:
+				menu_input_cd[i] -= 1
 		if bound_player_selector == null: return
 		if Input.is_action_pressed("Player" + str(input_device) + "Fire"):
-			if menu_input_cd == 0:
+			if menu_input_cd[0] == 0:
 				bound_player_selector.fire_pressed()
-				menu_input_cd = 20
+				menu_input_cd[0] = 15
 			return
+		if Input.is_action_just_released("Player" + str(input_device) + "Fire"):
+				menu_input_cd[0] = 0
 		if input_device <= 7:
 			if Input.get_joy_axis(input_device,JOY_AXIS_LEFT_X) < -0.5:
-				if menu_input_cd == 0:
+				if menu_input_cd[1] == 0:
 					bound_player_selector.left_pressed()
-					menu_input_cd = 20
-				return
+					menu_input_cd[1] = 15
 			if Input.get_joy_axis(input_device,JOY_AXIS_LEFT_X) > 0.5:
-				if menu_input_cd == 0:
+				if menu_input_cd[2] == 0:
 					bound_player_selector.right_pressed()
-					menu_input_cd = 20
-				return
+					menu_input_cd[2] = 15
 			if Input.get_joy_axis(input_device,JOY_AXIS_LEFT_Y) > 0.5:
-				if menu_input_cd == 0:
+				if menu_input_cd[3] == 0:
 					bound_player_selector.up_pressed()
-					menu_input_cd = 20
-				return
+					menu_input_cd[3] = 15
 			if Input.get_joy_axis(input_device,JOY_AXIS_LEFT_Y) < -0.5:
-				if menu_input_cd == 0:
+				if menu_input_cd[4] == 0:
 					bound_player_selector.down_pressed()
-					menu_input_cd = 20
-				return
-			menu_input_cd = 0
+					menu_input_cd[4] = 15
 			return
 		else:
 			if Input.is_action_pressed("Player" + str(input_device) + "Left"):
-				if menu_input_cd == 0:
+				if menu_input_cd[1] == 0:
 					bound_player_selector.left_pressed()
-					menu_input_cd = 20
-				return
+					menu_input_cd[1] = 15
 			if Input.is_action_pressed("Player" + str(input_device) + "Right"):
-				if menu_input_cd == 0:
+				if menu_input_cd[2] == 0:
 					bound_player_selector.right_pressed()
-					menu_input_cd = 20
-				return
+					menu_input_cd[2] = 15
 			if Input.is_action_pressed("Player" + str(input_device) + "Up"):
-				if menu_input_cd == 0:
+				if menu_input_cd[3] == 0:
 					bound_player_selector.up_pressed()
-					menu_input_cd = 20
-				return
+					menu_input_cd[3] = 15
 			if Input.is_action_pressed("Player" + str(input_device) + "Down"):
-				if menu_input_cd == 0:
+				if menu_input_cd[4] == 0:
 					bound_player_selector.down_pressed()
-					menu_input_cd = 20
-				return
-			menu_input_cd = 0
+					menu_input_cd[4] = 15
+			if Input.is_action_just_released("Player" + str(input_device) + "Left"):
+					menu_input_cd[1] = 0
+			if Input.is_action_just_released("Player" + str(input_device) + "Right"):
+					menu_input_cd[2] = 0
+			if Input.is_action_just_released("Player" + str(input_device) + "Up"):
+					menu_input_cd[3] = 0
+			if Input.is_action_just_released("Player" + str(input_device) + "Down"):
+					menu_input_cd[4] = 0
 			return
 	linear_velocity = game_manager.account_for_attractors(linear_velocity, position, 1)
 	if get_contact_count() > 0:
