@@ -45,7 +45,7 @@ func _input(event: InputEvent) -> void:
 					return
 				return
 	for i in [8, 9]:
-		for j in ["Fire", "Move", "Left", "Right"]:
+		for j in ["Fire", "Move", "Left", "Right", "Up", "Down"]:
 			if event.is_action("Player" + str(i) + str(j)) and not player_input_devices[i]:
 				player_input_devices[i] = true
 				players[new_player_slot].init(get_available_color(), i)
