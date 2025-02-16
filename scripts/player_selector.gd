@@ -160,6 +160,7 @@ func up_pressed():
 		if bound_player.character_type > 3: bound_player.character_type = 0
 		update_stat_text(bound_player.character_type)
 		bound_player.change_appearence()
+		bound_player.change_player_type(bound_player.character_type)
 		player_sprite.texture.region = Rect2(bound_player.character_color * 48, bound_player.character_type * 48, 48, 48)
 	else:
 		update_inv_highlight(selected_button, Color(1.0, 1.0, 1.0))
@@ -176,6 +177,7 @@ func down_pressed():
 		if bound_player.character_type < 0: bound_player.character_type = 3
 		update_stat_text(bound_player.character_type)
 		bound_player.change_appearence()
+		bound_player.change_player_type(bound_player.character_type)
 		player_sprite.texture.region = Rect2(bound_player.character_color * 48, bound_player.character_type * 48, 48, 48)
 	else:
 		update_inv_highlight(selected_button, Color(1.0, 1.0, 1.0))
