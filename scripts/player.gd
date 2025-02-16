@@ -1,7 +1,7 @@
 class_name Player extends RigidBody2D
 
 var hit_points := 0
-var type_hit_points := [3, 2, 6, 1]
+var type_hit_points := [50, 40, 100, 1]
 var is_player_active := false
 var is_input_connected := false
 var is_round_going := false
@@ -38,8 +38,25 @@ var character_type: int
 var menu_input_cd := [15, 15, 15, 15, 15]
 
 var inventory: Array[Action]
-const action_stack_size := 8
-const inventory_rows := 2
+var action_stack_size := 8
+var inventory_rows := 2
+var amount_of_stacks := 1
+var default_amount_of_stacks := [1, 1, 2, 1]
+
+var active_stack := 0
+var stack_position: Array[int]
+const reload_time := 40
+
+var damage_multiplier := 1.0
+const default_damage_multiplier = [1.0, 1.0, 1.0, 1.0]
+var angle_offset := 0
+const default_angle_offset = [0, PI, 0, 0]
+var spread_multiplier := 1.0
+const default_spread_multiplier = [1.0, 1.0, 10.0, 1.0]
+var reload_offset := 0
+const default_reload_offset = [0, 0, -20, 0]
+var cooldown_multiplier := 1.0
+const default_cooldown_multiplier = [1.0, 1.0, 0.5, 1.0]
 
 func set_active():
 	is_player_active = true
@@ -74,7 +91,6 @@ func _ready() -> void:
 	$ThrusterParticles.visible = false
 	$Sprite2D.visible = false
 	melee_hit_animation.connect("animation_finished", hide_swing_animation)
-	inventory.resize(action_stack_size * (inventory_rows + 1))
 
 func bind_player_selector(node: PlayerSelector, lobby: bool = false) -> void:
 	bound_player_selector = node
@@ -83,11 +99,22 @@ func bind_player_selector(node: PlayerSelector, lobby: bool = false) -> void:
 func change_appearence():
 	$Sprite2D.texture.region = Rect2(character_color * 48, character_type * 48, 48, 48)
 
+func reset_stat_offsets() -> void:
+	damage_multiplier = default_damage_multiplier[character_type]
+	angle_offset = default_angle_offset[character_type]
+	spread_multiplier = default_spread_multiplier[character_type]
+	reload_offset = default_reload_offset[character_type]
+	cooldown_multiplier = default_cooldown_multiplier[character_type]
+
 func change_player_type(type: int):
 	for i in range(inventory.size()):
 		if inventory[i] == null: continue
 		inventory[i].queue_free()
 		inventory[i] = null
+	amount_of_stacks = default_amount_of_stacks[type]
+	inventory.resize(action_stack_size * (inventory_rows + amount_of_stacks))
+	stack_position.resize(amount_of_stacks)
+	reset_stat_offsets()
 	match type:
 		0:
 			inventory[0] = shot_item.new()
@@ -97,9 +124,9 @@ func change_player_type(type: int):
 			add_child(inventory[0])
 		2:
 			inventory[0] = shot_item.new()
-			inventory[1] = shot_item.new()
+			inventory[action_stack_size] = shot_item.new()
 			add_child(inventory[0])
-			add_child(inventory[1])
+			add_child(inventory[action_stack_size])
 		3:
 			inventory[0] = sword_item.new()
 			add_child(inventory[0])
@@ -114,8 +141,7 @@ func init(color: int, device: int) -> void:
 	set_active()
 	$SpawnSoundEmitter.play()
 	game_manager.player_finished_initialisation(self)
-	inventory[0] = shot_item.new()
-	add_child(inventory[0])
+	change_player_type(0)
 
 func _physics_process(_delta: float) -> void:
 	if is_spawning: return
@@ -212,7 +238,9 @@ func _physics_process(_delta: float) -> void:
 	elif move_cd > 0:
 		move_cd -= 1
 	if Input.is_action_pressed("Player" + str(input_device) + "Fire") and fire_cd == 0:
-		fire_action_from_stack()
+		active_stack += 1
+		if active_stack >= amount_of_stacks: active_stack = 0
+		fire_action_from_stack(active_stack)
 	if fire_cd > 0:
 		fire_cd -= 1
 	thruster_particles.emitting = Input.is_action_pressed("Player" + str(input_device) + "Move")
@@ -238,6 +266,7 @@ func handle_collisions() -> void:
 func start_dying(body: Node2D = null, damage: int = 1):
 	if body is projectile:
 		body.you_have_to_kill_yourself = true
+		damage = body.damage
 	hit_points -= damage
 	linear_velocity += (body.position - position).normalized() * -100
 	if hit_points > 0:
@@ -262,20 +291,19 @@ func fucking_die(_body: Node2D, funny_sound := false) -> void:
 	call_deferred("set_inactive")
 	game_manager.im_dead_lol(self)
 
-var stack_position := 0
-const reload_time := 40
 
-func fire_action_from_stack() -> void:
-	if inventory[stack_position] != null:
-		var cooldown = inventory[stack_position].action(self)
+func fire_action_from_stack(stack := 0) -> void:
+	if inventory[stack_position[stack] + (action_stack_size * stack)] != null:
+		var cooldown = inventory[stack_position[stack] + (action_stack_size * stack)].action(self) * cooldown_multiplier
 		fire_cd = max(fire_cd, cooldown)
-		stack_position += 1
-	var starting_point := stack_position
-	while inventory[stack_position] == null:
-		stack_position += 1
-		if stack_position >= action_stack_size:
-			stack_position = 0
-			fire_cd = reload_time
-		if stack_position == starting_point:
+		stack_position[stack] += 1
+	var starting_point := stack_position[stack]
+	while inventory[stack_position[stack] + (action_stack_size * stack)] == null:
+		stack_position[stack] += 1
+		if stack_position[stack] >= action_stack_size:
+			stack_position[stack] = 0
+			fire_cd = reload_time + reload_offset
+			reset_stat_offsets()
+		if stack_position[stack] == starting_point:
 			fucking_die(self, true)
 			return

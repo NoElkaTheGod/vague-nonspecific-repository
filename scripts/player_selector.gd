@@ -72,7 +72,7 @@ func yo_wassup(player: Player, is_lobby: bool = true) -> void:
 		inventory_icons.resize(player.action_stack_size * (player.inventory_rows + 1))
 		for old in inventory_container.get_children():
 			old.queue_free()
-		for i in range(player.action_stack_size):
+		for i in range(player.action_stack_size * player.amount_of_stacks):
 			var new_slot = Panel.new()
 			new_slot.custom_minimum_size = Vector2(48, 48)
 			inventory_container.add_child(new_slot)

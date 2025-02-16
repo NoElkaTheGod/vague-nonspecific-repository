@@ -1,6 +1,5 @@
 class_name shot_item extends Action
 
-var amount := 1
 
 func _ready() -> void:
 	texture = "res://sprites/items/shot_item.png"
@@ -9,17 +8,13 @@ func _ready() -> void:
 	use_delay = 10
 
 func action(actor: Player) -> int:
-	if actor.idle_projectile_manager == null: return 20
+	if actor.idle_projectile_manager == null: return use_delay
 	actor.shot_sound_emitter.play()
-	var additional_rotation: Array[float]
-	additional_rotation.resize(amount)
-	for i in range(amount):
-		additional_rotation[i] = deg_to_rad(((i - (amount / 2.0 - 0.5)) * 10))
-	for i in range(amount):
-		var proj: projectile = actor.idle_projectile_manager.get_idle_projectile()
-		proj.init()
-		proj.visible = true
-		proj.process_mode = Node.PROCESS_MODE_PAUSABLE
-		proj.position = actor.position + (Vector2(cos(actor.rotation), sin(actor.rotation)) * 50)
-		proj.velocity = (Vector2(cos(actor.rotation + additional_rotation[i]), sin(actor.rotation + additional_rotation[i])) * randf_range(550, 650)) + actor.linear_velocity
+	var spread := Vector2(randf_range(-10, 10), randf_range(-10, 10)) * actor.spread_multiplier
+	var proj: projectile = actor.idle_projectile_manager.get_idle_projectile()
+	proj.init()
+	proj.visible = true
+	proj.process_mode = Node.PROCESS_MODE_PAUSABLE
+	proj.position = actor.position + (Vector2(cos(actor.rotation), sin(actor.rotation)) * 30).rotated(actor.angle_offset)
+	proj.velocity = (Vector2(cos(actor.rotation), sin(actor.rotation)) * randf_range(550, 650)).rotated(actor.angle_offset) + actor.linear_velocity + spread
 	return use_delay

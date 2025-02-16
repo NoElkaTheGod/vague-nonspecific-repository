@@ -15,7 +15,7 @@ func action(actor: Player) -> int:
 	var hit_sound := 0
 	var bodies := actor.melee_hit_area.get_overlapping_bodies()
 	for body in bodies:
-		if body == self: continue
+		if body == actor: continue
 		if body is RigidBody2D:
 			hit_sound = 1
 			body.linear_velocity += (body.position - actor.position).normalized() * 300

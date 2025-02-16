@@ -3,10 +3,12 @@ class_name projectile extends PhysicsBody2D
 var idle_projectile_manager: IdleProjectileManager
 var timer := 60
 var velocity := Vector2.ZERO
+var damage := 10
 var you_have_to_kill_yourself := false
 @onready var game_manager = get_parent().get_parent()
 
 func init() -> void:
+	damage = 10
 	timer = 60
 	you_have_to_kill_yourself = false
 

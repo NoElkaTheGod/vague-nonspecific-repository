@@ -11,8 +11,10 @@ func action(actor: Player) -> int:
 	actor.mine_release_sound_emitter.play()
 	var mine: Mine = actor.idle_projectile_manager.get_idle_mine()
 	mine.init()
+	@warning_ignore("narrowing_conversion")
+	mine.damage *= actor.damage_multiplier
 	mine.visible = true
 	mine.process_mode = Node.PROCESS_MODE_PAUSABLE
-	mine.position = actor.position + (Vector2(cos(actor.rotation), sin(actor.rotation)) * -50)
-	mine.linear_velocity = (Vector2(cos(actor.rotation), sin(actor.rotation)) * randf_range(-200, -150)) + actor.linear_velocity
+	mine.position = actor.position + (Vector2(cos(actor.rotation), sin(actor.rotation)) * 50).rotated(actor.angle_offset)
+	mine.linear_velocity = (Vector2(cos(actor.rotation), sin(actor.rotation)) * randf_range(150, 200)).rotated(actor.angle_offset) + actor.linear_velocity
 	return use_delay
