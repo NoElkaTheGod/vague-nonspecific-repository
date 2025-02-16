@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=3 uid="uid://ddtwhvu0d1psn"]
+[gd_scene load_steps=43 format=3 uid="uid://ddtwhvu0d1psn"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_ngg73"]
 [ext_resource type="Texture2D" uid="uid://8084ru2awn7s" path="res://sprites/player.png" id="2_5kcq6"]
@@ -19,6 +19,7 @@
 [ext_resource type="AudioStream" uid="uid://bc216qpmklpjs" path="res://sounds/collision1.wav" id="10_ox2nc"]
 [ext_resource type="AudioStream" uid="uid://bcct6j3y6757i" path="res://sounds/collision2.wav" id="11_34sp5"]
 [ext_resource type="AudioStream" uid="uid://hltyxioqe7er" path="res://sounds/player_spawn.wav" id="11_ypkmp"]
+[ext_resource type="AudioStream" uid="uid://4ynuhbxepnkd" path="res://sounds/fart-with-reverb.ogg" id="12_dkd4d"]
 [ext_resource type="AudioStream" uid="uid://b8rlhmt7ufxq6" path="res://sounds/collision3.wav" id="12_vwguv"]
 [ext_resource type="AudioStream" uid="uid://bj0wfpqhof1kk" path="res://sounds/hurt.wav" id="16_ac8i2"]
 
@@ -224,6 +225,10 @@ volume_db = -10.0
 [node name="DeathSoundEmitter" type="AudioStreamPlayer" parent="."]
 process_mode = 1
 stream = ExtResource("5_4ftdm")
+
+[node name="DeathSoundEmitterFunny" type="AudioStreamPlayer" parent="."]
+process_mode = 1
+stream = ExtResource("12_dkd4d")
 
 [node name="DeathParticles" type="GPUParticles2D" parent="."]
 process_mode = 1

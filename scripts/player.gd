@@ -19,6 +19,7 @@ var angular_velocity_target := 0.0
 @onready var shot_sound_emitter := $ShotSoundEmitter
 @onready var mine_release_sound_emitter := $MineReleaseSoundEmitter
 @onready var death_sound_emitter := $DeathSoundEmitter
+@onready var funny_death_sound_emitter := $DeathSoundEmitterFunny
 @onready var death_particles := $DeathParticles
 @onready var alarm_sound_emitter := $AlarmSoundEmitter
 @onready var collision_sound_emitter: CollisionSoundEmitter = $CollisionSoundEmitter
@@ -74,13 +75,6 @@ func _ready() -> void:
 	$Sprite2D.visible = false
 	melee_hit_animation.connect("animation_finished", hide_swing_animation)
 	inventory.resize(action_stack_size * (inventory_rows + 1))
-	test_fill_inv()
-
-func test_fill_inv() -> void:
-	inventory[0] = shot_item.new()
-	add_child(inventory[0])
-	inventory[1] = sword_item.new()
-	add_child(inventory[1])
 
 func bind_player_selector(node: PlayerSelector, lobby: bool = false) -> void:
 	bound_player_selector = node
@@ -88,6 +82,27 @@ func bind_player_selector(node: PlayerSelector, lobby: bool = false) -> void:
 
 func change_appearence():
 	$Sprite2D.texture.region = Rect2(character_color * 48, character_type * 48, 48, 48)
+
+func change_player_type(type: int):
+	for i in range(inventory.size()):
+		if inventory[i] == null: continue
+		inventory[i].queue_free()
+		inventory[i] = null
+	match type:
+		0:
+			inventory[0] = shot_item.new()
+			add_child(inventory[0])
+		1:
+			inventory[0] = mine_item.new()
+			add_child(inventory[0])
+		2:
+			inventory[0] = shot_item.new()
+			inventory[1] = shot_item.new()
+			add_child(inventory[0])
+			add_child(inventory[1])
+		3:
+			inventory[0] = sword_item.new()
+			add_child(inventory[0])
 
 func init(color: int, device: int) -> void:
 	is_input_connected = true
@@ -99,6 +114,8 @@ func init(color: int, device: int) -> void:
 	set_active()
 	$SpawnSoundEmitter.play()
 	game_manager.player_finished_initialisation(self)
+	inventory[0] = shot_item.new()
+	add_child(inventory[0])
 
 func _physics_process(_delta: float) -> void:
 	if is_spawning: return
@@ -195,23 +212,7 @@ func _physics_process(_delta: float) -> void:
 	elif move_cd > 0:
 		move_cd -= 1
 	if Input.is_action_pressed("Player" + str(input_device) + "Fire") and fire_cd == 0:
-		match character_type:
-			0:
-				fire_cd = 40
-				fire(1)
-				linear_velocity += Vector2(cos(rotation), sin(rotation)) * -200
-			1: 
-				fire_cd = 80
-				spawn_mine()
-				linear_velocity += Vector2(cos(rotation), sin(rotation)) * 100
-			2:
-				fire_cd = 60
-				fire(5)
-				linear_velocity += Vector2(cos(rotation), sin(rotation)) * -200
-			3:
-				fire_cd = 30
-				melee_hit()
-				linear_velocity += Vector2(cos(rotation), sin(rotation)) * 50
+		fire_action_from_stack()
 	if fire_cd > 0:
 		fire_cd -= 1
 	thruster_particles.emitting = Input.is_action_pressed("Player" + str(input_device) + "Move")
@@ -248,60 +249,33 @@ func start_dying(body: Node2D = null, damage: int = 1):
 	death_timer = 75
 	thruster_particles.emitting = false
 
-func fire(amount: int) -> void:
-	if idle_projectile_manager == null: return
-	shot_sound_emitter.play()
-	var additional_rotation: Array[float]
-	additional_rotation.resize(amount)
-	for i in range(amount):
-		additional_rotation[i] = deg_to_rad(((i - (amount / 2.0 - 0.5)) * 10))
-	for i in range(amount):
-		var proj := idle_projectile_manager.get_idle_projectile()
-		proj.init()
-		proj.visible = true
-		proj.process_mode = Node.PROCESS_MODE_PAUSABLE
-		proj.position = position + (Vector2(cos(rotation), sin(rotation)) * 50)
-		proj.velocity = (Vector2(cos(rotation + additional_rotation[i]), sin(rotation + additional_rotation[i])) * randf_range(550, 650)) + linear_velocity
-
 func hide_swing_animation():
 	melee_hit_animation.visible = false
 
-func spawn_mine() -> void:
-	mine_release_sound_emitter.play()
-	var mine := idle_projectile_manager.get_idle_mine()
-	mine.init()
-	mine.visible = true
-	mine.process_mode = Node.PROCESS_MODE_PAUSABLE
-	mine.position = position + (Vector2(cos(rotation), sin(rotation)) * -50)
-	mine.linear_velocity = (Vector2(cos(rotation), sin(rotation)) * randf_range(-200, -150)) + linear_velocity
-
-func melee_hit() -> void:
-	melee_hit_animation.flip_h = not melee_hit_animation.flip_h
-	melee_hit_animation.play()
-	melee_hit_animation.visible = true
-	melee_swing_sound_emitter.play()
-	var hit_sound := 0
-	var bodies := melee_hit_area.get_overlapping_bodies()
-	for body in bodies:
-		if body == self: continue
-		if body is RigidBody2D:
-			hit_sound = 1
-			body.linear_velocity += (body.position - position).normalized() * 300
-			if body is Player:
-				body.start_dying(self, 2)
-			elif body is Mine:
-				body.linear_velocity += (body.position - position).normalized() * 400
-		if body is CharacterBody2D:
-			hit_sound = 1
-			body.velocity = (body.position - position).normalized() * 600
-			if body is projectile:
-				hit_sound = 2
-		if hit_sound == 1: melee_hit_sound_emitter.play()
-		if hit_sound == 2: melee_parry_sound_emitter.play()
-
-func fucking_die(_body: Node2D) -> void:
-	death_sound_emitter.play()
+func fucking_die(_body: Node2D, funny_sound := false) -> void:
+	if funny_sound:
+		funny_death_sound_emitter.play()
+	else:
+		death_sound_emitter.play()
 	death_particles.emitting = true
 	$Sprite2D.visible = false
 	call_deferred("set_inactive")
 	game_manager.im_dead_lol(self)
+
+var stack_position := 0
+const reload_time := 40
+
+func fire_action_from_stack() -> void:
+	if inventory[stack_position] != null:
+		var cooldown = inventory[stack_position].action(self)
+		fire_cd = max(fire_cd, cooldown)
+		stack_position += 1
+	var starting_point := stack_position
+	while inventory[stack_position] == null:
+		stack_position += 1
+		if stack_position >= action_stack_size:
+			stack_position = 0
+			fire_cd = reload_time
+		if stack_position == starting_point:
+			fucking_die(self, true)
+			return
