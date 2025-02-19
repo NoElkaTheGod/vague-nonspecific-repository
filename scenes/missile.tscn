@@ -1,0 +1,54 @@
+[gd_scene load_steps=9 format=3 uid="uid://dsqk8c267cetx"]
+
+[ext_resource type="Script" path="res://scripts/missile.gd" id="1_xk04n"]
+[ext_resource type="Texture2D" uid="uid://d1vdo56rpmjfw" path="res://sprites/amogi.png" id="2_vf25o"]
+[ext_resource type="Texture2D" uid="uid://faopa8o4puxc" path="res://sprites/missile.png" id="3_m0ndy"]
+
+[sub_resource type="Curve" id="Curve_2enus"]
+_data = [Vector2(0.00666666, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_mrbcd"]
+curve = SubResource("Curve_2enus")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_i722w"]
+particle_flag_disable_z = true
+direction = Vector3(-1, 0, 0)
+spread = 30.0
+initial_velocity_min = 30.0
+initial_velocity_max = 40.0
+gravity = Vector3(0, 0, 0)
+color = Color(1, 0.888206, 0.700291, 1)
+alpha_curve = SubResource("CurveTexture_mrbcd")
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_vju15"]
+radius = 13.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_n31ud"]
+radius = 50.0
+
+[node name="Projectile" type="CharacterBody2D"]
+collision_layer = 2
+motion_mode = 1
+script = ExtResource("1_xk04n")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+position = Vector2(-12, 0)
+scale = Vector2(1.8, 1.8)
+process_material = SubResource("ParticleProcessMaterial_i722w")
+texture = ExtResource("2_vf25o")
+lifetime = 0.4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_vju15")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(1.8, 1.8)
+texture = ExtResource("3_m0ndy")
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 6
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_n31ud")

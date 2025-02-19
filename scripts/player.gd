@@ -128,7 +128,7 @@ func change_player_type(type: int):
 			add_child(inventory[0])
 			add_child(inventory[action_stack_size])
 		3:
-			inventory[0] = sword_item.new()
+			inventory[0] = missile_item.new()
 			add_child(inventory[0])
 
 func init(color: int, device: int) -> void:
@@ -264,7 +264,7 @@ func handle_collisions() -> void:
 			angular_velocity += pow(randf_range(-3, 3), 2)
 
 func start_dying(body: Node2D = null, damage: int = 1):
-	if body is projectile:
+	if body is projectile or Missile:
 		body.you_have_to_kill_yourself = true
 		damage = body.damage
 	hit_points -= damage
@@ -290,7 +290,6 @@ func fucking_die(_body: Node2D, funny_sound := false) -> void:
 	$Sprite2D.visible = false
 	call_deferred("set_inactive")
 	game_manager.im_dead_lol(self)
-
 
 func fire_action_from_stack(stack := 0) -> void:
 	if inventory[stack_position[stack] + (action_stack_size * stack)] != null:
