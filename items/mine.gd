@@ -6,6 +6,7 @@ func _ready() -> void:
 	item_name = "Мина"
 	description = "Мина с датчиком движения. Взорвётся, если кто-нибудь приблизится к ней."
 	use_delay = 120
+	weight = 1.0
 
 func action(actor: Player) -> int:
 	actor.mine_release_sound_emitter.play()

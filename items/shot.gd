@@ -6,6 +6,7 @@ func _ready() -> void:
 	item_name = "Снаряд"
 	description = "Самый обычный снаряд."
 	use_delay = 10
+	weight = 1.0
 
 func action(actor: Player) -> int:
 	if actor.idle_projectile_manager == null: return use_delay

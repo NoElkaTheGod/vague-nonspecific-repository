@@ -1,5 +1,12 @@
 class_name Action extends Node
 
+enum item_types {
+	ACTION,
+	MODIFIER
+}
+var item_type := item_types.ACTION
+var weight := 0.0
+
 var texture:= ""
 var item_name := ""
 var description := ""

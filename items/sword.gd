@@ -6,6 +6,7 @@ func _ready() -> void:
 	item_name = "Меч"
 	description = "Это специальный меч для космического корабля. Не спрашивайте. Может парировать снаряды."
 	use_delay = 10
+	weight = 1.0
 
 func action(actor: Player) -> int:
 	actor.melee_hit_animation.flip_h = not actor.melee_hit_animation.flip_h
