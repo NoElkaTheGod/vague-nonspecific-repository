@@ -78,6 +78,7 @@ func yo_wassup(player: Player, is_lobby: bool = true) -> void:
 			inventory_container.add_child(new_slot)
 			new_slot.z_index = 1
 			inventory_panels[i] = new_slot
+			new_slot.self_modulate = Color(1.8, 1.8, 1.8)
 			var new_slot_sprite = TextureRect.new()
 			new_slot_sprite.custom_minimum_size = Vector2(48, 48)
 			new_slot.add_child(new_slot_sprite)
