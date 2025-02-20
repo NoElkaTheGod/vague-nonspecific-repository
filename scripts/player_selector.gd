@@ -51,7 +51,7 @@ func yo_wassup(player: Player, is_lobby: bool = true) -> void:
 	player_sprite.texture = AtlasTexture.new()
 	player_sprite.texture.atlas = load("res://sprites/player.png")
 	player_sprite.texture.region = Rect2(bound_player.character_color * 48, bound_player.character_type * 48, 48, 48)
-	update_stat_text(bound_player.character_type)
+	update_stat_text(character_type_descriptions[bound_player.character_type])
 	is_in_lobby = is_lobby
 	if position.x > 1000:
 		label_of_readiness.size_flags_horizontal = SIZE_SHRINK_END
@@ -104,6 +104,12 @@ func yo_wassup(player: Player, is_lobby: bool = true) -> void:
 		selected_button = Vector2i.ZERO
 		update_inv_highlight(selected_button, Color(1.5, 1.5, 1.5))
 		selected_slot = Vector2i.ONE * -1
+		if bound_player.inventory[selected_button.x + (selected_button.y * bound_player.action_stack_size)] == null:
+			update_stat_text(" ")
+			stat_panel.visible = false
+		else:
+			update_stat_text(bound_player.inventory[selected_button.x + (selected_button.y * bound_player.action_stack_size)].description)
+			stat_panel.visible = true
 
 func round_started() -> void:
 	bound_player.bound_player_selector = null
@@ -130,6 +136,12 @@ func left_pressed():
 		selected_button.x -= 1
 		if selected_button.x < 0: selected_button.x = bound_player.action_stack_size - 1
 		update_inv_highlight(selected_button, Color(1.5, 1.5, 1.5))
+		if bound_player.inventory[selected_button.x + (selected_button.y * bound_player.action_stack_size)] == null:
+			update_stat_text(" ")
+			stat_panel.visible = false
+		else:
+			update_stat_text(bound_player.inventory[selected_button.x + (selected_button.y * bound_player.action_stack_size)].description)
+			stat_panel.visible = true
 
 func right_pressed():
 	sound.play()
@@ -151,6 +163,12 @@ func right_pressed():
 		selected_button.x += 1
 		if selected_button.x > bound_player.action_stack_size - 1: selected_button.x = 0
 		update_inv_highlight(selected_button, Color(1.5, 1.5, 1.5))
+		if bound_player.inventory[selected_button.x + (selected_button.y * bound_player.action_stack_size)] == null:
+			update_stat_text(" ")
+			stat_panel.visible = false
+		else:
+			update_stat_text(bound_player.inventory[selected_button.x + (selected_button.y * bound_player.action_stack_size)].description)
+			stat_panel.visible = true
 
 func up_pressed():
 	sound.play()
@@ -159,7 +177,7 @@ func up_pressed():
 		button_up.texture.region.position.y = 32
 		bound_player.character_type += 1
 		if bound_player.character_type > 3: bound_player.character_type = 0
-		update_stat_text(bound_player.character_type)
+		update_stat_text(character_type_descriptions[bound_player.character_type])
 		bound_player.change_appearence()
 		bound_player.change_player_type(bound_player.character_type)
 		player_sprite.texture.region = Rect2(bound_player.character_color * 48, bound_player.character_type * 48, 48, 48)
@@ -168,6 +186,12 @@ func up_pressed():
 		selected_button.y -= 1
 		if selected_button.y < -1: selected_button.y = bound_player.inventory_rows
 		update_inv_highlight(selected_button, Color(1.5, 1.5, 1.5))
+		if bound_player.inventory[selected_button.x + (selected_button.y * bound_player.action_stack_size)] == null:
+			update_stat_text(" ")
+			stat_panel.visible = false
+		else:
+			update_stat_text(bound_player.inventory[selected_button.x + (selected_button.y * bound_player.action_stack_size)].description)
+			stat_panel.visible = true
 
 func down_pressed():
 	sound.play()
@@ -176,7 +200,7 @@ func down_pressed():
 		button_down.texture.region.position.y = 32
 		bound_player.character_type -= 1
 		if bound_player.character_type < 0: bound_player.character_type = 3
-		update_stat_text(bound_player.character_type)
+		update_stat_text(character_type_descriptions[bound_player.character_type])
 		bound_player.change_appearence()
 		bound_player.change_player_type(bound_player.character_type)
 		player_sprite.texture.region = Rect2(bound_player.character_color * 48, bound_player.character_type * 48, 48, 48)
@@ -185,6 +209,12 @@ func down_pressed():
 		selected_button.y += 1
 		if selected_button.y > bound_player.inventory_rows: selected_button.y = -1
 		update_inv_highlight(selected_button, Color(1.5, 1.5, 1.5))
+		if bound_player.inventory[selected_button.x + (selected_button.y * bound_player.action_stack_size)] == null:
+			update_stat_text(" ")
+			stat_panel.visible = false
+		else:
+			update_stat_text(bound_player.inventory[selected_button.x + (selected_button.y * bound_player.action_stack_size)].description)
+			stat_panel.visible = true
 
 func fire_pressed():
 	sound.play()
@@ -229,9 +259,9 @@ func update_inv_highlight(pos: Vector2i, mod: Color):
 	else:
 		inventory_panels[pos.x + (pos.y * bound_player.action_stack_size)].modulate = mod
 
-func update_stat_text(c_type: int) -> void:
+func update_stat_text(text: String) -> void:
 	stat_panel.text = ""
-	text_to_print = character_type_descriptions[c_type]
+	text_to_print = text
 	printing_progress = 0
 
 func update_stat_text_process() -> void:

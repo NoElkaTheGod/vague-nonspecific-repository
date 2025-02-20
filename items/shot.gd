@@ -4,7 +4,7 @@ class_name shot_item extends Action
 func _ready() -> void:
 	texture = "res://sprites/items/shot_item.png"
 	item_name = "Снаряд"
-	description = "Самый обычный снаряд."
+	description = "Самый обычный снаряд. 10 урона при попадании."
 	use_delay = 10
 	weight = 1.0
 

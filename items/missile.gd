@@ -4,7 +4,7 @@ class_name missile_item extends Action
 func _ready() -> void:
 	texture = "res://sprites/items/missile_item.png"
 	item_name = "Ракета"
-	description = "Запускает ракету. Не самонаводится, но взрывается."
+	description = "Запускает ракету. Не самонаводится, но взрывается. 20 урона при попадании, вдвое меньше по области."
 	use_delay = 30
 	weight = 0.5
 

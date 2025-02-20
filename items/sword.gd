@@ -4,9 +4,9 @@ class_name sword_item extends Action
 func _ready() -> void:
 	texture = "res://sprites/items/sword_item.png"
 	item_name = "Меч"
-	description = "Это специальный меч для космического корабля. Не спрашивайте. Может парировать снаряды."
+	description = "Это специальный меч для космического корабля. Не спрашивайте. Может парировать снаряды. 40 урона."
 	use_delay = 10
-	weight = 1.0
+	weight = 0.0
 
 func action(actor: Player) -> int:
 	actor.melee_hit_animation.flip_h = not actor.melee_hit_animation.flip_h
@@ -21,7 +21,7 @@ func action(actor: Player) -> int:
 			hit_sound = 1
 			body.linear_velocity += (body.position - actor.position).normalized() * 300
 			if body is Player:
-				body.take_damage(self, 2)
+				body.take_damage(self, 40)
 			elif body is Mine:
 				body.linear_velocity += (body.position - actor.position).normalized() * 400
 		if body is CharacterBody2D:
