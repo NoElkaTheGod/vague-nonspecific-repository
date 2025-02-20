@@ -1,7 +1,7 @@
 class_name Player extends RigidBody2D
 
 var hit_points := 0
-var type_hit_points := [50, 40, 100, 1]
+var type_hit_points := [50, 40, 100, 10]
 var is_player_active := false
 var is_input_connected := false
 var is_round_going := false
