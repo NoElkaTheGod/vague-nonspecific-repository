@@ -17,5 +17,6 @@ func action(actor: Player) -> int:
 	proj.visible = true
 	proj.process_mode = Node.PROCESS_MODE_PAUSABLE
 	proj.position = actor.position + (Vector2(cos(actor.rotation), sin(actor.rotation)) * 50).rotated(actor.angle_offset)
-	proj.velocity = (Vector2(cos(actor.rotation), sin(actor.rotation)) * randf_range(150, 200)).rotated(actor.angle_offset) + actor.linear_velocity + spread
+	var actor_velocity = actor.linear_velocity.project(Vector2.RIGHT.rotated(actor.rotation))
+	proj.velocity = (Vector2(cos(actor.rotation), sin(actor.rotation)) * randf_range(150, 200)).rotated(actor.angle_offset) + actor_velocity + spread
 	return use_delay

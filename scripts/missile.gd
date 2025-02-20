@@ -13,7 +13,7 @@ func _process(_delta: float) -> void:
 
 func _physics_process(delta: float) -> void:
 	velocity = game_manager.account_for_attractors(velocity, position, 10)
-	velocity *= 1.05
+	velocity = velocity.lerp(velocity.normalized() * 1500, 0.05)
 	var collision := move_and_collide(velocity * delta)
 	if collision != null:
 		idle_projectile_manager.spawn_missile_remainder(position)
