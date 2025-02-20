@@ -25,6 +25,7 @@ alpha_curve = SubResource("CurveTexture_mrbcd")
 
 [node name="Projectile" type="CharacterBody2D"]
 collision_layer = 2
+collision_mask = 5
 script = ExtResource("1_rbnkc")
 
 [node name="GPUParticles2D" type="GPUParticles2D" parent="."]

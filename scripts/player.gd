@@ -87,7 +87,6 @@ func reset_player_state():
 	hit_points = type_hit_points[character_type]
 
 func _ready() -> void:
-	$Area2D.connect("body_entered", start_dying)
 	$ThrusterParticles.visible = false
 	$Sprite2D.visible = false
 	melee_hit_animation.connect("animation_finished", hide_swing_animation)
@@ -263,10 +262,7 @@ func handle_collisions() -> void:
 			collision_sound_emitter.play(1)
 			angular_velocity += pow(randf_range(-3, 3), 2)
 
-func start_dying(body: Node2D = null, damage: int = 1):
-	if body is projectile or Missile:
-		body.you_have_to_kill_yourself = true
-		damage = body.damage
+func take_damage(body: Node2D = null, damage: int = 1):
 	hit_points -= damage
 	linear_velocity += (body.position - position).normalized() * -100
 	if hit_points > 0:

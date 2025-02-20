@@ -4,13 +4,11 @@ var idle_projectile_manager: IdleProjectileManager
 var timer := 60
 var velocity := Vector2.ZERO
 var damage := 10
-var you_have_to_kill_yourself := false
 @onready var game_manager = get_parent().get_parent()
 
 func init() -> void:
 	damage = 10
 	timer = 60
-	you_have_to_kill_yourself = false
 
 func _process(_delta: float) -> void:
 	rotation = velocity.angle()
@@ -20,6 +18,8 @@ func _physics_process(delta: float) -> void:
 	var collision := move_and_collide(velocity * delta)
 	if velocity.length() <= 100:
 		timer -= 1
-	if collision != null or timer <= 0 or you_have_to_kill_yourself:
+	if collision != null or timer <= 0:
 		idle_projectile_manager.spawn_bullet_remainder(position)
 		idle_projectile_manager.add_idle_projectile(self)
+		if collision.get_collider() is Player:
+			collision.get_collider().take_damage(self, damage)

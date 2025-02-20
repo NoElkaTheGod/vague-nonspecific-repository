@@ -21,7 +21,7 @@ func action(actor: Player) -> int:
 			hit_sound = 1
 			body.linear_velocity += (body.position - actor.position).normalized() * 300
 			if body is Player:
-				body.start_dying(self, 2)
+				body.take_damage(self, 2)
 			elif body is Mine:
 				body.linear_velocity += (body.position - actor.position).normalized() * 400
 		if body is CharacterBody2D:

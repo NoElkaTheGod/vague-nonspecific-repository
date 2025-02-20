@@ -28,7 +28,7 @@ func explode() -> void:
 	$ActivationSound.stop()
 	for body in activation_area.get_overlapping_bodies():
 		if body is Player:
-			body.start_dying(self, damage)
+			body.take_damage(self, damage)
 		if body is Mine:
 			body.activate()
 	idle_projectile_manager.spawn_mine_remainder(position)
