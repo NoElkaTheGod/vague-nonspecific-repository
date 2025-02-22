@@ -66,6 +66,12 @@ func yo_wassup(player: Player, is_lobby: bool = true) -> void:
 		other_buttons.visible = false
 	else:
 		buttons.visible = false
+		engage_lootbox_mode(player)
+
+func engage_lootbox_mode(player: Player) -> void:
+		update_inventory(player)
+
+func update_inventory(player: Player) -> void:
 		other_buttons.visible = true
 		inventory_container.columns = player.action_stack_size
 		inventory_panels.resize(player.action_stack_size * (player.inventory_rows + 1))
@@ -228,12 +234,10 @@ func fire_pressed():
 			var temp: Action = bound_player.inventory[first_slot]
 			bound_player.inventory[first_slot] = bound_player.inventory[second_slot]
 			bound_player.inventory[second_slot] = temp
-
 			if bound_player.inventory[first_slot] == null:
 				inventory_icons[first_slot].texture = null
 			else:
 				inventory_icons[first_slot].texture = load(bound_player.inventory[first_slot].texture)
-
 			if bound_player.inventory[second_slot] == null:
 				inventory_icons[second_slot].texture = null
 			else:

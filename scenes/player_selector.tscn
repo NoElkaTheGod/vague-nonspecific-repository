@@ -113,6 +113,17 @@ offset_bottom = 114.0
 texture = SubResource("AtlasTexture_6cd4l")
 stretch_mode = 3
 
+[node name="LootboxButtons" type="Panel" parent="."]
+visible = false
+custom_minimum_size = Vector2(180, 64)
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="GridContainer" type="GridContainer" parent="LootboxButtons"]
+offset_right = 40.0
+offset_bottom = 40.0
+columns = 5
+
 [node name="NotLobbyButtons" type="Panel" parent="."]
 custom_minimum_size = Vector2(116, 116)
 layout_mode = 2
