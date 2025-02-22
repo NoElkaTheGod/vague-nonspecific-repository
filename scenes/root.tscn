@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://dcid4y3ew70yn"]
+[gd_scene load_steps=9 format=3 uid="uid://dcid4y3ew70yn"]
 
 [ext_resource type="Script" path="res://scripts/GameManager.gd" id="1_psp8s"]
 [ext_resource type="Script" path="res://scripts/main_camera.gd" id="2_lkdnu"]
 [ext_resource type="PackedScene" uid="uid://c7hmuu2lpdj4w" path="res://scenes/ui.tscn" id="2_tol41"]
+[ext_resource type="Script" path="res://scripts/lootbox_system.gd" id="2_uw7ln"]
 [ext_resource type="Script" path="res://scripts/map_loader.gd" id="3_c8yh4"]
 [ext_resource type="Texture2D" uid="uid://d4b3170qpi5bv" path="res://sprites/yoink.png" id="3_kxlrm"]
 [ext_resource type="Script" path="res://scripts/idle_projectile_manager.gd" id="5_78sfb"]
@@ -10,6 +11,9 @@
 
 [node name="Root" type="Node"]
 script = ExtResource("1_psp8s")
+
+[node name="LootboxManager" type="Node" parent="."]
+script = ExtResource("2_uw7ln")
 
 [node name="PlayersContainer" type="Node" parent="."]
 
