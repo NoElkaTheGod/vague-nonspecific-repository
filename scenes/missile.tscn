@@ -25,7 +25,7 @@ alpha_curve = SubResource("CurveTexture_mrbcd")
 radius = 8.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_n31ud"]
-radius = 50.0
+radius = 60.0
 
 [node name="Projectile" type="CharacterBody2D"]
 collision_layer = 2
@@ -48,7 +48,8 @@ texture = ExtResource("3_m0ndy")
 
 [node name="Area2D" type="Area2D" parent="."]
 collision_layer = 0
-collision_mask = 6
+collision_mask = 4
+monitorable = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Area2D"]
 shape = SubResource("CircleShape2D_n31ud")

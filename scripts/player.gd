@@ -43,8 +43,9 @@ var inventory_rows := 2
 var amount_of_stacks := 1
 var default_amount_of_stacks := [1, 1, 2, 1]
 
+var action_stack: Array[Array]
+var action_stack_copy: Array[Array]
 var active_stack := 0
-var stack_position: Array[int]
 const reload_time := 40
 
 var damage_multiplier := 1.0
@@ -112,7 +113,8 @@ func change_player_type(type: int):
 		inventory[i] = null
 	amount_of_stacks = default_amount_of_stacks[type]
 	inventory.resize(action_stack_size * (inventory_rows + amount_of_stacks))
-	stack_position.resize(amount_of_stacks)
+	action_stack.resize(amount_of_stacks)
+	action_stack_copy.resize(amount_of_stacks)
 	reset_stat_offsets()
 	match type:
 		0:
@@ -288,17 +290,21 @@ func fucking_die(_body: Node2D, funny_sound := false) -> void:
 	game_manager.im_dead_lol(self)
 
 func fire_action_from_stack(stack := 0) -> void:
-	if inventory[stack_position[stack] + (action_stack_size * stack)] != null:
-		var cooldown = inventory[stack_position[stack] + (action_stack_size * stack)].action(self) * cooldown_multiplier
-		fire_cd = max(fire_cd, cooldown)
-		stack_position[stack] += 1
-	var starting_point := stack_position[stack]
-	while inventory[stack_position[stack] + (action_stack_size * stack)] == null:
-		stack_position[stack] += 1
-		if stack_position[stack] >= action_stack_size:
-			stack_position[stack] = 0
-			fire_cd = reload_time + reload_offset
-			reset_stat_offsets()
-		if stack_position[stack] == starting_point:
-			fucking_die(self, true)
-			return
+	var action = action_stack_copy[stack].pop_back()
+	if action == null:
+		fucking_die(self, true)
+		return
+	fire_cd = action.action(self) * cooldown_multiplier
+	if action_stack_copy[stack].size() == 0:
+		action_stack_copy[stack] = action_stack[stack].duplicate(true)
+		fire_cd = max(reload_time + reload_offset, fire_cd)
+		reset_stat_offsets()
+
+func compile_action_stacks() -> void:
+	for stack in range(amount_of_stacks):
+		for i in range(action_stack_size):
+			if inventory[i + (stack * action_stack_size)] == null: continue
+			inventory[i + (stack * action_stack_size)].compile_into_stack(action_stack[stack])
+		action_stack_copy[stack] = action_stack[stack].duplicate(true)
+		if action_stack[stack].size() == 0:
+			pass #TODO: "Вы будете мгновенно убиты. Продолжить?"

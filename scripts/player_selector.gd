@@ -245,6 +245,7 @@ func fire_pressed():
 
 func toggle_ready() -> void:
 		player_ready = not player_ready
+		bound_player.compile_action_stacks()
 		bound_player.game_manager.set_ready(player_ready)
 		if player_ready:
 			label_of_readiness.self_modulate = Color(0.2, 1, 0.2)

@@ -14,3 +14,6 @@ var use_delay := 0
 
 func action(_actor: Player) -> int:
 	return 0
+
+func compile_into_stack(stack: Array) -> void:
+	stack.push_front(self)
