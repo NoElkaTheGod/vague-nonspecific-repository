@@ -120,6 +120,7 @@ layout_mode = 2
 size_flags_horizontal = 4
 
 [node name="GridContainer" type="GridContainer" parent="LootboxButtons"]
+layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 columns = 5

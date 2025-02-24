@@ -1,6 +1,5 @@
 class_name shot_item extends Action
 
-
 func _ready() -> void:
 	texture = "res://sprites/items/shot_item.png"
 	item_name = "Снаряд"
@@ -16,6 +15,10 @@ func action(actor: Player) -> int:
 	proj.init()
 	proj.visible = true
 	proj.process_mode = Node.PROCESS_MODE_PAUSABLE
-	proj.position = actor.position + (Vector2(cos(actor.rotation), sin(actor.rotation)) * 30).rotated(actor.angle_offset)
+	proj.position = actor.position + (Vector2(cos(actor.rotation), sin(actor.rotation)) * 40).rotated(actor.angle_offset)
 	proj.velocity = (Vector2(cos(actor.rotation), sin(actor.rotation)) * randf_range(550, 650)).rotated(actor.angle_offset) + actor.linear_velocity + spread
+	for component in components:
+		proj.components.append(component)
+		proj.add_child(component)
+	components.clear()
 	return use_delay

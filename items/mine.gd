@@ -18,4 +18,8 @@ func action(actor: Player) -> int:
 	mine.process_mode = Node.PROCESS_MODE_PAUSABLE
 	mine.position = actor.position + (Vector2(cos(actor.rotation), sin(actor.rotation)) * 50).rotated(actor.angle_offset)
 	mine.linear_velocity = (Vector2(cos(actor.rotation), sin(actor.rotation)) * randf_range(150, 200)).rotated(actor.angle_offset) + actor.linear_velocity
+	for component in components:
+		mine.components.append(component)
+		mine.add_child(component)
+	components.clear()
 	return use_delay

@@ -19,4 +19,8 @@ func action(actor: Player) -> int:
 	proj.position = actor.position + (Vector2(cos(actor.rotation), sin(actor.rotation)) * 50).rotated(actor.angle_offset)
 	var actor_velocity = actor.linear_velocity.project(Vector2.RIGHT.rotated(actor.rotation))
 	proj.velocity = (Vector2(cos(actor.rotation), sin(actor.rotation)) * randf_range(150, 200)).rotated(actor.angle_offset) + actor_velocity + spread
+	for component in components:
+		proj.components.append(component)
+		proj.add_child(component)
+	components.clear()
 	return use_delay

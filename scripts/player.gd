@@ -81,7 +81,7 @@ func reset_player_state():
 	thruster_particles.emitting = false
 	angular_velocity = 0
 	linear_velocity = Vector2.ZERO
-	fire_cd = 60
+	fire_cd = 0
 	for i in range(5):
 		if menu_input_cd[i] > 0:
 			menu_input_cd[i] -= 1
@@ -103,8 +103,10 @@ func reset_stat_offsets() -> void:
 	damage_multiplier = default_damage_multiplier[character_type]
 	angle_offset = default_angle_offset[character_type]
 	spread_multiplier = default_spread_multiplier[character_type]
-	reload_offset = default_reload_offset[character_type]
 	cooldown_multiplier = default_cooldown_multiplier[character_type]
+
+func reset_reload_offset() -> void:
+	reload_offset = default_reload_offset[character_type]
 
 func change_player_type(type: int):
 	for i in range(inventory.size()):
@@ -290,18 +292,31 @@ func fucking_die(_body: Node2D, funny_sound := false) -> void:
 	game_manager.im_dead_lol(self)
 
 func fire_action_from_stack(stack := 0) -> void:
-	var action = action_stack_copy[stack].pop_back()
+	var action: Action = action_stack_copy[stack].pop_back()
 	if action == null:
 		fucking_die(self, true)
 		return
-	fire_cd = action.action(self) * cooldown_multiplier
+	@warning_ignore("narrowing_conversion")
+	fire_cd = max(action.action(self) * cooldown_multiplier, fire_cd)
+	reload_if_empty_stack(stack)
+	if action.trigger_next_immediately:
+		fire_action_from_stack(stack)
+	else:
+		reset_stat_offsets()
+
+func get_next_action() -> Action:
+	reload_if_empty_stack(active_stack)
+	return action_stack_copy[active_stack][-1]
+
+func reload_if_empty_stack(stack) -> void:
 	if action_stack_copy[stack].size() == 0:
 		action_stack_copy[stack] = action_stack[stack].duplicate(true)
 		fire_cd = max(reload_time + reload_offset, fire_cd)
-		reset_stat_offsets()
+		reset_reload_offset()
 
 func compile_action_stacks() -> void:
 	for stack in range(amount_of_stacks):
+		action_stack[stack].clear()
 		for i in range(action_stack_size):
 			if inventory[i + (stack * action_stack_size)] == null: continue
 			inventory[i + (stack * action_stack_size)].compile_into_stack(action_stack[stack])

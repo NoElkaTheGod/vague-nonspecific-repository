@@ -3,6 +3,7 @@ class_name Missile extends PhysicsBody2D
 var idle_projectile_manager: IdleProjectileManager
 var velocity := Vector2.ZERO
 var damage := 20
+var components: Array[Node]
 @onready var game_manager = get_parent().get_parent()
 
 func init() -> void:

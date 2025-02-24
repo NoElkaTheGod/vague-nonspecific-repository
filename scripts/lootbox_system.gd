@@ -8,14 +8,14 @@ var ModifiersTotalWeight: float
 func _ready() -> void:
 	var item_names = DirAccess.get_files_at("res://items")
 	for item in item_names:
-		var new_item: Action = load("res://items/" + item).instantiate()
+		var new_item: Action = load("res://items/" + item).new()
 		add_child(new_item)
-		new_item._Ready()
-		match new_item.iten_type:
-			new_item.item_types.ACTION:
+		new_item._ready()
+		match new_item.item_type:
+			new_item.ITEM_TYPE.ACTION:
 				ActionsTotalWeight += new_item.weight
 				AvailableActions.append(new_item)
-			new_item.item_types.MODIFIER:
+			new_item.ITEM_TYPE.MODIFIER:
 				ModifiersTotalWeight += new_item.weight
 				AvailableModifiers.append(new_item)
 

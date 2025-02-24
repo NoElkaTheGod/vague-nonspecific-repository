@@ -24,6 +24,11 @@ func add_idle_projectile(item: projectile) -> void:
 	item.visible = false
 	item.process_mode = Node.PROCESS_MODE_DISABLED
 	item.get_node("GPUParticles2D").restart()
+	for i in range(item.components.size()):
+		if item.components[i] == null: continue
+		item.components[i].queue_free()
+		item.components[i] = null
+	item.components.clear()
 
 func get_idle_projectile() -> projectile:
 	var result = idle_projectiles.pop_back()
@@ -39,6 +44,11 @@ func add_idle_missile(item: Missile) -> void:
 	item.visible = false
 	item.process_mode = Node.PROCESS_MODE_DISABLED
 	item.get_node("GPUParticles2D").restart()
+	for i in range(item.components.size()):
+		if item.components[i] == null: continue
+		item.components[i].queue_free()
+		item.components[i] = null
+	item.components.clear()
 
 func get_idle_missile() -> Missile:
 	var result = idle_missiles.pop_back()
@@ -53,7 +63,11 @@ func add_idle_mine(item: Mine) -> void:
 	idle_mines.append(item)
 	item.visible = false
 	item.process_mode = Node.PROCESS_MODE_DISABLED
-	#item.get_node("GPUParticles2D").restart()
+	for i in range(item.components.size()):
+		if item.components[i] == null: continue
+		item.components[i].queue_free()
+		item.components[i] = null
+	item.components.clear()
 
 func get_idle_mine() -> Mine:
 	var result = idle_mines.pop_back()
