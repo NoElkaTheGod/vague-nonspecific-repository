@@ -121,7 +121,13 @@ func change_player_type(type: int):
 	match type:
 		0:
 			inventory[0] = shot_item.new()
+			inventory[action_stack_size] = chaotic_trajectory_item.new()
+			inventory[action_stack_size + 1] = chaotic_trajectory_item.new()
+			inventory[action_stack_size + 2] = chaotic_trajectory_item.new()
 			add_child(inventory[0])
+			add_child(inventory[action_stack_size])
+			add_child(inventory[action_stack_size + 1])
+			add_child(inventory[action_stack_size + 2])
 		1:
 			inventory[0] = mine_item.new()
 			add_child(inventory[0])
@@ -305,8 +311,15 @@ func fire_action_from_stack(stack := 0) -> void:
 		reset_stat_offsets()
 
 func get_next_action() -> Action:
-	reload_if_empty_stack(active_stack)
-	return action_stack_copy[active_stack][-1]
+	var result: Action = null
+	var i = 0
+	while not false:
+		i -= 1
+		if action_stack_copy[active_stack][i].item_type == Action.ITEM_TYPE.ACTION:
+			result = action_stack_copy[active_stack][i]
+			break
+		if action_stack_copy[active_stack].size() == 0: return null
+	return result
 
 func reload_if_empty_stack(stack) -> void:
 	if action_stack_copy[stack].size() == 0:

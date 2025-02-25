@@ -22,4 +22,5 @@ func action(actor: Player) -> int:
 		mine.components.append(component)
 		mine.add_child(component)
 	components.clear()
+	component_classes.clear()
 	return use_delay

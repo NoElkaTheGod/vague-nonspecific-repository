@@ -23,4 +23,5 @@ func action(actor: Player) -> int:
 		proj.components.append(component)
 		proj.add_child(component)
 	components.clear()
+	component_classes.clear()
 	return use_delay
