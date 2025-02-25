@@ -1,7 +1,7 @@
 class_name Player extends RigidBody2D
 
-var hit_points := 0
-var type_hit_points := [50, 40, 100, 10]
+var hit_points := 0.0
+var type_hit_points := [50.0, 40.0, 100.0, 10.0]
 var is_player_active := false
 var is_input_connected := false
 var is_round_going := false
@@ -49,7 +49,7 @@ var active_stack := 0
 const reload_time := 40
 
 var damage_multiplier := 1.0
-const default_damage_multiplier = [1.0, 1.0, 1.0, 1.0]
+const default_damage_multiplier = [1.0, 2.0, 1.0, 1.0]
 var angle_offset := 0
 const default_angle_offset = [0, PI, 0, 0]
 var spread_multiplier := 1.0

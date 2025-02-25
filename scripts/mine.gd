@@ -3,7 +3,7 @@ class_name Mine extends RigidBody2D
 var idle_projectile_manager: IdleProjectileManager
 var activation_timer := 30
 var explosion_timer := -1
-var damage := 30
+var damage := 30.0
 var components: Array[Node]
 @onready var game_manager = get_parent().get_parent()
 @onready var activation_area: Area2D = $Area2D

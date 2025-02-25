@@ -13,6 +13,7 @@ func action(actor: Player) -> int:
 	var spread := Vector2(randf_range(-10, 10), randf_range(-10, 10)) * actor.spread_multiplier
 	var proj: projectile = actor.idle_projectile_manager.get_idle_projectile()
 	proj.init()
+	proj.damage *= actor.damage_multiplier
 	proj.visible = true
 	proj.process_mode = Node.PROCESS_MODE_PAUSABLE
 	proj.position = actor.position + (Vector2(cos(actor.rotation), sin(actor.rotation)) * 40).rotated(actor.angle_offset)
