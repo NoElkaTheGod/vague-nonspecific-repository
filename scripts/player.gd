@@ -121,13 +121,7 @@ func change_player_type(type: int):
 	match type:
 		0:
 			inventory[0] = shot_item.new()
-			inventory[action_stack_size] = chaotic_trajectory_item.new()
-			inventory[action_stack_size + 1] = chaotic_trajectory_item.new()
-			inventory[action_stack_size + 2] = chaotic_trajectory_item.new()
 			add_child(inventory[0])
-			add_child(inventory[action_stack_size])
-			add_child(inventory[action_stack_size + 1])
-			add_child(inventory[action_stack_size + 2])
 		1:
 			inventory[0] = mine_item.new()
 			add_child(inventory[0])

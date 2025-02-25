@@ -23,12 +23,12 @@ func get_random_action() -> Action:
 	var number = randf_range(0, ActionsTotalWeight)
 	for i in range(AvailableActions.size()):
 		number -= AvailableActions[i].weight
-		if number <= 0.0: return AvailableActions[i].duplicate()
-	return AvailableActions[AvailableActions.size() - 1].duplicate()
+		if number <= 0.0: return AvailableActions[i]
+	return AvailableActions[AvailableActions.size() - 1]
 
 func get_random_modifier() -> Action:
 	var number = randf_range(0, ModifiersTotalWeight)
 	for i in range(AvailableModifiers.size()):
 		number -= AvailableModifiers[i].weight
-		if number <= 0.0: return AvailableModifiers[i].duplicate()
-	return AvailableModifiers[AvailableModifiers.size() - 1].duplicate()
+		if number <= 0.0: return AvailableModifiers[i]
+	return AvailableModifiers[AvailableModifiers.size() - 1]

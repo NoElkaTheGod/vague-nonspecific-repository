@@ -24,7 +24,7 @@ var round_start_countdown := -1
 @onready var main_camera: MainCamera = $Camera2D
 @onready var scoreboard := $Camera2D/UI/Scoreboard
 @onready var map_loader: MapLoader = $MapLoader
-@onready var lootbox_manager := $LootboxManager
+@onready var lootbox_manager: LootManager = $LootboxManager
 @onready var player_scene: PackedScene = load("res://scenes/player.tscn")
 @onready var spawning_fx_scene: PackedScene = load("res://scenes/spawning_crosshair.tscn")
 
