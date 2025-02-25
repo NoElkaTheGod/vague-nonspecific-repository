@@ -18,8 +18,9 @@ var use_delay := 0
 func action(_actor: Player) -> int:
 	return 0
 
-func compile_into_stack(stack: Array) -> void:
+func compile_into_stack(stack: Array) -> int:
 	stack.push_front(self)
+	return 1
 
 func add_component(component) -> void:
 	if trigger_next_immediately or item_type == ITEM_TYPE.MODIFIER: return
