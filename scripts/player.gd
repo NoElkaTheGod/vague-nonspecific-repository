@@ -105,7 +105,6 @@ func change_appearence():
 	$Sprite2D.texture.region = Rect2(character_color * 48, character_type * 48, 48, 48)
 
 func reset_stat_offsets() -> void:
-	print("soos")
 	damage_multiplier = default_damage_multiplier[character_type]
 	angle_offset = default_angle_offset[character_type]
 	spread_multiplier = default_spread_multiplier[character_type]
