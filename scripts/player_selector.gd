@@ -122,6 +122,7 @@ func engage_lootbox_mode() -> void:
 	lootbox_buttons.size = lootbox_container.size
 	selected_button = Vector2i.ZERO
 	cur_mode = SELECTOR_MODE.LOOTBOX
+	update_loot_highlight(selected_button, Color(1.5, 1.5, 1.5))
 	update_stat_text(presented_items[selected_button.x].description)
 
 func update_inventory(player: Player) -> void:

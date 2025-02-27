@@ -46,6 +46,7 @@ var default_amount_of_stacks := [1, 1, 2, 1]
 var action_stack: Array[Array]
 var action_stack_copy: Array[Array]
 var active_stack := 0
+var reset_pause := 0
 const reload_time := 40
 
 var damage_multiplier := 1.0
@@ -58,6 +59,10 @@ var reload_offset := 0
 const default_reload_offset = [0, 0, -20, 0]
 var cooldown_multiplier := 1.0
 const default_cooldown_multiplier = [1.0, 1.0, 0.5, 1.0]
+var recoil_multiplier := 1.0
+const default_recoil_multiplier = [1.0, 1.0, 0.8, 1.0]
+var projectile_velocity_multiplier := 1.0
+const default_projectile_velocity_multiplier = [1.0, 1.0, 1.0, 1.0]
 
 func set_active():
 	is_player_active = true
@@ -100,10 +105,13 @@ func change_appearence():
 	$Sprite2D.texture.region = Rect2(character_color * 48, character_type * 48, 48, 48)
 
 func reset_stat_offsets() -> void:
+	print("soos")
 	damage_multiplier = default_damage_multiplier[character_type]
 	angle_offset = default_angle_offset[character_type]
 	spread_multiplier = default_spread_multiplier[character_type]
 	cooldown_multiplier = default_cooldown_multiplier[character_type]
+	recoil_multiplier = default_recoil_multiplier[character_type]
+	projectile_velocity_multiplier = default_projectile_velocity_multiplier[character_type]
 
 func reset_reload_offset() -> void:
 	reload_offset = default_reload_offset[character_type]
@@ -296,13 +304,13 @@ func fire_action_from_stack(stack := 0) -> void:
 	if action == null:
 		fucking_die(self, true)
 		return
-	@warning_ignore("narrowing_conversion")
 	fire_cd = max(action.action(self) * cooldown_multiplier, fire_cd)
 	reload_if_empty_stack(stack)
 	if action.trigger_next_immediately:
 		fire_action_from_stack(stack)
-	else:
+	if action.item_type != Action.ITEM_TYPE.MODIFIER and reset_pause == 0:
 		reset_stat_offsets()
+	if action.item_type != Action.ITEM_TYPE.MODIFIER and reset_pause > 0: reset_pause -= 1
 
 func get_next_action() -> Action:
 	var result: Action = null

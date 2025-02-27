@@ -17,7 +17,8 @@ func action(actor: Player) -> int:
 	mine.visible = true
 	mine.process_mode = Node.PROCESS_MODE_PAUSABLE
 	mine.position = actor.position + (Vector2(cos(actor.rotation), sin(actor.rotation)) * 50).rotated(actor.angle_offset)
-	mine.linear_velocity = (Vector2(cos(actor.rotation), sin(actor.rotation)) * randf_range(150, 200)).rotated(actor.angle_offset) + actor.linear_velocity
+	mine.linear_velocity = (Vector2(cos(actor.rotation), sin(actor.rotation)) * randf_range(150, 200)).rotated(actor.angle_offset) * actor.projectile_velocity_multiplier + actor.linear_velocity
+	actor.linear_velocity += Vector2(cos(actor.rotation), sin(actor.rotation)).rotated(actor.angle_offset + PI) * 50.0 * actor.recoil_multiplier
 	for component in components:
 		mine.components.append(component)
 		mine.add_child(component)

@@ -10,6 +10,7 @@ func _ready() -> void:
 
 func action(actor: Player) -> int:
 	actor.damage_multiplier *= 0.5
+	actor.reset_pause += 2
 	return use_delay
 
 func compile_into_stack(stack: Array) -> int:
