@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://veqlaxa03uy6"]
+[gd_scene load_steps=9 format=3 uid="uid://veqlaxa03uy6"]
 
 [ext_resource type="Script" path="res://scripts/projectile.gd" id="1_rbnkc"]
 [ext_resource type="Texture2D" uid="uid://d1vdo56rpmjfw" path="res://sprites/amogi.png" id="2_6ph55"]
 [ext_resource type="Texture2D" uid="uid://dfqupr5jxfmhf" path="res://sprites/shot.png" id="2_m3s8t"]
+[ext_resource type="AudioStream" uid="uid://k6lru36ev48q" path="res://sounds/shot.wav" id="4_7j6ir"]
 
 [sub_resource type="Curve" id="Curve_2enus"]
 _data = [Vector2(0.00666666, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -40,3 +41,7 @@ shape = SubResource("CircleShape2D_vju15")
 [node name="Sprite2D" type="Sprite2D" parent="."]
 scale = Vector2(1.8, 1.8)
 texture = ExtResource("2_m3s8t")
+
+[node name="SoundEmitter" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_7j6ir")
+volume_db = -10.0

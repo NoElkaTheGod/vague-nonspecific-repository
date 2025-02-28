@@ -16,17 +16,11 @@ var angular_velocity_target := 0.0
 @onready var sprite := $Sprite2D
 @onready var thrust_sound_emitter := $ThrustSoundEmitter
 @onready var thruster_particles := $ThrusterParticles
-@onready var shot_sound_emitter := $ShotSoundEmitter
-@onready var mine_release_sound_emitter := $MineReleaseSoundEmitter
 @onready var death_sound_emitter := $DeathSoundEmitter
 @onready var funny_death_sound_emitter := $DeathSoundEmitterFunny
 @onready var death_particles := $DeathParticles
 @onready var alarm_sound_emitter := $AlarmSoundEmitter
 @onready var collision_sound_emitter: CollisionSoundEmitter = $CollisionSoundEmitter
-@onready var melee_hit_animation: AnimatedSprite2D = $MeleeHit/AnimatedSprite2D
-@onready var melee_hit_sound_emitter := $MeleeHit/HitSoundEmitter
-@onready var melee_swing_sound_emitter := $MeleeHit/SwingSoundEmitter
-@onready var melee_parry_sound_emitter := $MeleeHit/ParrySoundEmitter
 @onready var hurt_sound_emitter := $HurtSoundEmitter
 @onready var melee_hit_area: Area2D = $MeleeHit/Area2D
 @onready var idle_projectile_manager: IdleProjectileManager = get_parent().get_parent().get_node("IdleProjectileManager")
@@ -95,7 +89,6 @@ func reset_player_state():
 func _ready() -> void:
 	$ThrusterParticles.visible = false
 	$Sprite2D.visible = false
-	melee_hit_animation.connect("animation_finished", hide_swing_animation)
 
 func bind_player_selector(node: PlayerSelector, lobby: bool = false) -> void:
 	bound_player_selector = node
@@ -284,9 +277,6 @@ func take_damage(body: Node2D = null, damage: int = 1):
 	alarm_sound_emitter.play()
 	death_timer = 75
 	thruster_particles.emitting = false
-
-func hide_swing_animation():
-	melee_hit_animation.visible = false
 
 func fucking_die(_body: Node2D, funny_sound := false) -> void:
 	if funny_sound:

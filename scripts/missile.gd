@@ -5,9 +5,11 @@ var velocity := Vector2.ZERO
 var damage := 20.0
 var components: Array[Node]
 @onready var game_manager = get_parent().get_parent()
+@onready var sound := $SoundEmitter
 
 func init() -> void:
 	damage = 20
+	sound.play()
 
 func _process(_delta: float) -> void:
 	rotation = velocity.angle()

@@ -1,21 +1,13 @@
-[gd_scene load_steps=43 format=3 uid="uid://ddtwhvu0d1psn"]
+[gd_scene load_steps=24 format=3 uid="uid://ddtwhvu0d1psn"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_ngg73"]
 [ext_resource type="Texture2D" uid="uid://8084ru2awn7s" path="res://sprites/player.png" id="2_5kcq6"]
 [ext_resource type="AudioStream" uid="uid://cqc7eky4rp2y0" path="res://sounds/thruster.wav" id="2_lq5ed"]
-[ext_resource type="Texture2D" uid="uid://u7ggpafltbke" path="res://sprites/melee_swing.png" id="2_x10ty"]
-[ext_resource type="AudioStream" uid="uid://bjfel8lnoq6sb" path="res://sounds/melee_swing.wav" id="3_dx20d"]
-[ext_resource type="AudioStream" uid="uid://k6lru36ev48q" path="res://sounds/shot.wav" id="3_w52ir"]
 [ext_resource type="Texture2D" uid="uid://d1vdo56rpmjfw" path="res://sprites/amogi.png" id="4_3h1j3"]
-[ext_resource type="AudioStream" uid="uid://dr4yd3yesemb2" path="res://sounds/melee_hit.wav" id="4_quhfj"]
 [ext_resource type="AudioStream" uid="uid://bx2odwdl72ysg" path="res://sounds/dead.wav" id="5_4ftdm"]
-[ext_resource type="AudioStream" uid="uid://cic4ovpcs14ls" path="res://sounds/melee_parry.wav" id="5_fri4a"]
 [ext_resource type="AudioStream" uid="uid://den1cg75s2y8m" path="res://sounds/collision.wav" id="7_2chic"]
 [ext_resource type="AudioStream" uid="uid://cn10qb75ar7hy" path="res://sounds/alarm.wav" id="7_3jieg"]
-[ext_resource type="AudioStream" uid="uid://d5fgw4o3ni7n" path="res://sounds/mine_release.wav" id="7_843un"]
 [ext_resource type="Script" path="res://scripts/collision_sound_emitter.gd" id="7_lsnoe"]
-[ext_resource type="AudioStream" uid="uid://djsv374ehism7" path="res://sounds/powerup.wav" id="8_oql22"]
-[ext_resource type="AudioStream" uid="uid://dt0cipmrwuees" path="res://sounds/chargeup.wav" id="9_27fah"]
 [ext_resource type="AudioStream" uid="uid://bc216qpmklpjs" path="res://sounds/collision1.wav" id="10_ox2nc"]
 [ext_resource type="AudioStream" uid="uid://bcct6j3y6757i" path="res://sounds/collision2.wav" id="11_34sp5"]
 [ext_resource type="AudioStream" uid="uid://hltyxioqe7er" path="res://sounds/player_spawn.wav" id="11_ypkmp"]
@@ -29,80 +21,6 @@ bounce = 0.4
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_gfv2h"]
 radius = 20.0
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_dxjts"]
-atlas = ExtResource("2_x10ty")
-region = Rect2(0, 0, 64, 64)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_81shk"]
-atlas = ExtResource("2_x10ty")
-region = Rect2(64, 0, 64, 64)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_cgvhb"]
-atlas = ExtResource("2_x10ty")
-region = Rect2(128, 0, 64, 64)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_6vdr4"]
-atlas = ExtResource("2_x10ty")
-region = Rect2(192, 0, 64, 64)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ujgug"]
-atlas = ExtResource("2_x10ty")
-region = Rect2(256, 0, 64, 64)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_klqbh"]
-atlas = ExtResource("2_x10ty")
-region = Rect2(320, 0, 64, 64)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_vhful"]
-atlas = ExtResource("2_x10ty")
-region = Rect2(384, 0, 64, 64)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_e1bva"]
-atlas = ExtResource("2_x10ty")
-region = Rect2(448, 0, 64, 64)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_soofv"]
-atlas = ExtResource("2_x10ty")
-region = Rect2(512, 0, 64, 64)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_kspak"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_dxjts")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_81shk")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_cgvhb")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_6vdr4")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_ujgug")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_klqbh")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_vhful")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_e1bva")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_soofv")
-}],
-"loop": false,
-"name": &"default",
-"speed": 30.0
-}]
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_ridfi"]
-radius = 50.0
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_vj7gw"]
 atlas = ExtResource("2_5kcq6")
@@ -151,45 +69,10 @@ script = ExtResource("1_ngg73")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_gfv2h")
 
-[node name="MeleeHit" type="Node2D" parent="."]
-position = Vector2(55, 0)
-rotation = 1.5708
-
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="MeleeHit"]
-visible = false
-position = Vector2(-4.57764e-05, -13)
-scale = Vector2(1.415, 1.415)
-sprite_frames = SubResource("SpriteFrames_kspak")
-frame = 8
-frame_progress = 1.0
-
-[node name="Area2D" type="Area2D" parent="MeleeHit"]
-collision_layer = 0
-collision_mask = 6
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="MeleeHit/Area2D"]
-shape = SubResource("CircleShape2D_ridfi")
-
-[node name="SwingSoundEmitter" type="AudioStreamPlayer" parent="MeleeHit"]
-stream = ExtResource("3_dx20d")
-volume_db = -10.0
-
-[node name="HitSoundEmitter" type="AudioStreamPlayer" parent="MeleeHit"]
-stream = ExtResource("4_quhfj")
-volume_db = -10.0
-
-[node name="ParrySoundEmitter" type="AudioStreamPlayer" parent="MeleeHit"]
-stream = ExtResource("5_fri4a")
-volume_db = -10.0
-
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(3, 0)
 rotation = 1.5708
 texture = SubResource("AtlasTexture_vj7gw")
-
-[node name="ThrustSoundEmitter" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("2_lq5ed")
-volume_db = -10.0
 
 [node name="ThrusterParticles" type="CPUParticles2D" parent="."]
 process_mode = 1
@@ -214,22 +97,6 @@ scale_amount_max = 2.0
 color = Color(0.611654, 0.804481, 0.816871, 1)
 color_ramp = SubResource("Gradient_bbe0d")
 
-[node name="ShotSoundEmitter" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("3_w52ir")
-volume_db = -10.0
-
-[node name="MineReleaseSoundEmitter" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("7_843un")
-volume_db = -10.0
-
-[node name="DeathSoundEmitter" type="AudioStreamPlayer" parent="."]
-process_mode = 1
-stream = ExtResource("5_4ftdm")
-
-[node name="DeathSoundEmitterFunny" type="AudioStreamPlayer" parent="."]
-process_mode = 1
-stream = ExtResource("12_dkd4d")
-
 [node name="DeathParticles" type="GPUParticles2D" parent="."]
 process_mode = 1
 emitting = false
@@ -239,15 +106,20 @@ texture = ExtResource("4_3h1j3")
 one_shot = true
 explosiveness = 1.0
 
-[node name="AlarmSoundEmitter" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("7_3jieg")
+[node name="DeathSoundEmitter" type="AudioStreamPlayer" parent="."]
+process_mode = 1
+stream = ExtResource("5_4ftdm")
+
+[node name="DeathSoundEmitterFunny" type="AudioStreamPlayer" parent="."]
+process_mode = 1
+stream = ExtResource("12_dkd4d")
+
+[node name="ThrustSoundEmitter" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_lq5ed")
 volume_db = -10.0
 
-[node name="ChargeupSoundEmitter" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("9_27fah")
-
-[node name="PowerupSoundEmitter" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("8_oql22")
+[node name="AlarmSoundEmitter" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_3jieg")
 volume_db = -10.0
 
 [node name="SpawnSoundEmitter" type="AudioStreamPlayer" parent="."]

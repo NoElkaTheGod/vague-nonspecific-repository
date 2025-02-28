@@ -10,7 +10,6 @@ func _ready() -> void:
 
 func action(actor: Player) -> int:
 	if actor.idle_projectile_manager == null: return use_delay
-	actor.shot_sound_emitter.play()
 	var spread := Vector2(randf_range(-1, 1), randf_range(-1, 1)) * actor.spread_multiplier
 	var proj: Missile = actor.idle_projectile_manager.get_idle_missile()
 	proj.init()

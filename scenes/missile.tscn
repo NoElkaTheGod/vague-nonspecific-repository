@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://dsqk8c267cetx"]
+[gd_scene load_steps=10 format=3 uid="uid://dsqk8c267cetx"]
 
 [ext_resource type="Script" path="res://scripts/missile.gd" id="1_xk04n"]
 [ext_resource type="Texture2D" uid="uid://d1vdo56rpmjfw" path="res://sprites/amogi.png" id="2_vf25o"]
 [ext_resource type="Texture2D" uid="uid://faopa8o4puxc" path="res://sprites/missile.png" id="3_m0ndy"]
+[ext_resource type="AudioStream" uid="uid://c6a760v1rg8h8" path="res://sounds/missile_launch.wav" id="4_ind50"]
 
 [sub_resource type="Curve" id="Curve_2enus"]
 _data = [Vector2(0.00666666, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -34,7 +35,7 @@ motion_mode = 1
 script = ExtResource("1_xk04n")
 
 [node name="GPUParticles2D" type="GPUParticles2D" parent="."]
-position = Vector2(-12, 0)
+position = Vector2(-6, 0)
 scale = Vector2(1.8, 1.8)
 process_material = SubResource("ParticleProcessMaterial_i722w")
 texture = ExtResource("2_vf25o")
@@ -45,6 +46,10 @@ shape = SubResource("CircleShape2D_vju15")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("3_m0ndy")
+
+[node name="SoundEmitter" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_ind50")
+volume_db = -10.0
 
 [node name="Area2D" type="Area2D" parent="."]
 collision_layer = 0
