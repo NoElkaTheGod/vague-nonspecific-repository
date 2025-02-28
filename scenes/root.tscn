@@ -9,7 +9,7 @@
 [ext_resource type="Script" path="res://scripts/idle_projectile_manager.gd" id="5_78sfb"]
 [ext_resource type="PackedScene" uid="uid://b20u12x06cxjh" path="res://scenes/player_selector.tscn" id="7_poi6s"]
 
-[node name="Root" type="Node"]
+[node name="GameManager" type="Node"]
 script = ExtResource("1_psp8s")
 
 [node name="LootboxManager" type="Node" parent="."]
