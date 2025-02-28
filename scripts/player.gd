@@ -314,7 +314,7 @@ func fire_action_from_stack(stack := 0) -> void:
 func get_next_action() -> Action:
 	var result: Action = null
 	var i = 0
-	while not false:
+	while not false: #bro what
 		i -= 1
 		if action_stack_copy[active_stack][i].item_type == Action.ITEM_TYPE.ACTION:
 			result = action_stack_copy[active_stack][i]
