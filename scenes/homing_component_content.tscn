@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://cdv0tpgba1fi1"]
+
+[ext_resource type="Texture2D" uid="uid://jcnpxf3tcipe" path="res://sprites/the_outline.png" id="1_58nmy"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_c10mh"]
+radius = 100.0
+
+[node name="HomingComponentContent" type="Area2D"]
+collision_layer = 0
+collision_mask = 4
+input_pickable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_c10mh")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_58nmy")

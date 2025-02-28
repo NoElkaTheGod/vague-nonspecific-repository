@@ -294,11 +294,11 @@ func fire_action_from_stack(stack := 0) -> void:
 		return
 	fire_cd = max(action.action(self) * cooldown_multiplier, fire_cd)
 	reload_if_empty_stack(stack)
-	if action.trigger_next_immediately:
-		fire_action_from_stack(stack)
 	if action.item_type != Action.ITEM_TYPE.MODIFIER and reset_pause == 0:
 		reset_stat_offsets()
 	if reset_pause > 0: reset_pause -= 1
+	if action.trigger_next_immediately:
+		fire_action_from_stack(stack)
 
 func get_next_action() -> Action:
 	var result: Action = null

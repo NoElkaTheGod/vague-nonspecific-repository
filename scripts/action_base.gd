@@ -22,10 +22,12 @@ func compile_into_stack(stack: Array) -> int:
 	stack.push_front(self)
 	return 1
 
-func add_component(component) -> void:
+func add_component(component) -> BaseComponent:
 	if trigger_next_immediately or item_type == ITEM_TYPE.MODIFIER: return
+	var new_comp = component.new()
 	component_classes.append(component)
-	components.append(component.new())
+	components.append(new_comp)
+	return new_comp
 
 func has_component(component) -> bool:
 	for item in component_classes:
