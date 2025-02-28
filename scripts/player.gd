@@ -318,13 +318,18 @@ func reload_if_empty_stack(stack) -> void:
 		reset_reload_offset()
 
 func compile_action_stacks() -> void:
-	var division_modifier := 1
+	var division_modifier := 0
+	var temp := 0
 	for stack in range(amount_of_stacks):
 		action_stack[stack].clear()
 		for i in range(action_stack_size):
 			if inventory[i + (stack * action_stack_size)] == null: continue
-			for j in range(division_modifier):
-				division_modifier = inventory[i + (stack * action_stack_size)].compile_into_stack(action_stack[stack])
+			temp = 0
+			while division_modifier >= 0:
+				temp += inventory[i + (stack * action_stack_size)].compile_into_stack(action_stack[stack])
+				division_modifier -= 1
+			if temp == 0: division_modifier = 0
+			else: division_modifier += temp
 		action_stack_copy[stack] = action_stack[stack].duplicate(true)
 		if action_stack[stack].size() == 0:
 			pass #TODO: "Вы будете мгновенно убиты. Продолжить?"

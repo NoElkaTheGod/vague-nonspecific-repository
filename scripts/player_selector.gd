@@ -61,6 +61,7 @@ func yo_wassup(player: Player, is_lobby: bool = true) -> void:
 	bound_player = player
 	visible = true
 	player_ready = false
+	label_of_readiness.modulate = Color(1, 1, 1)
 	label_of_readiness.self_modulate = Color(0.5, 0, 0)
 	label_of_readiness.text = "Not ready"
 	player_sprite.texture = AtlasTexture.new()
