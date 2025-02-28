@@ -309,7 +309,7 @@ func fire_action_from_stack(stack := 0) -> void:
 		fire_action_from_stack(stack)
 	if action.item_type != Action.ITEM_TYPE.MODIFIER and reset_pause == 0:
 		reset_stat_offsets()
-	if action.item_type != Action.ITEM_TYPE.MODIFIER and reset_pause > 0: reset_pause -= 1
+	if reset_pause > 0: reset_pause -= 1
 
 func get_next_action() -> Action:
 	var result: Action = null
