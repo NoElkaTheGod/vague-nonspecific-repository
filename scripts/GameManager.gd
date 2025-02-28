@@ -1,6 +1,6 @@
 class_name GameManager extends Node
 
-var gravity_effectors: Array[Repulsor]
+var gravity_effectors: Array[GravityEffector]
 var player_spawns: Array[Node2D]
 var timer: int = -1
 var player_score: Array[int]

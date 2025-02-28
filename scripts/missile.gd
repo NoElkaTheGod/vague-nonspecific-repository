@@ -10,6 +10,8 @@ var components: Array[Node]
 func init() -> void:
 	damage = 20
 	sound.play()
+	for exception in get_collision_exceptions():
+		remove_collision_exception_with(exception)
 
 func _process(_delta: float) -> void:
 	rotation = velocity.angle()

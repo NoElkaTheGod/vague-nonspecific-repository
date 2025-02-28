@@ -22,7 +22,6 @@ var angular_velocity_target := 0.0
 @onready var alarm_sound_emitter := $AlarmSoundEmitter
 @onready var collision_sound_emitter: CollisionSoundEmitter = $CollisionSoundEmitter
 @onready var hurt_sound_emitter := $HurtSoundEmitter
-@onready var melee_hit_area: Area2D = $MeleeHit/Area2D
 @onready var idle_projectile_manager: IdleProjectileManager = get_parent().get_parent().get_node("IdleProjectileManager")
 @onready var game_manager: GameManager = get_parent().get_parent()
 var bound_player_selector: PlayerSelector
