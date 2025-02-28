@@ -9,7 +9,6 @@ func _ready() -> void:
 	weight = 1.0
 
 func action(actor: Player) -> int:
-	actor.mine_release_sound_emitter.play()
 	var mine: Mine = actor.idle_projectile_manager.get_idle_mine()
 	mine.init()
 	@warning_ignore("narrowing_conversion")

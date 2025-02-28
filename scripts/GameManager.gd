@@ -2,7 +2,6 @@ class_name GameManager extends Node
 
 var gravity_effectors: Array[Repulsor]
 var player_spawns: Array[Node2D]
-var powerups: Array[Powerup]
 var timer: int = -1
 var player_score: Array[int]
 var round_is_going := false
@@ -158,11 +157,7 @@ func end_round() -> void:
 	round_is_going = false
 	for item in idle_projectile_manager.get_children():
 		item.free()
-	for item in powerups:
-		item.queue_free()
-		item = null
 	map_loader.unload_map()
-	powerups.resize(0)
 	timer = -1
 	map_loader.load_map(-1)
 	for i in range(player_count):

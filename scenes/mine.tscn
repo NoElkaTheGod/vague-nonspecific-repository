@@ -1,9 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://0i33nghna4er"]
+[gd_scene load_steps=10 format=3 uid="uid://0i33nghna4er"]
 
 [ext_resource type="Script" path="res://scripts/mine.gd" id="1_nggjb"]
 [ext_resource type="Texture2D" uid="uid://ep0d7qfohf8d" path="res://sprites/mine.png" id="2_iuc7x"]
 [ext_resource type="Texture2D" uid="uid://b4fc5qtwvbjrv" path="res://sprites/epicness.png" id="3_yfujj"]
 [ext_resource type="Texture2D" uid="uid://0fs3o884tbo3" path="res://sprites/scary_red_circle.png" id="4_ir7ee"]
+[ext_resource type="AudioStream" uid="uid://d5fgw4o3ni7n" path="res://sounds/mine_release.wav" id="6_gddk5"]
 [ext_resource type="AudioStream" uid="uid://pgqy3k4p8kjc" path="res://sounds/mine_trigger.wav" id="6_xytaw"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_pfiej"]
@@ -48,4 +49,8 @@ texture = ExtResource("4_ir7ee")
 
 [node name="ActivationSound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("6_xytaw")
+volume_db = -10.0
+
+[node name="ReleaseSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_gddk5")
 volume_db = -10.0

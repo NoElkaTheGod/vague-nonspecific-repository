@@ -17,6 +17,7 @@ func init() -> void:
 	explosion_timer = -1
 	area_sprite.modulate = Color(1, 1, 1, 0)
 	scary.visible = false
+	$ReleaseSound.play()
 
 func activate() -> void:
 	if explosion_timer != -1: return
