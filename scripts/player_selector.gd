@@ -36,7 +36,7 @@ var presented_items: Array[Action]
 @onready var stat_panel := $Stats
 @onready var sound := $PressDoundEmitter
 
-var inventory_panels: Array[Panel]
+var inventory_panels: Array[WobblyPanel]
 var inventory_icons: Array[TextureRect]
 var lootbox_panels: Array[Panel]
 var lootbox_icons: Array[TextureRect]
@@ -68,7 +68,7 @@ func yo_wassup(player: Player, is_lobby: bool = true) -> void:
 	player_sprite.texture.region = Rect2(bound_player.character_color * 48, bound_player.character_type * 48, 48, 48)
 	update_stat_text(character_type_descriptions[bound_player.character_type])
 	cur_mode = SELECTOR_MODE.LOBBY
-	if position.x > 1000:
+	if position.x > 400:
 		label_of_readiness.size_flags_horizontal = SIZE_SHRINK_END
 		buttons.size_flags_horizontal = SIZE_SHRINK_END
 		other_buttons.size_flags_horizontal = SIZE_SHRINK_END
@@ -135,7 +135,7 @@ func update_inventory(player: Player) -> void:
 	for old in inventory_container.get_children():
 		old.free()
 	for i in range(player.action_stack_size * player.amount_of_stacks):
-		var new_slot = Panel.new()
+		var new_slot = WobblyPanel.new()
 		new_slot.custom_minimum_size = Vector2(48, 48)
 		inventory_container.add_child(new_slot)
 		new_slot.z_index = 1
@@ -149,7 +149,7 @@ func update_inventory(player: Player) -> void:
 		if player.inventory[i] == null: continue
 		new_slot_sprite.texture = load(player.inventory[i].texture)
 	for i in range(player.action_stack_size * player.inventory_rows):
-		var new_slot = Panel.new()
+		var new_slot = WobblyPanel.new()
 		new_slot.custom_minimum_size = Vector2(48, 48)
 		inventory_container.add_child(new_slot)
 		new_slot.z_index = 1
@@ -162,7 +162,7 @@ func update_inventory(player: Player) -> void:
 		if player.inventory[i + (player.action_stack_size * player.amount_of_stacks)] == null: continue
 		new_slot_sprite.texture = load(player.inventory[i + (player.action_stack_size * player.amount_of_stacks)].texture)
 	await inventory_container.sort_children
-	other_buttons.custom_minimum_size = inventory_container.size
+	other_buttons.custom_minimum_size = inventory_container.size + Vector2(10, 10)
 	selected_button = Vector2i.ZERO
 	update_inv_highlight(selected_button, Color(1.5, 1.5, 1.5))
 	selected_slot = Vector2i.ONE * -1
@@ -306,6 +306,7 @@ func fire_pressed():
 			var first_slot: int = selected_slot.x + (selected_slot.y * bound_player.action_stack_size)
 			var second_slot: int = selected_button.x + (selected_button.y * bound_player.action_stack_size)
 			var temp: Action = bound_player.inventory[first_slot]
+			inventory_panels[first_slot].wobbliness = 1.0
 			bound_player.inventory[first_slot] = bound_player.inventory[second_slot]
 			bound_player.inventory[second_slot] = temp
 			if bound_player.inventory[first_slot] == null:
@@ -317,8 +318,10 @@ func fire_pressed():
 			else:
 				inventory_icons[second_slot].texture = load(bound_player.inventory[second_slot].texture)
 			selected_slot = Vector2i.ONE * -1
+			update_stat_text(bound_player.inventory[second_slot].description)
 		elif bound_player.inventory[selected_button.x + (selected_button.y * bound_player.action_stack_size)] != null:
 			selected_slot = selected_button
+			inventory_panels[selected_slot.x + (selected_slot.y * bound_player.action_stack_size)].wobbliness = 2.0
 	elif cur_mode == SELECTOR_MODE.LOOTBOX:
 		var loot = presented_items[selected_button.x]
 		var inventory = range(bound_player.action_stack_size * bound_player.inventory_rows).map(func(value): return value + (bound_player.action_stack_size * bound_player.amount_of_stacks))

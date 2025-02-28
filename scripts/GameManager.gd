@@ -28,24 +28,13 @@ var round_start_countdown := -1
 @onready var spawning_fx_scene: PackedScene = load("res://scenes/spawning_crosshair.tscn")
 
 func _input(event: InputEvent) -> void:
-	if event.is_action("Restart"):
-		end_round()
-		return
 	if round_is_going: return
 	if not event.is_action_type(): return
 	if player_count >= 4: return
 	var new_player_slot = get_available_player_slot()
 	if new_player_slot == -1: return
-	if Input.get_connected_joypads().has(event.device) and not player_input_devices[event.device]:
-		for i in range(7):
-			for j in ["Fire", "Move"]:
-				if event.is_action("Player" + str(i) + str(j)) and not player_input_devices[i]:
-					player_input_devices[event.device] = true
-					players[new_player_slot].init(get_available_color(), event.device)
-					return
-				return
-	for i in [8, 9]:
-		for j in ["Fire", "Move", "Left", "Right", "Up", "Down"]:
+	for i in range(10):
+		for j in ["Fire", "Move", "Up", "Down", "Left", "Right"]:
 			if event.is_action("Player" + str(i) + str(j)) and not player_input_devices[i]:
 				player_input_devices[i] = true
 				players[new_player_slot].init(get_available_color(), i)

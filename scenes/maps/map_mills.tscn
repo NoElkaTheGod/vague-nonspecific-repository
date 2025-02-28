@@ -1,7 +1,7 @@
 [gd_scene load_steps=10 format=3 uid="uid://cie3jvxw3l7po"]
 
 [ext_resource type="Script" path="res://scripts/map_root.gd" id="1_xxl0i"]
-[ext_resource type="Script" path="res://scripts/rotatE.gd" id="2_sf74a"]
+[ext_resource type="Script" path="res://scripts/weirdly_specific/rotatE.gd" id="2_sf74a"]
 [ext_resource type="PackedScene" uid="uid://dp1cbr33xuauf" path="res://scenes/rock.tscn" id="3_ah8pc"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_2iqby"]

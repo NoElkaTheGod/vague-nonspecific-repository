@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://dp3pam36e44rj"]
 
-[ext_resource type="Script" path="res://scripts/bullet_remainder.gd" id="1_36e40"]
+[ext_resource type="Script" path="res://scripts/weirdly_specific/bullet_remainder.gd" id="1_36e40"]
 [ext_resource type="Texture2D" uid="uid://d1vdo56rpmjfw" path="res://sprites/amogi.png" id="2_35wpn"]
 [ext_resource type="AudioStream" uid="uid://ctg06qac4y73y" path="res://sounds/bullet_expire.wav" id="3_jwpcc"]
 
