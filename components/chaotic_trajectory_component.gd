@@ -1,4 +1,4 @@
-class_name chaotic_trajectory_component extends Node
+class_name chaotic_trajectory_component extends BaseComponent
 
 var parent: CharacterBody2D
 var anomaly: float = randf_range(-1, 1)
