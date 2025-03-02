@@ -25,6 +25,7 @@ var angular_velocity_target := 0.0
 @onready var idle_projectile_manager: IdleProjectileManager = get_parent().get_parent().get_node("IdleProjectileManager")
 @onready var game_manager: GameManager = get_parent().get_parent()
 var bound_player_selector: PlayerSelector
+var bound_health_bar: HealthBar
 var input_device := -1
 var character_color: int
 var character_type: int
@@ -84,10 +85,14 @@ func reset_player_state():
 		if menu_input_cd[i] > 0:
 			menu_input_cd[i] -= 1
 	hit_points = type_hit_points[character_type]
+	bound_health_bar.init(type_hit_points[character_type], self)
 
 func _ready() -> void:
 	$ThrusterParticles.visible = false
-	$Sprite2D.visible = false
+	sprite.visible = false
+	bound_health_bar = load("res://scenes/health_bar.tscn").instantiate()
+	game_manager.get_node("HealthbarsContainer").add_child(bound_health_bar)
+	bound_health_bar.init(type_hit_points[character_type], self)
 
 func bind_player_selector(node: PlayerSelector, lobby: bool = false) -> void:
 	bound_player_selector = node
@@ -117,6 +122,7 @@ func change_player_type(type: int):
 	action_stack.resize(amount_of_stacks)
 	action_stack_copy.resize(amount_of_stacks)
 	reset_stat_offsets()
+	bound_health_bar.init(type_hit_points[type], self)
 	match type:
 		0:
 			inventory[0] = shot_item.new()
@@ -266,6 +272,7 @@ func handle_collisions() -> void:
 			angular_velocity += pow(randf_range(-3, 3), 2)
 
 func take_damage(body: Node2D = null, damage: int = 1):
+	bound_health_bar.damage_taken(damage)
 	hit_points -= damage
 	linear_velocity += (body.position - position).normalized() * -100
 	if hit_points > 0:
