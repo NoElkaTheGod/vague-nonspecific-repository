@@ -6,7 +6,7 @@ func _ready() -> void:
 	description = "Заставляет снаряд самонаводится на противников. Замедляет перезарядку."
 	item_type = ITEM_TYPE.MODIFIER
 	trigger_next_immediately = true
-	weight = 1.0
+	weight = 0.3
 
 func action(actor: Player) -> int:
 	actor.reload_offset += 10

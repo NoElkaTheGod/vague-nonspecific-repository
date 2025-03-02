@@ -3,7 +3,7 @@ class_name homing_component extends BaseComponent
 var parent: PhysicsBody2D
 var hitbox: Area2D
 var sprite: Sprite2D
-var strength: float = 30
+var strength: float = 50
 var scale: float = 1.0
 var target: Node2D
 var actor: Node2D
