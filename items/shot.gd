@@ -16,7 +16,7 @@ func action(actor: Player) -> int:
 	proj.damage *= actor.damage_multiplier
 	proj.visible = true
 	proj.process_mode = Node.PROCESS_MODE_PAUSABLE
-	proj.position = actor.position + (Vector2(cos(actor.rotation), sin(actor.rotation)) * 40).rotated(actor.angle_offset)
+	proj.position = actor.position + (Vector2(cos(actor.rotation), sin(actor.rotation)) * 20).rotated(actor.angle_offset)
 	proj.velocity = (Vector2(cos(actor.rotation), sin(actor.rotation)) * randf_range(550, 650)).rotated(actor.angle_offset) * actor.projectile_velocity_multiplier + spread
 	actor.linear_velocity += Vector2(cos(actor.rotation), sin(actor.rotation)).rotated(actor.angle_offset + PI) * 50.0 * actor.recoil_multiplier
 	for component in components:

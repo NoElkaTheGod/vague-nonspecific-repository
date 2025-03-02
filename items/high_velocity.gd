@@ -10,7 +10,7 @@ func _ready() -> void:
 
 func action(actor: Player) -> int:
 	actor.cooldown_multiplier *= 1.2
-	actor.recoil_multiplier *= 2.0
+	actor.recoil_multiplier *= 1.5
 	actor.projectile_velocity_multiplier *= 2.0
-	actor.damage_multiplier *= 1.5
+	actor.damage_multiplier *= 1.6
 	return use_delay

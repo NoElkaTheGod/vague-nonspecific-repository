@@ -318,8 +318,8 @@ func fire_pressed():
 				inventory_icons[second_slot].texture = null
 			else:
 				inventory_icons[second_slot].texture = load(bound_player.inventory[second_slot].texture)
+				update_stat_text(bound_player.inventory[second_slot].description)
 			selected_slot = Vector2i.ONE * -1
-			update_stat_text(bound_player.inventory[second_slot].description)
 		elif bound_player.inventory[selected_button.x + (selected_button.y * bound_player.action_stack_size)] != null:
 			selected_slot = selected_button
 			inventory_panels[selected_slot.x + (selected_slot.y * bound_player.action_stack_size)].wobbliness = 2.0
