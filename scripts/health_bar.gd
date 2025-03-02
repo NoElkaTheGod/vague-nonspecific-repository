@@ -28,7 +28,8 @@ func damage_taken(damage: int) -> void:
 var timer: float
 
 func _process(delta: float) -> void:
-	visible = bound_player.sprite.visible
+	visible = bound_player.sprite.visible and bound_player.visible
+	if HP <= 0: visible = false
 	position = bound_player.position + offset - (size / 2.0)
 	timer += delta
 	if timer >= 0.5:
@@ -39,4 +40,4 @@ func _process(delta: float) -> void:
 	@warning_ignore("integer_division")
 	white.custom_minimum_size.x = last_damage / max_HP * box.size.x
 	@warning_ignore("integer_division")
-	dark.custom_minimum_size.x = (max_HP - HP - last_damage) / max_HP * box.size.x
+	dark.custom_minimum_size.x =  (max_HP - HP - last_damage) / max_HP * box.size.x
