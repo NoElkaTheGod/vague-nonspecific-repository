@@ -12,3 +12,4 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	parent.velocity = parent.velocity.rotated(anomaly * delta)
+	anomaly = move_toward(anomaly, anomaly, 0.01)

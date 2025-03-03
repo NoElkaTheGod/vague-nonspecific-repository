@@ -11,7 +11,7 @@ func _ready() -> void:
 func action(actor: Player) -> int:
 	if actor.idle_projectile_manager == null: return use_delay
 	actor.reload_offset += 10
-	var spread := Vector2(randf_range(-1, 1), randf_range(-1, 1)) * actor.spread_multiplier
+	var spread := Vector2(randf_range(-5, 5), randf_range(-5, 5)) * actor.spread_multiplier
 	var proj: Missile = actor.idle_projectile_manager.get_idle_missile()
 	proj.init()
 	proj.target_velocity *= actor.projectile_velocity_multiplier
