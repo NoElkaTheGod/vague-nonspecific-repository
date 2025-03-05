@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://dsqk8c267cetx"]
 
-[ext_resource type="Script" path="res://scripts/missile.gd" id="1_xk04n"]
+[ext_resource type="Script" uid="uid://dpk4bj6d4iks" path="res://scripts/missile.gd" id="1_xk04n"]
 [ext_resource type="Texture2D" uid="uid://d1vdo56rpmjfw" path="res://sprites/amogi.png" id="2_vf25o"]
 [ext_resource type="Texture2D" uid="uid://faopa8o4puxc" path="res://sprites/missile.png" id="3_m0ndy"]
 [ext_resource type="AudioStream" uid="uid://c6a760v1rg8h8" path="res://sounds/missile_launch.wav" id="4_ind50"]

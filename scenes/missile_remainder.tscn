@@ -1,10 +1,10 @@
 [gd_scene load_steps=9 format=3 uid="uid://yfco0htknajd"]
 
-[ext_resource type="Script" path="res://scripts/weirdly_specific/bullet_remainder.gd" id="1_hutsp"]
+[ext_resource type="Script" uid="uid://dka70x3o1nrc0" path="res://scripts/weirdly_specific/bullet_remainder.gd" id="1_hutsp"]
 [ext_resource type="Texture2D" uid="uid://d1vdo56rpmjfw" path="res://sprites/amogi.png" id="2_q2fai"]
 [ext_resource type="AudioStream" uid="uid://bs2wklswxet57" path="res://sounds/caboom.wav" id="3_xx4xp"]
 [ext_resource type="Texture2D" uid="uid://b4fc5qtwvbjrv" path="res://sprites/epicness.png" id="4_yv57g"]
-[ext_resource type="Script" path="res://scripts/weirdly_specific/assplosion_range_indicator.gd" id="5_r0ybk"]
+[ext_resource type="Script" uid="uid://c5k58fny3yv0g" path="res://scripts/weirdly_specific/assplosion_range_indicator.gd" id="5_r0ybk"]
 
 [sub_resource type="Curve" id="Curve_yrba5"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]

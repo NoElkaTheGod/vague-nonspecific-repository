@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://c1hvtim0lp634"]
 
-[ext_resource type="Script" path="res://scripts/map_root.gd" id="1_hiln5"]
+[ext_resource type="Script" uid="uid://c0ld4q242a8qh" path="res://scripts/map_root.gd" id="1_hiln5"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_2iqby"]
 normal = Vector2(0, 1)

@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://c7hmuu2lpdj4w"]
 
-[ext_resource type="Script" path="res://scripts/ui.gd" id="1_iqpue"]
-[ext_resource type="Script" path="res://scripts/scoreboard.gd" id="1_o1h88"]
+[ext_resource type="Script" uid="uid://eu6ss0xbw24x" path="res://scripts/ui.gd" id="1_iqpue"]
+[ext_resource type="Script" uid="uid://cfw13ej4hbmjv" path="res://scripts/scoreboard.gd" id="1_o1h88"]
 [ext_resource type="Texture2D" uid="uid://bnx0ygeuexykh" path="res://sprites/countdown.png" id="4_fnws8"]
 [ext_resource type="AudioStream" uid="uid://c1asum85x0w5w" path="res://sounds/countdown.wav" id="5_dt8xj"]
 [ext_resource type="AudioStream" uid="uid://dxwcskefclwjq" path="res://sounds/countdown_end.wav" id="6_3ylvy"]

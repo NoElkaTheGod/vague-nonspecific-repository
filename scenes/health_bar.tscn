@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cdfgmg08a3x3t"]
 
-[ext_resource type="Script" path="res://scripts/health_bar.gd" id="1_ytfrn"]
+[ext_resource type="Script" uid="uid://bn6j5ug3jbae4" path="res://scripts/health_bar.gd" id="1_ytfrn"]
 
 [sub_resource type="Theme" id="Theme_en72l"]
 BoxContainer/constants/separation = 0

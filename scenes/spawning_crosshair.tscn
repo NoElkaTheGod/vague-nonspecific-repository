@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://csbbyqska80vt"]
 
 [ext_resource type="Texture2D" uid="uid://brm7rby1366pd" path="res://sprites/spawning_scrosshair.png" id="1_422go"]
-[ext_resource type="Script" path="res://scripts/spawning_crosshair.gd" id="2_p64yv"]
+[ext_resource type="Script" uid="uid://pv1g0x86jwgj" path="res://scripts/spawning_crosshair.gd" id="2_p64yv"]
 
 [node name="SpawningCrosshair" type="Sprite2D"]
 texture = ExtResource("1_422go")

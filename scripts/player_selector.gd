@@ -123,7 +123,7 @@ func engage_lootbox_mode() -> void:
 	lootbox_buttons.size = lootbox_container.size
 	selected_button = Vector2i.ZERO
 	cur_mode = SELECTOR_MODE.LOOTBOX
-	update_loot_highlight(selected_button, Color(1.5, 1.5, 1.5))
+	update_loot_highlight(selected_button, Color(2.5, 2.5, 2.5))
 	update_stat_text(presented_items[selected_button.x].description)
 
 func update_inventory(player: Player) -> void:
@@ -165,7 +165,7 @@ func update_inventory(player: Player) -> void:
 	await inventory_container.sort_children
 	other_buttons.custom_minimum_size = inventory_container.size + Vector2(10, 10)
 	selected_button = Vector2i.ZERO
-	update_inv_highlight(selected_button, Color(1.5, 1.5, 1.5))
+	update_inv_highlight(selected_button, Color(2.5, 2.5, 2.5))
 	selected_slot = Vector2i.ONE * -1
 	if bound_player.inventory[selected_button.x + (selected_button.y * bound_player.action_stack_size)] == null:
 		update_stat_text(" ")
@@ -199,7 +199,7 @@ func left_pressed():
 			update_inv_highlight(selected_button, Color(1.0, 1.0, 1.0))
 			selected_button.x -= 1
 			if selected_button.x < 0: selected_button.x = bound_player.action_stack_size - 1
-			update_inv_highlight(selected_button, Color(1.5, 1.5, 1.5))
+			update_inv_highlight(selected_button, Color(2.5, 2.5, 2.5))
 			if bound_player.inventory[selected_button.x + (selected_button.y * bound_player.action_stack_size)] == null:
 				update_stat_text(" ")
 				stat_panel.visible = false
@@ -210,7 +210,7 @@ func left_pressed():
 			update_loot_highlight(selected_button, Color(1.0, 1.0, 1.0))
 			selected_button.x -= 1
 			if selected_button.x < 0: selected_button.x = LOOT_ACT_AMOUNT + LOOT_MOD_AMOUNT - 1
-			update_loot_highlight(selected_button, Color(1.5, 1.5, 1.5))
+			update_loot_highlight(selected_button, Color(2.5, 2.5, 2.5))
 			update_stat_text(presented_items[selected_button.x].description)
 			stat_panel.visible = true
 
@@ -234,7 +234,7 @@ func right_pressed():
 			update_inv_highlight(selected_button, Color(1.0, 1.0, 1.0))
 			selected_button.x += 1
 			if selected_button.x > bound_player.action_stack_size - 1: selected_button.x = 0
-			update_inv_highlight(selected_button, Color(1.5, 1.5, 1.5))
+			update_inv_highlight(selected_button, Color(2.5, 2.5, 2.5))
 			if bound_player.inventory[selected_button.x + (selected_button.y * bound_player.action_stack_size)] == null:
 				update_stat_text(" ")
 				stat_panel.visible = false
@@ -245,7 +245,7 @@ func right_pressed():
 			update_loot_highlight(selected_button, Color(1.0, 1.0, 1.0))
 			selected_button.x += 1
 			if selected_button.x > LOOT_ACT_AMOUNT + LOOT_MOD_AMOUNT - 1: selected_button.x = 0
-			update_loot_highlight(selected_button, Color(1.5, 1.5, 1.5))
+			update_loot_highlight(selected_button, Color(2.5, 2.5, 2.5))
 			update_stat_text(presented_items[selected_button.x].description)
 			stat_panel.visible = true
 
@@ -265,7 +265,7 @@ func up_pressed():
 			update_inv_highlight(selected_button, Color(1.0, 1.0, 1.0))
 			selected_button.y -= 1
 			if selected_button.y < -1: selected_button.y = bound_player.inventory_rows + bound_player.amount_of_stacks - 1
-			update_inv_highlight(selected_button, Color(1.5, 1.5, 1.5))
+			update_inv_highlight(selected_button, Color(2.5, 2.5, 2.5))
 			if bound_player.inventory[selected_button.x + (selected_button.y * bound_player.action_stack_size)] == null:
 				update_stat_text(" ")
 				stat_panel.visible = false
@@ -289,7 +289,7 @@ func down_pressed():
 			update_inv_highlight(selected_button, Color(1.0, 1.0, 1.0))
 			selected_button.y += 1
 			if selected_button.y > bound_player.inventory_rows + bound_player.amount_of_stacks - 1: selected_button.y = -1
-			update_inv_highlight(selected_button, Color(1.5, 1.5, 1.5))
+			update_inv_highlight(selected_button, Color(2.5, 2.5, 2.5))
 			if bound_player.inventory[selected_button.x + (selected_button.y * bound_player.action_stack_size)] == null:
 				update_stat_text(" ")
 				stat_panel.visible = false

@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://bfysfexp25eyi"]
 
-[ext_resource type="Script" path="res://scripts/map_root.gd" id="1_6866f"]
+[ext_resource type="Script" uid="uid://c0ld4q242a8qh" path="res://scripts/map_root.gd" id="1_6866f"]
 [ext_resource type="PackedScene" uid="uid://brmla0jhwlcbi" path="res://scenes/wormhole.tscn" id="2_l7brs"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_2iqby"]

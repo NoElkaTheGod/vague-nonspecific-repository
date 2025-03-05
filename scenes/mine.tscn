@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://0i33nghna4er"]
 
-[ext_resource type="Script" path="res://scripts/mine.gd" id="1_nggjb"]
+[ext_resource type="Script" uid="uid://de47ntwxflfq4" path="res://scripts/mine.gd" id="1_nggjb"]
 [ext_resource type="Texture2D" uid="uid://ep0d7qfohf8d" path="res://sprites/mine.png" id="2_iuc7x"]
 [ext_resource type="Texture2D" uid="uid://b4fc5qtwvbjrv" path="res://sprites/epicness.png" id="3_yfujj"]
 [ext_resource type="Texture2D" uid="uid://0fs3o884tbo3" path="res://sprites/scary_red_circle.png" id="4_ir7ee"]

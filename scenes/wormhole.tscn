@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://brmla0jhwlcbi"]
 
-[ext_resource type="Script" path="res://scripts/wormhole.gd" id="1_nsqem"]
+[ext_resource type="Script" uid="uid://bpojrdie0ovt7" path="res://scripts/wormhole.gd" id="1_nsqem"]
 [ext_resource type="Texture2D" uid="uid://cq6eka4n26hwu" path="res://sprites/wowmhowe.png" id="2_6bb1q"]
 [ext_resource type="Texture2D" uid="uid://d1vdo56rpmjfw" path="res://sprites/amogi.png" id="3_5gwum"]
 [ext_resource type="AudioStream" uid="uid://bgtg3b3r8gp8w" path="res://sounds/warp.wav" id="4_wk7fu"]
@@ -19,6 +19,7 @@ emission_ring_axis = Vector3(0, 0, 1)
 emission_ring_height = 40.0
 emission_ring_radius = 40.0
 emission_ring_inner_radius = 50.0
+emission_ring_cone_angle = 90.0
 orbit_velocity_min = -0.5
 orbit_velocity_max = 0.5
 radial_velocity_min = -5.00002
