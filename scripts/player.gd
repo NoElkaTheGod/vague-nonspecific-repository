@@ -261,7 +261,7 @@ func handle_collisions() -> void:
 		var achtung = get_colliding_bodies()[0] as RigidBody2D
 		if (achtung.linear_velocity + linear_velocity).length() < 900.0 and (achtung.linear_velocity.length() + linear_velocity.length()) > 900.0:
 			collision_sound_emitter.play(3)
-			#start_dying()
+			angular_velocity += pow(randf_range(-7, 7), 2)
 		elif (achtung.linear_velocity + linear_velocity).length() < 1500.0 and (achtung.linear_velocity.length() + linear_velocity.length()) > 500.0:
 			collision_sound_emitter.play(2)
 			angular_velocity += pow(randf_range(-5, 5), 2)
