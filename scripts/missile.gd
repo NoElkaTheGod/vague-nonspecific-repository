@@ -5,10 +5,12 @@ var velocity := Vector2.ZERO
 var damage := 20.0
 var target_velocity := 1100.0
 var components: Array[Node]
+var timer := 300
 @onready var game_manager = get_parent().get_parent()
 @onready var sound := $SoundEmitter
 
 func init() -> void:
+	timer = 300
 	damage = 20
 	target_velocity = 1100
 	sound.play()
@@ -19,10 +21,11 @@ func _process(_delta: float) -> void:
 	rotation = velocity.angle()
 
 func _physics_process(delta: float) -> void:
+	timer -= 1
 	velocity = game_manager.account_for_attractors(velocity, position, 10)
 	velocity = velocity.lerp(velocity.normalized() * target_velocity, 0.05)
 	var collision := move_and_collide(velocity * delta)
-	if collision != null:
+	if collision != null or timer <= 0:
 		if collision.get_collider() is Player:
 			collision.get_collider().take_damage(self, damage)
 		var sas = get_node("Area2D") as Area2D
