@@ -135,9 +135,8 @@ func start_round() -> void:
 
 func move_to_spawn(player: Player) -> void:
 	if player_spawns.size() == 0: return
-	var spawn = player_spawns.pick_random()
+	var spawn = player_spawns.pop_back()
 	player.position = spawn.position
-	player_spawns.erase(spawn)
 	player.rotation = (player.position - Vector2(960, 640)).rotated(PI).angle()
 	if not round_is_going:
 		player.bind_player_selector(get_node("PlayerSelectors/Player" + spawn.name), is_lobby)

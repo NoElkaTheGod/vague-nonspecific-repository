@@ -25,5 +25,6 @@ func _physics_process(delta: float) -> void:
 	if collision != null or timer <= 0:
 		idle_projectile_manager.spawn_bullet_remainder(position)
 		idle_projectile_manager.add_idle_projectile(self)
+		if collision == null: return
 		if collision.get_collider() is Player:
 			collision.get_collider().take_damage(self, damage)

@@ -307,15 +307,14 @@ func fire_action_from_stack(stack := 0) -> void:
 
 func get_next_action() -> Action:
 	var result: Action = null
-	var i = 0
+	var copy = action_stack_copy[active_stack].duplicate(true)
 	while not false: #bro what
-		i -= 1
-		if i == -1: fucking_die(self, true)
-		if action_stack_copy[active_stack][i].item_type == Action.ITEM_TYPE.ACTION:
-			result = action_stack_copy[active_stack][i]
-			break
-		if action_stack_copy[active_stack].size() == 0: return null
-	return result
+		result = copy.pop_back()
+		if result.item_type == Action.ITEM_TYPE.ACTION:
+			return result
+		if action_stack_copy[active_stack].size() == 0:
+			return null
+	return null
 
 func reload_if_empty_stack(stack) -> void:
 	if action_stack_copy[stack].size() == 0:
