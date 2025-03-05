@@ -99,6 +99,7 @@ func bind_player_selector(node: PlayerSelector, lobby: bool = false) -> void:
 	node.yo_wassup(self, lobby)
 
 func change_appearence():
+	if not game_manager.is_lobby: return
 	$Sprite2D.texture.region = Rect2(character_color * 48, character_type * 48, 48, 48)
 
 func reset_stat_offsets() -> void:
@@ -113,6 +114,7 @@ func reset_reload_offset() -> void:
 	reload_offset = default_reload_offset[character_type]
 
 func change_player_type(type: int):
+	if not game_manager.is_lobby: return
 	for i in range(inventory.size()):
 		if inventory[i] == null: continue
 		inventory[i].queue_free()

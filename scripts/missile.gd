@@ -26,6 +26,7 @@ func _physics_process(delta: float) -> void:
 	velocity = velocity.lerp(velocity.normalized() * target_velocity, 0.05)
 	var collision := move_and_collide(velocity * delta)
 	if collision != null or timer <= 0:
+		if collision == null: return
 		if collision.get_collider() is Player:
 			collision.get_collider().take_damage(self, damage)
 		var sas = get_node("Area2D") as Area2D
