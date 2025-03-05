@@ -208,7 +208,7 @@ func _physics_process(_delta: float) -> void:
 			menu_input_cd[3] = 0
 		if Input.is_action_just_released("Player" + str(input_device) + "Down"):
 			menu_input_cd[4] = 0
-			return
+		return
 	linear_velocity = game_manager.account_for_attractors(linear_velocity, position, 1)
 	if get_contact_count() > 0:
 		handle_collisions()
@@ -289,7 +289,7 @@ func fucking_die(_body: Node2D, funny_sound := false) -> void:
 		death_sound_emitter.play()
 	death_particles.emitting = true
 	$Sprite2D.visible = false
-	call_deferred("set_inactive")
+	set_inactive()
 	game_manager.im_dead_lol(self)
 
 func fire_action_from_stack(stack := 0) -> void:
@@ -310,6 +310,7 @@ func get_next_action() -> Action:
 	var i = 0
 	while not false: #bro what
 		i -= 1
+		if i == -1: fucking_die(self, true)
 		if action_stack_copy[active_stack][i].item_type == Action.ITEM_TYPE.ACTION:
 			result = action_stack_copy[active_stack][i]
 			break

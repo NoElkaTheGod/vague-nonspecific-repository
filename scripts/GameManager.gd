@@ -87,7 +87,7 @@ func account_for_attractors(velocity: Vector2, position: Vector2, coefficient: f
 func im_dead_lol(_player: Player) -> void:
 	var alive_players = player_count
 	for i in players:
-		if not i.alive:
+		if not i.alive and i.is_input_connected:
 			alive_players -= 1
 	if alive_players <= 1:
 		main_camera.camera_return_to_center = true
