@@ -23,7 +23,6 @@ var angular_velocity_target := 0.0
 @onready var alarm_sound_emitter := $AlarmSoundEmitter
 @onready var collision_sound_emitter: CollisionSoundEmitter = $CollisionSoundEmitter
 @onready var hurt_sound_emitter := $HurtSoundEmitter
-@onready var idle_projectile_manager: IdleProjectileManager = get_parent().get_parent().get_node("IdleProjectileManager")
 @onready var game_manager: GameManager = get_parent().get_parent()
 var bound_player_selector: PlayerSelector
 var bound_health_bar: HealthBar
@@ -71,7 +70,7 @@ func set_active():
 func set_inactive():
 	is_player_active = false
 	process_mode = PROCESS_MODE_DISABLED
-	$Sprite2D.visible = false
+	sprite_base.visible = false
 	$ThrusterParticles.visible = false
 	alive = false
 
@@ -93,7 +92,7 @@ func _ready() -> void:
 	$ThrusterParticles.visible = false
 	sprite_base.visible = false
 	bound_health_bar = load("res://scenes/health_bar.tscn").instantiate()
-	game_manager.get_node("HealthbarsContainer").add_child(bound_health_bar)
+	game_manager.get_node("HealthbarContainer").add_child(bound_health_bar)
 	bound_health_bar.init(type_hit_points[character_type], self)
 
 func bind_player_selector(node: PlayerSelector, lobby: bool = false) -> void:
@@ -299,7 +298,7 @@ func fucking_die(_body: Node2D, funny_sound := false) -> void:
 	else:
 		death_sound_emitter.play()
 	death_particles.emitting = true
-	$Sprite2D.visible = false
+	sprite_base.visible = false
 	set_inactive()
 	game_manager.im_dead_lol(self)
 

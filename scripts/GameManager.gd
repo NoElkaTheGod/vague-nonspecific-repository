@@ -18,8 +18,8 @@ var players_to_spawn: Array[Player]
 var round_start_countdown := -1
 
 @onready var player_selectors: Control = $PlayerSelectors
-@onready var players_container := $PlayersContainer
-@onready var idle_projectile_manager: IdleProjectileManager = $IdleProjectileManager
+@onready var player_container := $PlayerContainer
+@onready var projectile_container := $ProjectileContainer
 @onready var main_camera: MainCamera = $Camera2D
 @onready var scoreboard := $Camera2D/UI/Scoreboard
 @onready var map_loader: MapLoader = $MapLoader
@@ -73,7 +73,7 @@ func _ready() -> void:
 	for i in range(10):
 		players[i] = player_scene.instantiate()
 		players[i].position = main_camera.get_random_spot()
-		players_container.add_child(players[i])
+		player_container.add_child(players[i])
 	map_loader.load_map(-1)
 
 func account_for_attractors(velocity: Vector2, position: Vector2, coefficient: float) -> Vector2:
@@ -143,7 +143,7 @@ func move_to_spawn(player: Player) -> void:
 
 func end_round() -> void:
 	round_is_going = false
-	for item in idle_projectile_manager.get_children():
+	for item in projectile_container.get_children():
 		item.free()
 	map_loader.unload_map()
 	timer = -1

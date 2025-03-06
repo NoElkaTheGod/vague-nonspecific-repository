@@ -6,11 +6,12 @@ func _ready() -> void:
 	description = "Самый обычный снаряд. 20 урона при попадании."
 	use_delay = 10
 	weight = 1.0
+	associated_scene = load("res://scenes/projectile.tscn")
 
 func action(actor: Player) -> int:
-	if actor.idle_projectile_manager == null: return use_delay
 	var spread := Vector2(randf_range(-10, 10), randf_range(-10, 10)) * actor.spread_multiplier
-	var proj: projectile = actor.idle_projectile_manager.get_idle_projectile()
+	var proj: Projectile = associated_scene.instantiate()
+	actor.game_manager.projectile_container.add_child(proj)
 	proj.init()
 	proj.add_collision_exception_with(actor)
 	proj.damage *= actor.damage_multiplier

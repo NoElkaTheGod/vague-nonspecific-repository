@@ -7,9 +7,11 @@ func _ready() -> void:
 	description = "Мина с датчиком движения. Взорвётся, если кто-нибудь приблизится к ней. 30 урона."
 	use_delay = 120
 	weight = 1.0
+	associated_scene = load("res://scenes/mine.tscn")
 
 func action(actor: Player) -> int:
-	var mine: Mine = actor.idle_projectile_manager.get_idle_mine()
+	var mine: Mine = associated_scene.instantiate()
+	actor.game_manager.projectile_container.add_child(mine)
 	mine.init()
 	@warning_ignore("narrowing_conversion")
 	mine.damage *= actor.damage_multiplier

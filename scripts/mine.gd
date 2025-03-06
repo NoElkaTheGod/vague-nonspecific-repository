@@ -1,10 +1,10 @@
 class_name Mine extends RigidBody2D
 
-var idle_projectile_manager: IdleProjectileManager
 var activation_timer := 30
 var explosion_timer := -1
 var damage := 30.0
 var components: Array[Node]
+@onready var remainder_scene: PackedScene = load("res://scenes/mine_remainder.tscn")
 @onready var game_manager = get_parent().get_parent()
 @onready var activation_area: Area2D = $Area2D
 @onready var area_sprite: Sprite2D = $Explosion
@@ -33,8 +33,10 @@ func explode() -> void:
 			body.take_damage(self, damage)
 		if body is Mine:
 			body.activate()
-	idle_projectile_manager.spawn_mine_remainder(position)
-	idle_projectile_manager.add_idle_mine(self)
+	var remainder = remainder_scene.instantiate()
+	remainder.position = position
+	game_manager.projectile_container.add_child(remainder)
+	queue_free()
 
 func _process(delta: float) -> void:
 	area_sprite.rotate(PI * delta * 2)

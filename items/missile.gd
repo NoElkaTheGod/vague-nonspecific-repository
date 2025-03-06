@@ -7,12 +7,13 @@ func _ready() -> void:
 	description = "Запускает ракету. Не самонаводится, но взрывается. 20 урона при попадании, вдвое меньше по области."
 	use_delay = 20
 	weight = 0.5
+	associated_scene = load("res://scenes/missile.tscn")
 
 func action(actor: Player) -> int:
-	if actor.idle_projectile_manager == null: return use_delay
 	actor.reload_offset += 10
 	var spread := Vector2(randf_range(-5, 5), randf_range(-5, 5)) * actor.spread_multiplier
-	var proj: Missile = actor.idle_projectile_manager.get_idle_missile()
+	var proj: Missile = associated_scene.instantiate()
+	actor.game_manager.projectile_container.add_child(proj)
 	proj.init()
 	proj.target_velocity *= actor.projectile_velocity_multiplier
 	proj.add_collision_exception_with(actor)

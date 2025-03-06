@@ -10,6 +10,7 @@ var trigger_next_immediately := false
 var components: Array[Node]
 var component_classes: Array
 
+var associated_scene: PackedScene = null
 var texture:= ""
 var item_name := ""
 var description := ""
