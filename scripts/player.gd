@@ -124,6 +124,7 @@ func change_player_type(type: int):
 	action_stack.resize(amount_of_stacks)
 	action_stack_copy.resize(amount_of_stacks)
 	reset_stat_offsets()
+	hit_points = type_hit_points[character_type]
 	bound_health_bar.init(type_hit_points[type], self)
 	match type:
 		0:

@@ -27,13 +27,14 @@ grow_vertical = 2
 theme = SubResource("Theme_en72l")
 
 [node name="Red" type="ColorRect" parent="Box"]
+modulate = Color(0.607843, 0, 0, 1)
 layout_mode = 2
 size_flags_horizontal = 3
-color = Color(0.588235, 0, 0.0392157, 1)
 
 [node name="White" type="ColorRect" parent="Box"]
 layout_mode = 2
 
 [node name="Dark" type="ColorRect" parent="Box"]
+modulate = Color(0.588235, 0, 0.0392157, 1)
 layout_mode = 2
-color = Color(0.313726, 0, 0, 1)
+color = Color(0.501961, 0.501961, 0.501961, 1)
