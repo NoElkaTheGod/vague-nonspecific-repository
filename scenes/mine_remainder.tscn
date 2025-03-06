@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://bvar8syxhfjgl"]
+[gd_scene load_steps=8 format=3 uid="uid://bvar8syxhfjgl"]
 
 [ext_resource type="Script" uid="uid://dka70x3o1nrc0" path="res://scripts/weirdly_specific/bullet_remainder.gd" id="1_7f7ts"]
 [ext_resource type="Texture2D" uid="uid://d1vdo56rpmjfw" path="res://sprites/amogi.png" id="2_ioayv"]
@@ -21,18 +21,23 @@ damping_min = 100.0
 damping_max = 100.0
 alpha_curve = SubResource("CurveTexture_o2vfw")
 
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_vj163"]
+random_pitch = 1.2
+streams_count = 1
+stream_0/stream = ExtResource("3_lo861")
+
 [node name="MineRamainder" type="Node2D"]
 script = ExtResource("1_7f7ts")
 
 [node name="GPUParticles2D" type="GPUParticles2D" parent="."]
 emitting = false
 amount = 64
-process_material = SubResource("ParticleProcessMaterial_cwp3t")
 texture = ExtResource("2_ioayv")
 lifetime = 0.5
 one_shot = true
 explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_cwp3t")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("3_lo861")
+stream = SubResource("AudioStreamRandomizer_vj163")
 volume_db = -20.0

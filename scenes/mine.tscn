@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://0i33nghna4er"]
+[gd_scene load_steps=11 format=3 uid="uid://0i33nghna4er"]
 
 [ext_resource type="Script" uid="uid://de47ntwxflfq4" path="res://scripts/mine.gd" id="1_nggjb"]
 [ext_resource type="Texture2D" uid="uid://ep0d7qfohf8d" path="res://sprites/mine.png" id="2_iuc7x"]
@@ -16,6 +16,11 @@ radius = 15.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_jwnth"]
 radius = 100.0
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_kxfpg"]
+random_pitch = 1.1
+streams_count = 1
+stream_0/stream = ExtResource("6_gddk5")
 
 [node name="Mine" type="RigidBody2D"]
 collision_layer = 4
@@ -52,5 +57,5 @@ stream = ExtResource("6_xytaw")
 volume_db = -10.0
 
 [node name="ReleaseSound" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("6_gddk5")
+stream = SubResource("AudioStreamRandomizer_kxfpg")
 volume_db = -10.0

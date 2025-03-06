@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://dsqk8c267cetx"]
+[gd_scene load_steps=11 format=3 uid="uid://dsqk8c267cetx"]
 
 [ext_resource type="Script" uid="uid://dpk4bj6d4iks" path="res://scripts/missile.gd" id="1_xk04n"]
 [ext_resource type="Texture2D" uid="uid://d1vdo56rpmjfw" path="res://sprites/amogi.png" id="2_vf25o"]
@@ -25,6 +25,11 @@ alpha_curve = SubResource("CurveTexture_mrbcd")
 [sub_resource type="CircleShape2D" id="CircleShape2D_vju15"]
 radius = 8.0
 
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_2swxv"]
+random_pitch = 1.1
+streams_count = 1
+stream_0/stream = ExtResource("4_ind50")
+
 [sub_resource type="CircleShape2D" id="CircleShape2D_n31ud"]
 radius = 60.0
 
@@ -37,9 +42,9 @@ script = ExtResource("1_xk04n")
 [node name="GPUParticles2D" type="GPUParticles2D" parent="."]
 position = Vector2(-6, 0)
 scale = Vector2(1.8, 1.8)
-process_material = SubResource("ParticleProcessMaterial_i722w")
 texture = ExtResource("2_vf25o")
 lifetime = 0.4
+process_material = SubResource("ParticleProcessMaterial_i722w")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_vju15")
@@ -48,7 +53,7 @@ shape = SubResource("CircleShape2D_vju15")
 texture = ExtResource("3_m0ndy")
 
 [node name="SoundEmitter" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("4_ind50")
+stream = SubResource("AudioStreamRandomizer_2swxv")
 volume_db = -10.0
 
 [node name="Area2D" type="Area2D" parent="."]
