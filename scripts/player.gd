@@ -8,6 +8,7 @@ var is_round_going := false
 var is_spawning := false
 var move_cd := 0
 var fire_cd := 0
+var stack_fire_cd: Array[int]
 var max_move_cd := [5, 6, 8, 3]
 var turn_speed := [5, 5, 3, 6]
 var death_timer := -1
@@ -51,9 +52,9 @@ const default_angle_offset = [0, PI, 0, 0]
 var spread_multiplier := 1.0
 const default_spread_multiplier = [1.0, 1.0, 4.0, 1.0]
 var reload_offset := 0
-const default_reload_offset = [0, 0, -20, 0]
+const default_reload_offset = [0, 0, 0, 0]
 var cooldown_multiplier := 1.0
-const default_cooldown_multiplier = [1.0, 1.0, 0.5, 1.0]
+const default_cooldown_multiplier = [1.0, 1.0, 1.0, 1.0]
 var recoil_multiplier := 1.0
 const default_recoil_multiplier = [1.0, 1.0, 0.8, 1.0]
 var projectile_velocity_multiplier := 1.0
@@ -126,6 +127,7 @@ func change_player_type(type: int):
 	inventory.resize(action_stack_size * (inventory_rows + amount_of_stacks))
 	action_stack.resize(amount_of_stacks)
 	action_stack_copy.resize(amount_of_stacks)
+	stack_fire_cd.resize(amount_of_stacks)
 	reset_stat_offsets()
 	hit_points = type_hit_points[character_type]
 	bound_health_bar.init(type_hit_points[type], self)
@@ -253,12 +255,14 @@ func _physics_process(_delta: float) -> void:
 		move_cd = max_move_cd[character_type]
 	elif move_cd > 0:
 		move_cd -= 1
-	if Input.is_action_pressed("Player" + str(input_device) + "Fire") and fire_cd == 0:
-		active_stack += 1
-		if active_stack >= amount_of_stacks: active_stack = 0
-		fire_action_from_stack(active_stack)
+	if Input.is_action_pressed("Player" + str(input_device) + "Fire"):
+		if stack_fire_cd[active_stack] <= 0 and fire_cd <= 0:
+			fire_action_from_stack(active_stack)
 	if fire_cd > 0:
 		fire_cd -= 1
+	for i in range(stack_fire_cd.size()):
+		if stack_fire_cd[i] > 0:
+			stack_fire_cd[i] -= 1
 	thruster_particles.emitting = Input.is_action_pressed("Player" + str(input_device) + "Move")
 
 func handle_collisions() -> void:
@@ -327,10 +331,12 @@ func get_next_action() -> Action:
 	return null
 
 func reload_if_empty_stack(stack) -> void:
-	if action_stack_copy[stack].size() == 0:
-		action_stack_copy[stack] = action_stack[stack].duplicate(true)
-		fire_cd = max(reload_time + reload_offset, fire_cd)
-		reset_reload_offset()
+	if action_stack_copy[stack].size() > 0: return
+	stack_fire_cd[active_stack] = reload_time + reload_offset
+	active_stack += 1
+	if active_stack >= amount_of_stacks: active_stack = 0
+	action_stack_copy[stack] = action_stack[stack].duplicate(true)
+	reset_reload_offset()
 
 func compile_action_stacks() -> void:
 	var division_modifier := 0
