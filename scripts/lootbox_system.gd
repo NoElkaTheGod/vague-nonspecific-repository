@@ -1,9 +1,9 @@
 class_name LootManager extends Node
 
-var AvailableActions: Array[Action]
-var ActionsTotalWeight: float
-var AvailableModifiers: Array[Action]
-var ModifiersTotalWeight: float
+var available_actions: Array[Action]
+var actions_total_weight: float
+var available_modifiers: Array[Action]
+var modifiers_total_weight: float
 
 func _ready() -> void:
 	var item_names = DirAccess.get_files_at("res://items")
@@ -14,22 +14,32 @@ func _ready() -> void:
 		new_item._ready()
 		match new_item.item_type:
 			new_item.ITEM_TYPE.ACTION:
-				ActionsTotalWeight += new_item.weight
-				AvailableActions.append(new_item)
+				actions_total_weight += new_item.weight
+				available_actions.append(new_item)
 			new_item.ITEM_TYPE.MODIFIER:
-				ModifiersTotalWeight += new_item.weight
-				AvailableModifiers.append(new_item)
+				modifiers_total_weight += new_item.weight
+				available_modifiers.append(new_item)
 
-func get_random_action() -> Action:
-	var number = randf_range(0, ActionsTotalWeight)
-	for i in range(AvailableActions.size()):
-		number -= AvailableActions[i].weight
-		if number <= 0.0: return AvailableActions[i]
-	return AvailableActions[AvailableActions.size() - 1]
+func get_random_action(exceptions: Array[Action]) -> Action:
+	var available_actions_copy = available_actions.duplicate(true)
+	var actions_total_weight_copy = actions_total_weight
+	for exception in exceptions:
+		available_actions_copy.erase(exception)
+		actions_total_weight_copy -= exception.weight
+	var number = randf_range(0, actions_total_weight_copy)
+	for i in range(available_actions_copy.size()):
+		number -= available_actions_copy[i].weight
+		if number <= 0.0: return available_actions_copy[i]
+	return available_actions_copy[available_actions_copy.size() - 1]
 
-func get_random_modifier() -> Action:
-	var number = randf_range(0, ModifiersTotalWeight)
-	for i in range(AvailableModifiers.size()):
-		number -= AvailableModifiers[i].weight
-		if number <= 0.0: return AvailableModifiers[i]
-	return AvailableModifiers[AvailableModifiers.size() - 1]
+func get_random_modifier(exceptions: Array[Action]) -> Action:
+	var available_modifiers_copy = available_modifiers.duplicate(true)
+	var modifiers_total_weight_copy = modifiers_total_weight
+	for exception in exceptions:
+		available_modifiers_copy.erase(exception)
+		modifiers_total_weight_copy -= exception.weight
+	var number = randf_range(0, modifiers_total_weight_copy)
+	for i in range(available_modifiers_copy.size()):
+		number -= available_modifiers_copy[i].weight
+		if number <= 0.0: return available_modifiers_copy[i]
+	return available_modifiers_copy[available_modifiers_copy.size() - 1]

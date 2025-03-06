@@ -100,9 +100,10 @@ func engage_lootbox_mode() -> void:
 	lootbox_panels.resize(LOOT_ACT_AMOUNT + LOOT_MOD_AMOUNT)
 	for old in lootbox_container.get_children():
 		old.free()
+	var actions_to_present: Array[Action]
 	for i in range(LOOT_ACT_AMOUNT):
-		var loot = game_manager.lootbox_manager.get_random_action()
-		presented_items.append(loot)
+		var loot = game_manager.lootbox_manager.get_random_action(actions_to_present)
+		actions_to_present.append(loot)
 		var panel = Panel.new()
 		lootbox_container.add_child(panel)
 		lootbox_panels[i] = panel
@@ -112,9 +113,11 @@ func engage_lootbox_mode() -> void:
 		lootbox_icons[i] = icon
 		icon.texture = load(loot.texture)
 		icon.custom_minimum_size = Vector2(48, 48)
+	presented_items.append_array(actions_to_present)
+	var modifiers_to_present: Array[Action]
 	for i in range(LOOT_MOD_AMOUNT):
-		var loot = game_manager.lootbox_manager.get_random_modifier()
-		presented_items.append(loot)
+		var loot = game_manager.lootbox_manager.get_random_modifier(modifiers_to_present)
+		modifiers_to_present.append(loot)
 		var panel = Panel.new()
 		lootbox_container.add_child(panel)
 		lootbox_panels[i + LOOT_ACT_AMOUNT] = panel
@@ -124,6 +127,7 @@ func engage_lootbox_mode() -> void:
 		lootbox_icons[i + LOOT_ACT_AMOUNT] = icon
 		icon.texture = load(loot.texture)
 		icon.custom_minimum_size = Vector2(48, 48)
+	presented_items.append_array(modifiers_to_present)
 	await lootbox_container.sort_children
 	lootbox_buttons.size = lootbox_container.size
 	selected_button = Vector2i.ZERO
