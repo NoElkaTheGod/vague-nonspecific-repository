@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://de47ntwxflfq4" path="res://scripts/mine.gd" id="1_nggjb"]
 [ext_resource type="Texture2D" uid="uid://ep0d7qfohf8d" path="res://sprites/mine.png" id="2_iuc7x"]
 [ext_resource type="Texture2D" uid="uid://b4fc5qtwvbjrv" path="res://sprites/epicness.png" id="3_yfujj"]
-[ext_resource type="Texture2D" uid="uid://0fs3o884tbo3" path="res://sprites/scary_red_circle.png" id="4_ir7ee"]
+[ext_resource type="Texture2D" uid="uid://jcnpxf3tcipe" path="res://sprites/the_outline.png" id="4_kxfpg"]
 [ext_resource type="AudioStream" uid="uid://d5fgw4o3ni7n" path="res://sounds/mine_release.wav" id="6_gddk5"]
 [ext_resource type="AudioStream" uid="uid://pgqy3k4p8kjc" path="res://sounds/mine_trigger.wav" id="6_xytaw"]
 
@@ -44,8 +44,8 @@ scale = Vector2(0.75, 0.75)
 texture = ExtResource("3_yfujj")
 
 [node name="ScaryRedCircle" type="Sprite2D" parent="."]
-scale = Vector2(2, 2)
-texture = ExtResource("4_ir7ee")
+modulate = Color(1, 0, 0, 1)
+texture = ExtResource("4_kxfpg")
 
 [node name="ActivationSound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("6_xytaw")
