@@ -23,7 +23,8 @@ var presented_items: Array[Action]
 @onready var game_manager: GameManager = get_parent().get_parent()
 
 @onready var label_of_readiness := $Ready
-@onready var player_sprite := $LobbyButtons/Player
+@onready var player_sprite_base := $LobbyButtons/PlayerBase
+@onready var player_sprite_mask := $LobbyButtons/PlayerMask
 @onready var buttons := $LobbyButtons
 @onready var other_buttons := $NotLobbyButtons
 @onready var inventory_container := $NotLobbyButtons/GridContainer
@@ -64,9 +65,13 @@ func yo_wassup(player: Player, is_lobby: bool = true) -> void:
 	label_of_readiness.modulate = Color(1, 1, 1)
 	label_of_readiness.self_modulate = Color(0.5, 0, 0)
 	label_of_readiness.text = "Not ready"
-	player_sprite.texture = AtlasTexture.new()
-	player_sprite.texture.atlas = load("res://sprites/player.png")
-	player_sprite.texture.region = Rect2(bound_player.character_color * 48, bound_player.character_type * 48, 48, 48)
+	player_sprite_base.texture = AtlasTexture.new()
+	player_sprite_base.texture.atlas = load("res://sprites/player.png")
+	player_sprite_base.texture.region = Rect2(0, bound_player.character_type * 48, 48, 48)
+	player_sprite_mask.texture = AtlasTexture.new()
+	player_sprite_mask.texture.atlas = load("res://sprites/player.png")
+	player_sprite_mask.texture.region = Rect2(48, bound_player.character_type * 48, 48, 48)
+	player_sprite_mask.modulate = bound_player.character_colors[bound_player.character_color]
 	update_stat_text(character_type_descriptions[bound_player.character_type])
 	cur_mode = SELECTOR_MODE.LOBBY
 	if position.x > 400:
@@ -179,6 +184,11 @@ func round_started() -> void:
 	bound_player = null
 	visible = false
 
+func update_player_sprite() -> void:
+	player_sprite_base.texture.region = Rect2(0, bound_player.character_type * 48, 48, 48)
+	player_sprite_mask.texture.region = Rect2(48, bound_player.character_type * 48, 48, 48)
+	player_sprite_mask.modulate = bound_player.character_colors[bound_player.character_color]
+
 func left_pressed():
 	sound.play()
 	match cur_mode:
@@ -186,15 +196,15 @@ func left_pressed():
 			timer = 6
 			button_left.texture.region.position.y = 32
 			var prev_color = bound_player.character_color
-			for i in range(4):
+			for i in range(bound_player.character_colors.size()):
 				bound_player.character_color += 1
-				if bound_player.character_color > 3: bound_player.character_color = 0
+				if bound_player.character_color >= bound_player.character_colors.size(): bound_player.character_color = 0
 				if bound_player.game_manager.player_color_numbers[bound_player.character_color]:
 					bound_player.game_manager.player_color_numbers[prev_color] = true
 					break
 			bound_player.game_manager.player_color_numbers[bound_player.character_color] = false
 			bound_player.change_appearence()
-			player_sprite.texture.region = Rect2(bound_player.character_color * 48, bound_player.character_type * 48, 48, 48)
+			update_player_sprite()
 		SELECTOR_MODE.INVENTORY:
 			update_inv_highlight(selected_button, Color(1.0, 1.0, 1.0))
 			selected_button.x -= 1
@@ -223,13 +233,13 @@ func right_pressed():
 			var prev_color = bound_player.character_color
 			for i in range(4):
 				bound_player.character_color -= 1
-				if bound_player.character_color < 0: bound_player.character_color = 3
+				if bound_player.character_color < 0: bound_player.character_color = bound_player.character_colors.size() - 1
 				if bound_player.game_manager.player_color_numbers[bound_player.character_color]:
 					bound_player.game_manager.player_color_numbers[prev_color] = true
 					break
 			bound_player.game_manager.player_color_numbers[bound_player.character_color] = false
 			bound_player.change_appearence()
-			player_sprite.texture.region = Rect2(bound_player.character_color * 48, bound_player.character_type * 48, 48, 48)
+			update_player_sprite()
 		SELECTOR_MODE.INVENTORY:
 			update_inv_highlight(selected_button, Color(1.0, 1.0, 1.0))
 			selected_button.x += 1
@@ -260,7 +270,7 @@ func up_pressed():
 			update_stat_text(character_type_descriptions[bound_player.character_type])
 			bound_player.change_appearence()
 			bound_player.change_player_type(bound_player.character_type)
-			player_sprite.texture.region = Rect2(bound_player.character_color * 48, bound_player.character_type * 48, 48, 48)
+			update_player_sprite()
 		SELECTOR_MODE.INVENTORY:
 			update_inv_highlight(selected_button, Color(1.0, 1.0, 1.0))
 			selected_button.y -= 1
@@ -284,7 +294,7 @@ func down_pressed():
 			update_stat_text(character_type_descriptions[bound_player.character_type])
 			bound_player.change_appearence()
 			bound_player.change_player_type(bound_player.character_type)
-			player_sprite.texture.region = Rect2(bound_player.character_color * 48, bound_player.character_type * 48, 48, 48)
+			update_player_sprite()
 		SELECTOR_MODE.INVENTORY:
 			update_inv_highlight(selected_button, Color(1.0, 1.0, 1.0))
 			selected_button.y += 1

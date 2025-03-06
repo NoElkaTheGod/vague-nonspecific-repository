@@ -8,7 +8,7 @@ var round_is_going := false
 
 var players: Array[Player]
 var player_input_devices: Array[bool]
-var player_color_numbers := [true, true, true, true]
+var player_color_numbers := [true, true, true, true, true, true]
 var player_count := 0
 var players_ready := 0
 var is_lobby := true

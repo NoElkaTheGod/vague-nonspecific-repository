@@ -31,7 +31,7 @@ func damage_taken(damage: int) -> void:
 var timer: float
 
 func _process(delta: float) -> void:
-	visible = bound_player.sprite.visible and bound_player.visible and HP > 0
+	visible = bound_player.sprite_base.visible and bound_player.visible and HP > 0
 	position = bound_player.position + offset - (size / 2.0)
 	timer += delta
 	if timer >= 0.5:

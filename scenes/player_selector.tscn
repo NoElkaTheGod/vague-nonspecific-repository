@@ -54,7 +54,15 @@ layout_mode = 2
 size_flags_horizontal = 4
 mouse_filter = 2
 
-[node name="Player" type="TextureRect" parent="LobbyButtons"]
+[node name="PlayerBase" type="TextureRect" parent="LobbyButtons"]
+layout_mode = 0
+offset_left = 33.856
+offset_top = 34.0
+offset_right = 81.856
+offset_bottom = 82.0
+pivot_offset = Vector2(24, 24)
+
+[node name="PlayerMask" type="TextureRect" parent="LobbyButtons"]
 layout_mode = 0
 offset_left = 33.856
 offset_top = 34.0

@@ -13,7 +13,8 @@ var turn_speed := [5, 5, 3, 6]
 var death_timer := -1
 var alive := false
 var angular_velocity_target := 0.0
-@onready var sprite := $Sprite2D
+@onready var sprite_base := $SpriteBase
+@onready var sprite_mask := $SpriteBase/SpriteMask
 @onready var thrust_sound_emitter := $ThrustSoundEmitter
 @onready var thruster_particles := $ThrusterParticles
 @onready var death_sound_emitter := $DeathSoundEmitter
@@ -28,6 +29,7 @@ var bound_player_selector: PlayerSelector
 var bound_health_bar: HealthBar
 var input_device := -1
 var character_color: int
+const character_colors = [Color.AQUA, Color.ORANGE_RED, Color.BLUE_VIOLET, Color.DARK_ORANGE, Color.YELLOW_GREEN, Color.GOLD]
 var character_type: int
 var menu_input_cd := [15, 15, 15, 15, 15]
 
@@ -61,7 +63,7 @@ const default_projectile_velocity_multiplier = [1.0, 1.0, 1.0, 1.0]
 func set_active():
 	is_player_active = true
 	process_mode = PROCESS_MODE_INHERIT
-	$Sprite2D.visible = true
+	sprite_base.visible = true
 	$ThrusterParticles.visible = true
 	alive = true
 	reset_player_state()
@@ -74,8 +76,8 @@ func set_inactive():
 	alive = false
 
 func reset_player_state():
-	$Sprite2D.position = Vector2(3, 0)
-	$Sprite2D.rotation = deg_to_rad(90)
+	sprite_base.position = Vector2(3, 0)
+	sprite_base.rotation = deg_to_rad(90)
 	$DeathParticles.position = Vector2(0, 0)
 	thruster_particles.emitting = false
 	angular_velocity = 0
@@ -89,7 +91,7 @@ func reset_player_state():
 
 func _ready() -> void:
 	$ThrusterParticles.visible = false
-	sprite.visible = false
+	sprite_base.visible = false
 	bound_health_bar = load("res://scenes/health_bar.tscn").instantiate()
 	game_manager.get_node("HealthbarsContainer").add_child(bound_health_bar)
 	bound_health_bar.init(type_hit_points[character_type], self)
@@ -100,7 +102,9 @@ func bind_player_selector(node: PlayerSelector, lobby: bool = false) -> void:
 
 func change_appearence():
 	if not game_manager.is_lobby: return
-	$Sprite2D.texture.region = Rect2(character_color * 48, character_type * 48, 48, 48)
+	sprite_base.texture.region = Rect2(0, character_type * 48, 48, 48)
+	sprite_mask.texture.region = Rect2(48, character_type * 48, 48, 48)
+	sprite_mask.modulate = character_colors[character_color]
 
 func reset_stat_offsets() -> void:
 	damage_multiplier = default_damage_multiplier[character_type]
@@ -146,9 +150,13 @@ func init(color: int, device: int) -> void:
 	is_input_connected = true
 	character_color = color
 	input_device = device
-	$Sprite2D.texture = AtlasTexture.new()
-	$Sprite2D.texture.atlas = load("res://sprites/player.png")
-	$Sprite2D.texture.region = Rect2(color * 48, 0, 48, 48)
+	sprite_base.texture = AtlasTexture.new()
+	sprite_base.texture.atlas = load("res://sprites/player.png")
+	sprite_base.texture.region = Rect2(0, 0, 48, 48)
+	sprite_mask.texture = AtlasTexture.new()
+	sprite_mask.texture.atlas = load("res://sprites/player.png")
+	sprite_mask.texture.region = Rect2(48, 0, 48, 48)
+	sprite_mask.modulate = character_colors[character_color]
 	set_active()
 	$SpawnSoundEmitter.play()
 	game_manager.player_finished_initialisation(self)
@@ -216,7 +224,7 @@ func _physics_process(_delta: float) -> void:
 	if get_contact_count() > 0:
 		handle_collisions()
 	if death_timer != -1:
-		sprite.position = Vector2(randf_range(-10, 10), randf_range(-10, 10))
+		sprite_base.position = Vector2(randf_range(-10, 10), randf_range(-10, 10))
 		if death_timer == 0:
 			fucking_die(null)
 		death_timer -= 1
