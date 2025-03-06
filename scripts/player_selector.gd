@@ -133,7 +133,7 @@ func engage_lootbox_mode() -> void:
 	selected_button = Vector2i.ZERO
 	cur_mode = SELECTOR_MODE.LOOTBOX
 	update_loot_highlight(selected_button, Color(2.5, 2.5, 2.5))
-	update_stat_text(presented_items[selected_button.x].description)
+	update_stat_text(presented_items[selected_button.x].item_name + presented_items[selected_button.x].description)
 
 func update_inventory(player: Player) -> void:
 	cur_mode = SELECTOR_MODE.INVENTORY
@@ -193,6 +193,15 @@ func update_player_sprite() -> void:
 	player_sprite_mask.texture.region = Rect2(48, bound_player.character_type * 48, 48, 48)
 	player_sprite_mask.modulate = bound_player.character_colors[bound_player.character_color]
 
+func update_inventory_item_description() -> void:
+	var index: int = selected_button.x + (selected_button.y * bound_player.action_stack_size)
+	if bound_player.inventory[index] == null:
+		update_stat_text(" ")
+		stat_panel.visible = false
+	else:
+		update_stat_text(bound_player.inventory[index].item_name + bound_player.inventory[index].description)
+		stat_panel.visible = true
+
 func left_pressed():
 	sound.play()
 	match cur_mode:
@@ -211,21 +220,18 @@ func left_pressed():
 			update_player_sprite()
 		SELECTOR_MODE.INVENTORY:
 			update_inv_highlight(selected_button, Color(1.0, 1.0, 1.0))
+			update_inv_panel_scale(selected_button, 1.0)
 			selected_button.x -= 1
 			if selected_button.x < 0: selected_button.x = bound_player.action_stack_size - 1
 			update_inv_highlight(selected_button, Color(2.5, 2.5, 2.5))
-			if bound_player.inventory[selected_button.x + (selected_button.y * bound_player.action_stack_size)] == null:
-				update_stat_text(" ")
-				stat_panel.visible = false
-			else:
-				update_stat_text(bound_player.inventory[selected_button.x + (selected_button.y * bound_player.action_stack_size)].description)
-				stat_panel.visible = true
+			update_inv_panel_scale(selected_button, 1.2)
+			update_inventory_item_description()
 		SELECTOR_MODE.LOOTBOX:
 			update_loot_highlight(selected_button, Color(1.0, 1.0, 1.0))
 			selected_button.x -= 1
 			if selected_button.x < 0: selected_button.x = LOOT_ACT_AMOUNT + LOOT_MOD_AMOUNT - 1
 			update_loot_highlight(selected_button, Color(2.5, 2.5, 2.5))
-			update_stat_text(presented_items[selected_button.x].description)
+			update_stat_text(presented_items[selected_button.x].item_name + presented_items[selected_button.x].description)
 			stat_panel.visible = true
 
 func right_pressed():
@@ -246,21 +252,18 @@ func right_pressed():
 			update_player_sprite()
 		SELECTOR_MODE.INVENTORY:
 			update_inv_highlight(selected_button, Color(1.0, 1.0, 1.0))
+			update_inv_panel_scale(selected_button, 1.0)
 			selected_button.x += 1
 			if selected_button.x > bound_player.action_stack_size - 1: selected_button.x = 0
 			update_inv_highlight(selected_button, Color(2.5, 2.5, 2.5))
-			if bound_player.inventory[selected_button.x + (selected_button.y * bound_player.action_stack_size)] == null:
-				update_stat_text(" ")
-				stat_panel.visible = false
-			else:
-				update_stat_text(bound_player.inventory[selected_button.x + (selected_button.y * bound_player.action_stack_size)].description)
-				stat_panel.visible = true
+			update_inv_panel_scale(selected_button, 1.2)
+			update_inventory_item_description()
 		SELECTOR_MODE.LOOTBOX:
 			update_loot_highlight(selected_button, Color(1.0, 1.0, 1.0))
 			selected_button.x += 1
 			if selected_button.x > LOOT_ACT_AMOUNT + LOOT_MOD_AMOUNT - 1: selected_button.x = 0
 			update_loot_highlight(selected_button, Color(2.5, 2.5, 2.5))
-			update_stat_text(presented_items[selected_button.x].description)
+			update_stat_text(presented_items[selected_button.x].item_name + presented_items[selected_button.x].description)
 			stat_panel.visible = true
 
 func up_pressed():
@@ -277,15 +280,12 @@ func up_pressed():
 			update_player_sprite()
 		SELECTOR_MODE.INVENTORY:
 			update_inv_highlight(selected_button, Color(1.0, 1.0, 1.0))
+			update_inv_panel_scale(selected_button, 1.0)
 			selected_button.y -= 1
 			if selected_button.y < -1: selected_button.y = bound_player.inventory_rows + bound_player.amount_of_stacks - 1
 			update_inv_highlight(selected_button, Color(2.5, 2.5, 2.5))
-			if bound_player.inventory[selected_button.x + (selected_button.y * bound_player.action_stack_size)] == null:
-				update_stat_text(" ")
-				stat_panel.visible = false
-			else:
-				update_stat_text(bound_player.inventory[selected_button.x + (selected_button.y * bound_player.action_stack_size)].description)
-				stat_panel.visible = true
+			update_inv_panel_scale(selected_button, 1.2)
+			update_inventory_item_description()
 
 func down_pressed():
 	sound.play()
@@ -301,15 +301,12 @@ func down_pressed():
 			update_player_sprite()
 		SELECTOR_MODE.INVENTORY:
 			update_inv_highlight(selected_button, Color(1.0, 1.0, 1.0))
+			update_inv_panel_scale(selected_button, 1.0)
 			selected_button.y += 1
 			if selected_button.y > bound_player.inventory_rows + bound_player.amount_of_stacks - 1: selected_button.y = -1
 			update_inv_highlight(selected_button, Color(2.5, 2.5, 2.5))
-			if bound_player.inventory[selected_button.x + (selected_button.y * bound_player.action_stack_size)] == null:
-				update_stat_text(" ")
-				stat_panel.visible = false
-			else:
-				update_stat_text(bound_player.inventory[selected_button.x + (selected_button.y * bound_player.action_stack_size)].description)
-				stat_panel.visible = true
+			update_inv_panel_scale(selected_button, 1.2)
+			update_inventory_item_description()
 
 func fire_pressed():
 	sound.play()
@@ -364,6 +361,12 @@ func update_inv_highlight(pos: Vector2i, mod: Color):
 	else:
 		inventory_panels[pos.x + (pos.y * bound_player.action_stack_size)].modulate = mod
 
+func update_inv_panel_scale(pos: Vector2i, target_scale: float):
+	if pos.y == -1:
+		return
+	else:
+		inventory_panels[pos.x + (pos.y * bound_player.action_stack_size)].target_scale = target_scale
+
 func update_loot_highlight(pos: Vector2i, mod: Color):
 	lootbox_panels[pos.x].modulate = mod
 
@@ -375,7 +378,8 @@ func update_stat_text(text: String) -> void:
 func update_stat_text_process() -> void:
 	for i in range(2):
 		if printing_progress == -1: return
-		stat_panel.text += text_to_print[printing_progress]
+		if not (text_to_print[printing_progress] == " " and text_to_print[printing_progress - 1] == "."):
+			stat_panel.text += text_to_print[printing_progress]
 		if text_to_print[printing_progress] == ".":
 			stat_panel.text += "\r\n"
 		printing_progress += 1

@@ -6,6 +6,7 @@
 BoxContainer/constants/separation = 0
 
 [node name="HealthBar" type="Control"]
+clip_contents = true
 layout_mode = 3
 anchor_right = 0.026
 anchor_bottom = 0.008

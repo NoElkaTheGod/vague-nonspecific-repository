@@ -53,8 +53,8 @@ var spread_multiplier := 1.0
 const default_spread_multiplier = [1.0, 1.0, 4.0, 1.0]
 var reload_offset := 0
 const default_reload_offset = [0, 0, 0, 0]
-var cooldown_multiplier := 1.0
-const default_cooldown_multiplier = [1.0, 1.0, 1.0, 1.0]
+var cooldown_offset := 0
+const default_cooldown_offset = [0, 0, 0, 0]
 var recoil_multiplier := 1.0
 const default_recoil_multiplier = [1.0, 1.0, 0.8, 1.0]
 var projectile_velocity_multiplier := 1.0
@@ -110,7 +110,7 @@ func reset_stat_offsets() -> void:
 	damage_multiplier = default_damage_multiplier[character_type]
 	angle_offset = default_angle_offset[character_type]
 	spread_multiplier = default_spread_multiplier[character_type]
-	cooldown_multiplier = default_cooldown_multiplier[character_type]
+	cooldown_offset = default_cooldown_offset[character_type]
 	recoil_multiplier = default_recoil_multiplier[character_type]
 	projectile_velocity_multiplier = default_projectile_velocity_multiplier[character_type]
 	reload_offset = default_reload_offset[character_type]
@@ -309,7 +309,7 @@ func fire_action_from_stack(stack := 0) -> void:
 	if action == null:
 		fucking_die(self, true)
 		return
-	fire_cd = max(action.action(self) * cooldown_multiplier, fire_cd)
+	fire_cd = max(action.action(self) + cooldown_offset, fire_cd)
 	reload_if_empty_stack(stack)
 	if action.trigger_next_immediately:
 		fire_action_from_stack(stack)

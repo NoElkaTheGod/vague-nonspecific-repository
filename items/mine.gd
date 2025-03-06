@@ -3,8 +3,8 @@ class_name mine_item extends Action
 
 func _ready() -> void:
 	texture = "res://sprites/items/mine_item.png"
-	item_name = "Мина"
-	description = "Мина с датчиком движения. Взорвётся, если кто-нибудь приблизится к ней. 30 урона."
+	item_name = "Мина."
+	description = "Взорвётся, если кто-нибудь приблизится к ней. 30 урона. 2 секунды задержки действия. "
 	use_delay = 120
 	weight = 1.0
 	associated_scene = load("res://scenes/mine.tscn")

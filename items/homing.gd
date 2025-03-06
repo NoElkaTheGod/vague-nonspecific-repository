@@ -2,15 +2,15 @@ class_name homing_item extends Action
 
 func _ready() -> void:
 	texture = "res://sprites/items/homing_item.png"
-	item_name = "Самонаведение"
-	description = "Заставляет снаряд самонаводится на противников. Замедляет перезарядку."
+	item_name = "Самонаведение."
+	description = "Заставляет снаряды самонаводится на противника. +0.125 секунд к задержке действия. +0.5 секунд к перезарядке. "
 	item_type = ITEM_TYPE.MODIFIER
 	trigger_next_immediately = true
 	weight = 0.3
 
 func action(actor: Player) -> int:
-	actor.reload_offset += 10
-	actor.cooldown_multiplier *= 2.0
+	actor.reload_offset += 130
+	actor.cooldown_offset += 10
 	var modifiable := actor.get_next_action()
 	if modifiable == null: return use_delay
 	if modifiable.has_component(homing_component):
