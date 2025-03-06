@@ -113,8 +113,6 @@ func reset_stat_offsets() -> void:
 	cooldown_multiplier = default_cooldown_multiplier[character_type]
 	recoil_multiplier = default_recoil_multiplier[character_type]
 	projectile_velocity_multiplier = default_projectile_velocity_multiplier[character_type]
-
-func reset_reload_offset() -> void:
 	reload_offset = default_reload_offset[character_type]
 
 func change_player_type(type: int):
@@ -313,9 +311,6 @@ func fire_action_from_stack(stack := 0) -> void:
 		return
 	fire_cd = max(action.action(self) * cooldown_multiplier, fire_cd)
 	reload_if_empty_stack(stack)
-	if action.item_type != Action.ITEM_TYPE.MODIFIER and reset_pause == 0:
-		reset_stat_offsets()
-	if reset_pause > 0: reset_pause -= 1
 	if action.trigger_next_immediately:
 		fire_action_from_stack(stack)
 
@@ -336,7 +331,7 @@ func reload_if_empty_stack(stack) -> void:
 	active_stack += 1
 	if active_stack >= amount_of_stacks: active_stack = 0
 	action_stack_copy[stack] = action_stack[stack].duplicate(true)
-	reset_reload_offset()
+	reset_stat_offsets()
 
 func compile_action_stacks() -> void:
 	var division_modifier := 0

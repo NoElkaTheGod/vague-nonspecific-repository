@@ -1,7 +1,7 @@
 class_name chaotic_trajectory_component extends BaseComponent
 
 var parent: CharacterBody2D
-var anomaly: float = randf_range(-1, 1)
+var anomaly: float = randf_range(-2, 2)
 
 func _ready() -> void:
 	var node = get_parent()
@@ -12,4 +12,4 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	parent.velocity = parent.velocity.rotated(anomaly * delta)
-	anomaly = move_toward(anomaly, anomaly, 0.01)
+	anomaly = lerp(anomaly, 0.0, 0.1)
