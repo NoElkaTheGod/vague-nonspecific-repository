@@ -25,6 +25,7 @@ var angular_velocity_target := 0.0
 @onready var collision_sound_emitter: CollisionSoundEmitter = $CollisionSoundEmitter
 @onready var hurt_sound_emitter := $HurtSoundEmitter
 @onready var game_manager: GameManager = get_parent().get_parent()
+@onready var healing_particles := $HealingParticles
 
 @onready var healthbar_scene: PackedScene = load("res://scenes/health_bar.tscn")
 @onready var cooldownbar_scene: PackedScene = load("res://scenes/cooldown_indicator.tscn")
@@ -101,6 +102,7 @@ func _ready() -> void:
 	$ThrusterParticles.visible = false
 	sprite_base.visible = false
 	bound_indicator_container = VBoxContainer.new()
+	bound_indicator_container.z_index = 1
 	game_manager.get_node("HealthbarContainer").add_child(bound_indicator_container)
 
 func bind_player_selector(node: PlayerSelector, lobby: bool = false) -> void:
@@ -283,29 +285,29 @@ func _physics_process(delta: float) -> void:
 
 func handle_regeneration(delta: float) -> void:
 	if character_type != 3: return
+	healing_particles.emitting = linear_velocity.length() <= 100 and hit_points < type_hit_points[character_type]
 	if linear_velocity.length() > 100: return
-	hit_points = move_toward(hit_points, type_hit_points[character_type], delta * 5)
-	bound_health_bar.healing_recieved(delta * 5)
+	var healing = delta * 5
+	hit_points += healing
+	bound_health_bar.healing_recieved(healing)
+	if hit_points > type_hit_points[character_type]: hit_points = type_hit_points[character_type]
 
 func handle_collisions() -> void:
-	if get_colliding_bodies()[0] is StaticBody2D:
-		collision_sound_emitter.play(0)
-		if get_colliding_bodies()[0].get_node("CollisionShape2D").shape is WorldBoundaryShape2D:
-			linear_velocity += get_colliding_bodies()[0].get_node("CollisionShape2D").shape.normal * 50
-		return
-	if get_colliding_bodies()[0] is RigidBody2D:
-		var achtung = get_colliding_bodies()[0] as RigidBody2D
-		if (achtung.linear_velocity + linear_velocity).length() < 900.0 and (achtung.linear_velocity.length() + linear_velocity.length()) > 900.0:
-			collision_sound_emitter.play(3)
-			angular_velocity += pow(randf_range(-7, 7), 2)
-		elif (achtung.linear_velocity + linear_velocity).length() < 1500.0 and (achtung.linear_velocity.length() + linear_velocity.length()) > 500.0:
+	for collision in get_colliding_bodies():
+		if collision is StaticBody2D:
+			collision_sound_emitter.play(0)
+			if get_colliding_bodies()[0].get_node("CollisionShape2D").shape is WorldBoundaryShape2D:
+				linear_velocity += get_colliding_bodies()[0].get_node("CollisionShape2D").shape.normal * 50
+			continue
+		if collision is RigidBody2D:
+			var collision_speed_coefficient: float = (collision.linear_velocity - linear_velocity).length() * 0.01
+			var collision_mass_coefficient: float = sqrt(collision.mass / mass)
+			var collision_severity = collision_speed_coefficient * collision_mass_coefficient
 			collision_sound_emitter.play(2)
-			angular_velocity += pow(randf_range(-5, 5), 2)
-		else:
-			collision_sound_emitter.play(1)
-			angular_velocity += pow(randf_range(-3, 3), 2)
+			angular_velocity += pow(randf_range(-collision_severity, collision_severity), 2)
+			take_damage(collision, collision_severity)
 
-func take_damage(body: Node2D = null, damage: int = 1):
+func take_damage(body: Node2D = null, damage: float = 0):
 	bound_health_bar.damage_taken(damage)
 	hit_points -= damage
 	linear_velocity += (body.position - position).normalized() * -100

@@ -354,6 +354,7 @@ func fire_pressed():
 
 func swap_inventory_slots() -> void:
 	#abandon hope all ye who enter here, for i have accidentaly created a massive shitshow down there
+	if selected_button == Vector2i(0, -1): return
 	if selected_slot != Vector2i(-1, -1):
 		var first_slot: int = selected_slot.x + (selected_slot.y * bound_player.action_stack_size)
 		inventory_panels[first_slot].wobbliness = 1.0

@@ -21,7 +21,7 @@ func init(_max_HP: int, player: Player, color := Color(0.6, 0, 0)) -> void:
 	last_damage = 0
 	bound_player = player
 
-func damage_taken(damage: int) -> void:
+func damage_taken(damage: float) -> void:
 	last_damage += damage
 	HP -= damage
 	time_since_last_damage = 0
@@ -29,6 +29,7 @@ func damage_taken(damage: int) -> void:
 func healing_recieved(amount: float) -> void:
 	HP += amount
 	last_damage = move_toward(last_damage, 0, amount)
+	if HP > max_HP: HP = max_HP
 
 var timer: float
 
