@@ -3,7 +3,7 @@ class_name homing_item extends Action
 func _ready() -> void:
 	texture = "res://sprites/items/homing_item.png"
 	item_name = "Самонаведение."
-	description = "Заставляет снаряды самонаводится на противника. +0.125 секунд к задержке действия. +0.5 секунд к перезарядке. "
+	description = "Заставляет снаряды самонаводится на противника.\r\n+0.125 секунд к задержке действия.\r\n+0.5 секунд к перезарядке."
 	item_type = ITEM_TYPE.MODIFIER
 	trigger_next_immediately = true
 	weight = 0.3

@@ -3,7 +3,7 @@ class_name high_velocity_item extends Action
 func _ready() -> void:
 	texture = "res://sprites/items/high_velocity_item.png"
 	item_name = "Быстрый выстрел."
-	description = "+100% отдачи. +40% скорости снаряда. +20% урона. "
+	description = "+100% отдачи.\r\n+40% скорости снаряда.\r\n+20% урона."
 	item_type = ITEM_TYPE.MODIFIER
 	trigger_next_immediately = true
 	weight = 0.9

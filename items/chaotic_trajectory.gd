@@ -3,7 +3,7 @@ class_name chaotic_trajectory_item extends Action
 func _ready() -> void:
 	texture = "res://sprites/items/chaotic_trajectory_item.png"
 	item_name = "Искривление."
-	description = "Случайным образом закручивает снаряд. -0,25 секунд перезарядки. -0,25 секунд задержки действия. "
+	description = "Случайным образом закручивает снаряд.\r\n-0,25 секунд перезарядки.\r\n-0,25 секунд задержки действия."
 	item_type = ITEM_TYPE.MODIFIER
 	trigger_next_immediately = true
 	weight = 1.0

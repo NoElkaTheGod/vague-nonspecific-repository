@@ -3,7 +3,7 @@ class_name three_division_item extends Action
 func _ready() -> void:
 	texture = "res://sprites/items/three_division_item.png"
 	item_name = "Деление на два."
-	description = "Заставляет следующее действие выполнится дважды. -20% урона. +50% разброса."
+	description = "Заставляет следующее действие выполнится дважды.\r\n-20% урона.\r\n+50% разброса."
 	item_type = ITEM_TYPE.MODIFIER
 	trigger_next_immediately = true
 	weight = 1.0
