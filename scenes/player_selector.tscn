@@ -1,8 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://b20u12x06cxjh"]
+[gd_scene load_steps=11 format=3 uid="uid://b20u12x06cxjh"]
 
 [ext_resource type="Script" uid="uid://dvy665wcfcao1" path="res://scripts/player_selector.gd" id="2_bgvek"]
 [ext_resource type="Texture2D" uid="uid://cwgxchjrai87o" path="res://sprites/buppon.png" id="3_663ph"]
 [ext_resource type="AudioStream" uid="uid://byayjo5swd873" path="res://sounds/UI_act.wav" id="3_qo07m"]
+[ext_resource type="Script" uid="uid://bvm6akmfrir8o" path="res://scripts/weirdly_specific/wobbly_panel.gd" id="4_6uaf6"]
+[ext_resource type="Texture2D" uid="uid://b1klgshecca1b" path="res://sprites/my_life.png" id="5_0wsvy"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_6wayj"]
 atlas = ExtResource("3_663ph")
@@ -20,31 +22,22 @@ region = Rect2(96, 0, 32, 32)
 atlas = ExtResource("3_663ph")
 region = Rect2(64, 0, 32, 32)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7akwr"]
+bg_color = Color(0.401427, 0.0469262, 0.0343625, 0.501961)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
 [node name="Control" type="VBoxContainer"]
 offset_right = 409.0
 offset_bottom = 351.0
 script = ExtResource("2_bgvek")
-character_type_descriptions = Array[String](["RB-01 \"Устройство\".Средняя скорость.Средняя живучесть.Стреляет одиночными снарядами.", "RB-02 \"Конструкция\".Низкая скорость.Средняя живучесть.Наносит вдвое больше урона, но стреляет назад.Устанавливает взрывающиеся мины.", "RB-03 \"Агрегат\".Крайне низкая скорость.Высокая живучесть.Попеременно использует два стэка с большей скоростью.", "RB-04 \"Механизм\".Высокая скорость.Низкая живучесть.Имеет перезаряжающийся щит.(Щита пока нет, либо я забыл обновить описание)"])
+character_type_descriptions = Array[String](["RB-01 \"Устройство\".\\r\\nСредняя скорость.\\r\\nПрочность: 50.\\r\\nСтреляет одиночными снарядами.", "RB-02 \"Конструкция\".\\r\\nНизкая скорость.\\r\\nПрочность: 40.\\r\\nНаносит вдвое больше урона, но стреляет назад.\\r\\nУстанавливает взрывающиеся мины.", "RB-03 \"Агрегат\".\\r\\nКрайне низкая скорость.\\r\\nПрочность: 100.\\r\\nПопеременно использует два стэка с большей скоростью.", "RB-04 \"Механизм\".\\r\\nВысокая скорость.\\r\\nПрочность: 30.\\r\\nВосстанавливает 10 прочности в секунду пока не двигается."])
 
 [node name="PressDoundEmitter" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3_qo07m")
 volume_db = -10.0
-
-[node name="Ready" type="Label" parent="."]
-self_modulate = Color(0.498039, 0, 0, 1)
-layout_mode = 2
-size_flags_horizontal = 4
-text = "Not ready"
-horizontal_alignment = 1
-
-[node name="Panel" type="Panel" parent="Ready"]
-z_index = -1
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
 
 [node name="LobbyButtons" type="Panel" parent="."]
 visible = false
@@ -160,6 +153,43 @@ offset_right = 20.0
 offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="Ready" type="Label" parent="HBoxContainer"]
+self_modulate = Color(0.498039, 0, 0, 1)
+custom_minimum_size = Vector2(80, 48)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Not ready"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Panel" type="Panel" parent="HBoxContainer/Ready"]
+z_index = -1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DeletionSlot" type="Panel" parent="HBoxContainer"]
+visible = false
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_7akwr")
+script = ExtResource("4_6uaf6")
+
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer/DeletionSlot"]
+modulate = Color(1, 1, 1, 0.501961)
+custom_minimum_size = Vector2(48, 48)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+texture = ExtResource("5_0wsvy")
 
 [node name="Stats" type="Label" parent="."]
 custom_minimum_size = Vector2(200, 50)

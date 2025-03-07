@@ -22,7 +22,10 @@ var presented_items: Array[Action]
 
 @onready var game_manager: GameManager = get_parent().get_parent()
 
-@onready var label_of_readiness := $Ready
+@onready var label_of_readiness := $HBoxContainer/Ready
+@onready var readiness_container := $HBoxContainer
+@onready var deletion_slot_panel := $HBoxContainer/DeletionSlot
+@onready var deletion_slot := $HBoxContainer/DeletionSlot/TextureRect
 @onready var player_sprite_base := $LobbyButtons/PlayerBase
 @onready var player_sprite_mask := $LobbyButtons/PlayerMask
 @onready var buttons := $LobbyButtons
@@ -36,6 +39,8 @@ var presented_items: Array[Action]
 @onready var button_right := $LobbyButtons/Right
 @onready var stat_panel := $Stats
 @onready var sound := $PressDoundEmitter
+
+@onready var deletion_slot_default_sprite: Texture2D = load("res://sprites/my_life.png")
 
 var inventory_panels: Array[WobblyPanel]
 var inventory_icons: Array[TextureRect]
@@ -75,12 +80,12 @@ func yo_wassup(player: Player, is_lobby: bool = true) -> void:
 	update_stat_text(character_type_descriptions[bound_player.character_type])
 	cur_mode = SELECTOR_MODE.LOBBY
 	if position.x > 400:
-		label_of_readiness.size_flags_horizontal = SIZE_SHRINK_END
+		readiness_container.size_flags_horizontal = SIZE_SHRINK_END
 		buttons.size_flags_horizontal = SIZE_SHRINK_END
 		other_buttons.size_flags_horizontal = SIZE_SHRINK_END
 		lootbox_buttons.size_flags_horizontal = SIZE_SHRINK_END
 	else:
-		label_of_readiness.size_flags_horizontal = SIZE_SHRINK_BEGIN
+		readiness_container.size_flags_horizontal = SIZE_SHRINK_BEGIN
 		buttons.size_flags_horizontal = SIZE_SHRINK_BEGIN
 		other_buttons.size_flags_horizontal = SIZE_SHRINK_BEGIN
 		lootbox_buttons.size_flags_horizontal = SIZE_SHRINK_BEGIN
@@ -93,6 +98,7 @@ func yo_wassup(player: Player, is_lobby: bool = true) -> void:
 
 func engage_lootbox_mode() -> void:
 	lootbox_buttons.visible = true
+	deletion_slot_panel.visible = false
 	other_buttons.visible = false
 	presented_items.clear()
 	lootbox_container.columns = LOOT_ACT_AMOUNT + LOOT_MOD_AMOUNT
@@ -137,6 +143,9 @@ func engage_lootbox_mode() -> void:
 
 func update_inventory(player: Player) -> void:
 	cur_mode = SELECTOR_MODE.INVENTORY
+	deletion_slot.texture = deletion_slot_default_sprite
+	bound_player.slot_for_deletion = null
+	deletion_slot_panel.visible = true
 	lootbox_buttons.visible = false
 	other_buttons.visible = true
 	inventory_container.columns = player.action_stack_size
@@ -223,6 +232,8 @@ func left_pressed():
 			update_inv_panel_scale(selected_button, 1.0)
 			selected_button.x -= 1
 			if selected_button.x < 0: selected_button.x = bound_player.action_stack_size - 1
+			if selected_button.y == -1 and selected_button.x < 0:
+				selected_button.x = 1
 			update_inv_highlight(selected_button, Color(2.5, 2.5, 2.5))
 			update_inv_panel_scale(selected_button, 1.2)
 			update_inventory_item_description()
@@ -255,6 +266,8 @@ func right_pressed():
 			update_inv_panel_scale(selected_button, 1.0)
 			selected_button.x += 1
 			if selected_button.x > bound_player.action_stack_size - 1: selected_button.x = 0
+			if selected_button.y == -1 and selected_button.x > 1:
+				selected_button.x = 0
 			update_inv_highlight(selected_button, Color(2.5, 2.5, 2.5))
 			update_inv_panel_scale(selected_button, 1.2)
 			update_inventory_item_description()
@@ -283,6 +296,11 @@ func up_pressed():
 			update_inv_panel_scale(selected_button, 1.0)
 			selected_button.y -= 1
 			if selected_button.y < -1: selected_button.y = bound_player.inventory_rows + bound_player.amount_of_stacks - 1
+			if selected_button.y == -1:
+				if selected_button.x < 0:
+					selected_button.x = 1
+				if selected_button.x > 1:
+					selected_button.x = 0
 			update_inv_highlight(selected_button, Color(2.5, 2.5, 2.5))
 			update_inv_panel_scale(selected_button, 1.2)
 			update_inventory_item_description()
@@ -304,36 +322,26 @@ func down_pressed():
 			update_inv_panel_scale(selected_button, 1.0)
 			selected_button.y += 1
 			if selected_button.y > bound_player.inventory_rows + bound_player.amount_of_stacks - 1: selected_button.y = -1
+			if selected_button.y == -1:
+				if selected_button.x < 0:
+					selected_button.x = 1
+				if selected_button.x > 1:
+					selected_button.x = 0
 			update_inv_highlight(selected_button, Color(2.5, 2.5, 2.5))
 			update_inv_panel_scale(selected_button, 1.2)
 			update_inventory_item_description()
 
 func fire_pressed():
 	sound.play()
-	if cur_mode == SELECTOR_MODE.LOBBY or selected_button.y == -1:
+	if cur_mode == SELECTOR_MODE.LOBBY:
 		toggle_ready()
 		selected_slot = Vector2i.ONE * -1
 	elif cur_mode == SELECTOR_MODE.INVENTORY:
-		if selected_slot != Vector2i.ONE * -1:
-			var first_slot: int = selected_slot.x + (selected_slot.y * bound_player.action_stack_size)
-			var second_slot: int = selected_button.x + (selected_button.y * bound_player.action_stack_size)
-			var temp: Action = bound_player.inventory[first_slot]
-			inventory_panels[first_slot].wobbliness = 1.0
-			bound_player.inventory[first_slot] = bound_player.inventory[second_slot]
-			bound_player.inventory[second_slot] = temp
-			if bound_player.inventory[first_slot] == null:
-				inventory_icons[first_slot].texture = null
-			else:
-				inventory_icons[first_slot].texture = load(bound_player.inventory[first_slot].texture)
-			if bound_player.inventory[second_slot] == null:
-				inventory_icons[second_slot].texture = null
-			else:
-				inventory_icons[second_slot].texture = load(bound_player.inventory[second_slot].texture)
-				update_stat_text(bound_player.inventory[second_slot].description)
+		if selected_button == Vector2i(0, -1):
+			inventory_panels[selected_slot.x + (selected_slot.y * bound_player.action_stack_size)].wobbliness = 1.0
+			toggle_ready()
 			selected_slot = Vector2i.ONE * -1
-		elif bound_player.inventory[selected_button.x + (selected_button.y * bound_player.action_stack_size)] != null:
-			selected_slot = selected_button
-			inventory_panels[selected_slot.x + (selected_slot.y * bound_player.action_stack_size)].wobbliness = 2.0
+		swap_inventory_slots()
 	elif cur_mode == SELECTOR_MODE.LOOTBOX:
 		var loot = presented_items[selected_button.x]
 		var inventory = range(bound_player.action_stack_size * bound_player.inventory_rows).map(func(value): return value + (bound_player.action_stack_size * bound_player.amount_of_stacks))
@@ -344,6 +352,52 @@ func fire_pressed():
 				break
 		update_inventory(bound_player)
 
+func swap_inventory_slots() -> void:
+	#abandon hope all ye who enter here, for i have accidentaly created a massive shitshow down there
+	if selected_slot != Vector2i(-1, -1):
+		var first_slot: int = selected_slot.x + (selected_slot.y * bound_player.action_stack_size)
+		inventory_panels[first_slot].wobbliness = 1.0
+		if selected_button != Vector2i(1, -1):
+			if selected_slot != Vector2i(1, -1):
+				var second_slot: int = selected_button.x + (selected_button.y * bound_player.action_stack_size)
+				var temp: Action = bound_player.inventory[first_slot]
+				bound_player.inventory[first_slot] = bound_player.inventory[second_slot]
+				bound_player.inventory[second_slot] = temp
+				if bound_player.inventory[second_slot] == null:
+					inventory_icons[second_slot].texture = null
+				else:
+					inventory_icons[second_slot].texture = load(bound_player.inventory[second_slot].texture)
+					update_stat_text(bound_player.inventory[second_slot].description)
+			else:
+				deletion_slot_panel.wobbliness = 1.0
+				var temp: Action = bound_player.inventory[first_slot]
+				bound_player.inventory[first_slot] = bound_player.slot_for_deletion
+				bound_player.slot_for_deletion = temp
+				if bound_player.slot_for_deletion == null:
+					deletion_slot.texture = deletion_slot_default_sprite
+				else:
+					deletion_slot.texture = load(bound_player.slot_for_deletion.texture)
+		else:
+			deletion_slot_panel.wobbliness = 1.0
+			bound_player.slot_for_deletion = bound_player.inventory[first_slot]
+			bound_player.inventory[first_slot] = null
+			if bound_player.slot_for_deletion == null:
+				deletion_slot.texture = deletion_slot_default_sprite
+			else:
+				deletion_slot.texture = load(bound_player.slot_for_deletion.texture)
+		if bound_player.inventory[first_slot] == null:
+			inventory_icons[first_slot].texture = null
+		else:
+			inventory_icons[first_slot].texture = load(bound_player.inventory[first_slot].texture)
+		selected_slot = Vector2i(-1, -1)
+	elif selected_button != Vector2i(1, -1):
+		if bound_player.inventory[selected_button.x + (selected_button.y * bound_player.action_stack_size)] != null:
+			selected_slot = selected_button
+			inventory_panels[selected_slot.x + (selected_slot.y * bound_player.action_stack_size)].wobbliness = 2.0
+	elif bound_player.slot_for_deletion != null:
+		deletion_slot_panel.wobbliness = 2.0
+		selected_slot = selected_button
+	
 func toggle_ready() -> void:
 		player_ready = not player_ready
 		bound_player.compile_action_stacks()
@@ -356,14 +410,18 @@ func toggle_ready() -> void:
 			label_of_readiness.text = "Not ready"
 	
 func update_inv_highlight(pos: Vector2i, mod: Color):
-	if pos.y == -1:
+	if pos.y == -1 and pos.x == 0:
 		label_of_readiness.modulate = mod
+	elif pos.y == -1 and pos.x == 1:
+		deletion_slot_panel.modulate = mod
 	else:
 		inventory_panels[pos.x + (pos.y * bound_player.action_stack_size)].modulate = mod
 
 func update_inv_panel_scale(pos: Vector2i, target_scale: float):
-	if pos.y == -1:
+	if pos.y == -1 and pos.x == 0:
 		return
+	elif pos.y == -1 and pos.x == 1:
+		deletion_slot_panel.target_scale = target_scale
 	else:
 		inventory_panels[pos.x + (pos.y * bound_player.action_stack_size)].target_scale = target_scale
 
@@ -372,16 +430,13 @@ func update_loot_highlight(pos: Vector2i, mod: Color):
 
 func update_stat_text(text: String) -> void:
 	stat_panel.text = ""
-	text_to_print = text
+	text_to_print = text.c_unescape()
 	printing_progress = 0
 
 func update_stat_text_process() -> void:
 	for i in range(2):
 		if printing_progress == -1: return
-		if not (text_to_print[printing_progress] == " " and text_to_print[printing_progress - 1] == "."):
-			stat_panel.text += text_to_print[printing_progress]
-		if text_to_print[printing_progress] == ".":
-			stat_panel.text += "\r\n"
+		stat_panel.text += text_to_print[printing_progress]
 		printing_progress += 1
 		if printing_progress == text_to_print.length():
 			printing_progress = -1

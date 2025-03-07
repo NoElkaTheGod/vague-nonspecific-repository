@@ -1,7 +1,7 @@
 class_name Player extends RigidBody2D
 
 var hit_points := 0.0
-var type_hit_points := [50.0, 40.0, 100.0, 10.0]
+var type_hit_points := [50.0, 40.0, 100.0, 30.0]
 var is_player_active := false
 var is_input_connected := false
 var is_round_going := false
@@ -41,6 +41,7 @@ var character_type: int
 var menu_input_cd := [15, 15, 15, 15, 15]
 
 var inventory: Array[Action]
+var slot_for_deletion: Action
 var action_stack_size := 8
 var inventory_rows := 2
 var amount_of_stacks := 1
