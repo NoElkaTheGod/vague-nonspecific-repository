@@ -266,7 +266,7 @@ func _physics_process(delta: float) -> void:
 				angular_velocity_target = 0.0
 		else:
 			angular_velocity_target = 0.0
-	angular_velocity = move_toward(angular_velocity, angular_velocity_target, 1.0)
+	angular_velocity = move_toward(angular_velocity, angular_velocity_target, 0.5)
 	if Input.is_action_pressed("Player" + str(input_device) + "Move") and move_cd == 0:
 		linear_velocity += Vector2(cos(rotation), sin(rotation)) * 70
 		thrust_sound_emitter.play()
@@ -285,7 +285,7 @@ func _physics_process(delta: float) -> void:
 
 func handle_regeneration(delta: float) -> void:
 	if character_type != 3: return
-	healing_particles.emitting = linear_velocity.length() <= 100 and hit_points < type_hit_points[character_type]
+	healing_particles.emitting = linear_velocity.length() <= 100 and hit_points < type_hit_points[character_type] and is_round_going
 	if linear_velocity.length() > 100: return
 	var healing = delta * 5
 	hit_points += healing
