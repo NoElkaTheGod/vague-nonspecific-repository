@@ -26,10 +26,16 @@ func damage_taken(damage: int) -> void:
 	HP -= damage
 	time_since_last_damage = 0
 
+func healing_recieved(amount: float) -> void:
+	HP += amount
+	last_damage = move_toward(last_damage, 0, amount)
+
 var timer: float
 
 func _process(delta: float) -> void:
 	if bound_player == null: return
+	if last_damage < 0: last_damage = 0
+	if HP < 0: HP = 0
 	visible = bound_player.sprite_base.visible and bound_player.visible
 	timer += delta
 	if timer >= 0.5:
