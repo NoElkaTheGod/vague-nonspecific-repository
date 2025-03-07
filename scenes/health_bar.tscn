@@ -7,6 +7,7 @@ BoxContainer/constants/separation = 0
 
 [node name="HealthBar" type="Control"]
 clip_contents = true
+custom_minimum_size = Vector2(40, 6)
 layout_mode = 3
 anchor_right = 0.026
 anchor_bottom = 0.008
@@ -15,6 +16,7 @@ offset_bottom = -0.184
 script = ExtResource("1_ytfrn")
 
 [node name="Box" type="HBoxContainer" parent="."]
+custom_minimum_size = Vector2(40, 6)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

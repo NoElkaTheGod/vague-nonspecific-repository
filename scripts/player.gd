@@ -25,8 +25,15 @@ var angular_velocity_target := 0.0
 @onready var collision_sound_emitter: CollisionSoundEmitter = $CollisionSoundEmitter
 @onready var hurt_sound_emitter := $HurtSoundEmitter
 @onready var game_manager: GameManager = get_parent().get_parent()
+
+@onready var healthbar_scene: PackedScene = load("res://scenes/health_bar.tscn")
+@onready var cooldownbar_scene: PackedScene = load("res://scenes/cooldown_indicator.tscn")
+
+var bound_indicator_container: VBoxContainer
 var bound_player_selector: PlayerSelector
 var bound_health_bar: HealthBar
+var bound_cooldown_indicators: Array[CooldownIndicator]
+
 var input_device := -1
 var character_color: int
 const character_colors = [Color.AQUA, Color.ORANGE_RED, Color.BLUE_VIOLET, Color.DARK_ORANGE, Color.YELLOW_GREEN, Color.GOLD]
@@ -92,9 +99,8 @@ func reset_player_state():
 func _ready() -> void:
 	$ThrusterParticles.visible = false
 	sprite_base.visible = false
-	bound_health_bar = load("res://scenes/health_bar.tscn").instantiate()
-	game_manager.get_node("HealthbarContainer").add_child(bound_health_bar)
-	bound_health_bar.init(type_hit_points[character_type], self)
+	bound_indicator_container = VBoxContainer.new()
+	game_manager.get_node("HealthbarContainer").add_child(bound_indicator_container)
 
 func bind_player_selector(node: PlayerSelector, lobby: bool = false) -> void:
 	bound_player_selector = node
@@ -128,7 +134,6 @@ func change_player_type(type: int):
 	stack_fire_cd.resize(amount_of_stacks)
 	reset_stat_offsets()
 	hit_points = type_hit_points[character_type]
-	bound_health_bar.init(type_hit_points[type], self)
 	match type:
 		0:
 			inventory[0] = shot_item.new()
@@ -144,6 +149,16 @@ func change_player_type(type: int):
 		3:
 			inventory[0] = missile_item.new()
 			add_child(inventory[0])
+	for item in bound_indicator_container.get_children():
+		item.free()
+	bound_health_bar = healthbar_scene.instantiate()
+	bound_indicator_container.add_child(bound_health_bar)
+	bound_health_bar.init(type_hit_points[character_type], self)
+	bound_cooldown_indicators.resize(amount_of_stacks)
+	for i in range(amount_of_stacks):
+		bound_cooldown_indicators[i] = cooldownbar_scene.instantiate()
+		bound_indicator_container.add_child(bound_cooldown_indicators[i])
+		bound_cooldown_indicators[i].init(self)
 
 func init(color: int, device: int) -> void:
 	is_input_connected = true
@@ -156,12 +171,13 @@ func init(color: int, device: int) -> void:
 	sprite_mask.texture.atlas = load("res://sprites/player.png")
 	sprite_mask.texture.region = Rect2(48, 0, 48, 48)
 	sprite_mask.modulate = character_colors[character_color]
+	change_player_type(0)
 	set_active()
 	$SpawnSoundEmitter.play()
 	game_manager.player_finished_initialisation(self)
-	change_player_type(0)
 
 func _physics_process(_delta: float) -> void:
+	bound_indicator_container.position = position + Vector2(0, -60) - (bound_indicator_container.size / 2)
 	if is_spawning: return
 	if not is_round_going:
 		linear_velocity = Vector2.ZERO
@@ -309,7 +325,10 @@ func fire_action_from_stack(stack := 0) -> void:
 	if action == null:
 		fucking_die(self, true)
 		return
+	if action.item_type == Action.ITEM_TYPE.ACTION:
+		bound_cooldown_indicators[stack].action_fired()
 	fire_cd = max(action.action(self) + cooldown_offset, fire_cd)
+	bound_cooldown_indicators[stack].start_cooldown(fire_cd)
 	reload_if_empty_stack(stack)
 	if action.trigger_next_immediately:
 		fire_action_from_stack(stack)
@@ -327,6 +346,7 @@ func get_next_action() -> Action:
 
 func reload_if_empty_stack(stack) -> void:
 	if action_stack_copy[stack].size() > 0: return
+	bound_cooldown_indicators[stack].reload_started(reload_time + reload_offset)
 	stack_fire_cd[active_stack] = reload_time + reload_offset
 	active_stack += 1
 	if active_stack >= amount_of_stacks: active_stack = 0
@@ -338,14 +358,17 @@ func compile_action_stacks() -> void:
 	var temp := 0
 	for stack in range(amount_of_stacks):
 		action_stack[stack].clear()
+		var amount_of_actions := 0
 		for i in range(action_stack_size):
 			if inventory[i + (stack * action_stack_size)] == null: continue
 			temp = 0
 			while division_modifier >= 0:
+				if inventory[i + (stack * action_stack_size)].item_type == Action.ITEM_TYPE.ACTION: amount_of_actions += 1
 				temp += inventory[i + (stack * action_stack_size)].compile_into_stack(action_stack[stack])
 				division_modifier -= 1
 			if temp == 0: division_modifier = 0
 			else: division_modifier += temp
+		bound_cooldown_indicators[stack].set_max_stack_size(amount_of_actions)
 		action_stack_copy[stack] = action_stack[stack].duplicate(true)
 		if action_stack[stack].size() == 0:
 			pass #TODO: "Вы будете мгновенно убиты. Продолжить?"

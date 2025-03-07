@@ -1,0 +1,55 @@
+[gd_scene load_steps=4 format=3 uid="uid://npi8soq5rnl4"]
+
+[ext_resource type="Script" uid="uid://nvvul1w1xot7" path="res://scripts/cooldown_indicator.gd" id="1_u3864"]
+[ext_resource type="Texture2D" uid="uid://di1nk5v6gwxhh" path="res://sprites/circle.png" id="2_qn1vp"]
+
+[sub_resource type="Theme" id="Theme_en72l"]
+BoxContainer/constants/separation = 0
+
+[node name="CooldownIndicator" type="Control"]
+clip_contents = true
+custom_minimum_size = Vector2(50, 10)
+layout_mode = 3
+anchor_right = 0.026
+anchor_bottom = 0.008
+offset_right = 20.048
+offset_bottom = 4.816
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_u3864")
+
+[node name="ReloadBar" type="HBoxContainer" parent="."]
+custom_minimum_size = Vector2(40, 6)
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -3.0
+offset_right = 30.0
+offset_bottom = 3.0
+grow_vertical = 2
+theme = SubResource("Theme_en72l")
+
+[node name="Light" type="ColorRect" parent="ReloadBar"]
+custom_minimum_size = Vector2(0, 5)
+layout_mode = 2
+size_flags_horizontal = 3
+color = Color(1, 0.784314, 0, 1)
+
+[node name="Dark" type="ColorRect" parent="ReloadBar"]
+layout_mode = 2
+color = Color(0.501961, 0.392157, 0, 1)
+
+[node name="CooldownBar" type="TextureProgressBar" parent="."]
+custom_minimum_size = Vector2(10, 10)
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -10.0
+grow_horizontal = 0
+grow_vertical = 2
+fill_mode = 4
+nine_patch_stretch = true
+texture_progress = ExtResource("2_qn1vp")
