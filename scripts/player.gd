@@ -177,7 +177,7 @@ func init(color: int, device: int) -> void:
 	$SpawnSoundEmitter.play()
 	game_manager.player_finished_initialisation(self)
 
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	bound_indicator_container.position = position + Vector2(0, -60) - (bound_indicator_container.size / 2)
 	if is_spawning: return
 	if not is_round_going:
@@ -237,6 +237,7 @@ func _physics_process(_delta: float) -> void:
 			menu_input_cd[4] = 0
 		return
 	linear_velocity = game_manager.account_for_attractors(linear_velocity, position, 1)
+	handle_regeneration(delta)
 	if get_contact_count() > 0:
 		handle_collisions()
 	if death_timer != -1:
@@ -279,6 +280,12 @@ func _physics_process(_delta: float) -> void:
 		if stack_fire_cd[i] > 0:
 			stack_fire_cd[i] -= 1
 	thruster_particles.emitting = Input.is_action_pressed("Player" + str(input_device) + "Move")
+
+func handle_regeneration(delta: float) -> void:
+	if character_type != 3: return
+	if linear_velocity.length() > 100: return
+	hit_points = move_toward(hit_points, type_hit_points[character_type], delta * 5)
+	bound_health_bar.healing_recieved(delta * 5)
 
 func handle_collisions() -> void:
 	if get_colliding_bodies()[0] is StaticBody2D:
