@@ -1,9 +1,33 @@
-[gd_scene load_steps=6 format=3 uid="uid://b7ayvqqy2doqh"]
+[gd_scene load_steps=12 format=3 uid="uid://b7ayvqqy2doqh"]
 
 [ext_resource type="Script" uid="uid://cy22b81hswaor" path="res://scripts/laser.gd" id="1_412cd"]
 [ext_resource type="Texture2D" uid="uid://2h1qxpxpfnw2" path="res://sprites/laser_something.png" id="1_a7dhc"]
 [ext_resource type="Texture2D" uid="uid://bjoa4t3oc3irs" path="res://sprites/laser_something_hit.png" id="2_jjj73"]
+[ext_resource type="Texture2D" uid="uid://d1vdo56rpmjfw" path="res://sprites/amogi.png" id="4_788yo"]
 [ext_resource type="AudioStream" uid="uid://dxlkyt8j20iux" path="res://sounds/laser.wav" id="4_q8rul"]
+
+[sub_resource type="Curve" id="Curve_dakmh"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.5, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.011236), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_xjiwp"]
+curve = SubResource("Curve_dakmh")
+
+[sub_resource type="Gradient" id="Gradient_iuany"]
+offsets = PackedFloat32Array(0, 0.5)
+colors = PackedColorArray(1, 1, 1, 1, 1, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_id182"]
+gradient = SubResource("Gradient_iuany")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_y4m2n"]
+particle_flag_disable_z = true
+spread = 90.0
+initial_velocity_min = 50.0
+initial_velocity_max = 200.0
+gravity = Vector3(0, 0, 0)
+color_ramp = SubResource("GradientTexture1D_id182")
+alpha_curve = SubResource("CurveTexture_xjiwp")
 
 [sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_788yo"]
 random_pitch = 1.1
@@ -28,6 +52,15 @@ position = Vector2(100, 0)
 rotation = 3.14159
 texture = ExtResource("2_jjj73")
 offset = Vector2(8, 0)
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="Sprite2D"]
+emitting = false
+amount = 32
+texture = ExtResource("4_788yo")
+lifetime = 0.5
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_y4m2n")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = SubResource("AudioStreamRandomizer_788yo")
