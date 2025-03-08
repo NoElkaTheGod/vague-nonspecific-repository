@@ -62,12 +62,19 @@ var spread_multiplier := 1.0
 const default_spread_multiplier = [1.0, 1.0, 4.0, 1.0]
 var reload_offset := 0
 const default_reload_offset = [0, 0, 0, 0]
+var reload_multiplier := 1.0
+const default_reload_multiplier = [1.0, 1.0, 1.0, 1.0]
 var cooldown_offset := 0
 const default_cooldown_offset = [0, 0, 0, 0]
+var cooldown_multiplier := 1.0
+const default_cooldown_multiplier = [1.0, 1.0, 1.0, 1.0]
 var recoil_multiplier := 1.0
 const default_recoil_multiplier = [1.0, 1.0, 0.8, 1.0]
 var projectile_velocity_multiplier := 1.0
 const default_projectile_velocity_multiplier = [1.0, 1.0, 1.0, 1.0]
+
+var projectile_components: Array[BaseComponent]
+var projectile_component_classes: Array
 
 func set_active():
 	is_player_active = true
@@ -123,6 +130,10 @@ func reset_stat_offsets() -> void:
 	recoil_multiplier = default_recoil_multiplier[character_type]
 	projectile_velocity_multiplier = default_projectile_velocity_multiplier[character_type]
 	reload_offset = default_reload_offset[character_type]
+	reload_multiplier = default_reload_multiplier[character_type]
+	cooldown_multiplier = default_cooldown_multiplier[character_type]
+	projectile_components.clear()
+	projectile_component_classes.clear()
 
 func change_player_type(type: int):
 	if not game_manager.is_lobby: return
@@ -181,6 +192,7 @@ func init(color: int, device: int) -> void:
 
 func _physics_process(delta: float) -> void:
 	bound_indicator_container.position = position + Vector2(0, -60) - (bound_indicator_container.size / 2)
+	healing_particles.emitting = character_type == 3 and death_timer == -1 and is_round_going and linear_velocity.length() <= 100 and hit_points < type_hit_points[character_type]
 	if is_spawning: return
 	if not is_round_going:
 		linear_velocity = Vector2.ZERO
@@ -285,8 +297,8 @@ func _physics_process(delta: float) -> void:
 
 func handle_regeneration(delta: float) -> void:
 	if character_type != 3: return
-	healing_particles.emitting = linear_velocity.length() <= 100 and hit_points < type_hit_points[character_type] and is_round_going
 	if linear_velocity.length() > 100: return
+	if death_timer != -1: return
 	var healing = delta * 5
 	hit_points += healing
 	bound_health_bar.healing_recieved(healing)
@@ -337,11 +349,24 @@ func fire_action_from_stack(stack := 0) -> void:
 		return
 	if action.item_type == Action.ITEM_TYPE.ACTION:
 		bound_cooldown_indicators[stack].action_fired()
-	fire_cd = max(action.action(self) + cooldown_offset, fire_cd)
+		for item in projectile_components:
+			action.add_component(item.duplicate())
+	fire_cd = max(ceili((action.action(self) + cooldown_offset) * cooldown_multiplier), fire_cd)
 	bound_cooldown_indicators[stack].start_cooldown(fire_cd)
 	reload_if_empty_stack(stack)
 	if action.trigger_next_immediately:
 		fire_action_from_stack(stack)
+
+func is_comp_present(component) -> bool:
+	for item in projectile_component_classes:
+		if item == component:
+			return true
+	return false
+
+func add_comp(component) -> void:
+	var new_comp = component.new()
+	projectile_components.append(new_comp)
+	projectile_component_classes.append(component)
 
 func get_next_action() -> Action:
 	var result: Action = null
@@ -357,7 +382,8 @@ func get_next_action() -> Action:
 func reload_if_empty_stack(stack) -> void:
 	if action_stack_copy[stack].size() > 0: return
 	bound_cooldown_indicators[stack].reload_started(reload_time + reload_offset)
-	stack_fire_cd[active_stack] = reload_time + reload_offset
+	@warning_ignore("narrowing_conversion")
+	stack_fire_cd[active_stack] = ceili((reload_time + reload_offset) * reload_multiplier)
 	active_stack += 1
 	if active_stack >= amount_of_stacks: active_stack = 0
 	action_stack_copy[stack] = action_stack[stack].duplicate(true)

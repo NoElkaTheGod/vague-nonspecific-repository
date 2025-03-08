@@ -6,10 +6,11 @@ var sprite: Sprite2D
 var strength: float = 50
 var scale: float = 1.0
 var target: Node2D
-var actor: Node2D
+var actor: Node2D = null
 const content_path = "res://scenes/homing_component_content.tscn"
 
 func _ready() -> void:
+	if get_parent() is not PhysicsBody2D: return
 	parent = get_parent()
 	hitbox = load(content_path).instantiate()
 	parent.add_child(hitbox)
@@ -22,11 +23,14 @@ func _physics_process(_delta: float) -> void:
 	hitbox.scale = Vector2(scale, scale)
 	if target == null: return
 	if parent is CharacterBody2D:
+		parent.velocity *= 0.98
 		parent.velocity += (target.position - parent.position).normalized() * strength
 	elif parent is RigidBody2D:
+		parent.linear_velocity *= 0.98
 		parent.linear_velocity += (target.position - parent.position).normalized() * strength
 
 func target_detected(body: Node2D) -> void:
+	if actor == null: actor = body
 	if body is not Player: return
 	if body == actor: return
 	target = body

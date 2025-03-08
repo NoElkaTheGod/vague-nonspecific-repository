@@ -9,17 +9,14 @@ func _ready() -> void:
 	weight = 0.3
 
 func action(actor: Player) -> int:
-	actor.reload_offset += 130
+	actor.reload_offset += 30
 	actor.cooldown_offset += 10
-	var modifiable := actor.get_next_action()
-	if modifiable == null: return use_delay
-	if modifiable.has_component(homing_component):
-		for item in modifiable.components:
+	if actor.is_comp_present(homing_component):
+		for item in actor.projectile_components:
 			if item is homing_component:
 				item.scale *= 1.5
 				item.strength *= 2
 				break
 	else:
-		var comp := modifiable.add_component(homing_component) as homing_component
-		comp.actor = actor
+		actor.add_comp(homing_component)
 	return use_delay
