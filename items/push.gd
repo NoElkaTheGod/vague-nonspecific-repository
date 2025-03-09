@@ -18,7 +18,6 @@ func action(actor: Player) -> int:
 	proj.origin_position = actor.position
 	actor.linear_velocity += Vector2(cos(actor.rotation), sin(actor.rotation)).rotated(actor.angle_offset + PI) * 50.0 * actor.recoil_multiplier
 	for component in components:
-		proj.components.append(component)
 		proj.add_child(component)
 	components.clear()
 	component_classes.clear()

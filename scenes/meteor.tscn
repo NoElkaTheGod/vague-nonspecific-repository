@@ -31,7 +31,7 @@ shape = SubResource("CircleShape2D_lhxke")
 
 [node name="HealthComponent" type="Node" parent="."]
 script = ExtResource("2_83eji")
-hit_points = 60.0
+hit_points = 120.0
 metadata/_custom_type_script = "uid://bjyrgrh8mrm7l"
 
 [node name="DamageSound" type="AudioStreamPlayer" parent="HealthComponent"]
