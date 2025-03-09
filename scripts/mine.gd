@@ -29,8 +29,8 @@ func activate() -> void:
 func explode() -> void:
 	$ActivationSound.stop()
 	for body in activation_area.get_overlapping_bodies():
-		if body is Player:
-			body.take_damage(self, damage)
+		if body.has_node("HealthComponent"):
+			body.get_node("HealthComponent").take_damage(self, damage)
 		if body is Mine:
 			body.activate()
 	var remainder = remainder_scene.instantiate()

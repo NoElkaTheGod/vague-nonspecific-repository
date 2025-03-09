@@ -19,5 +19,5 @@ func custom_collision_behaviour(_collision: KinematicCollision2D) -> void:
 	for body in sas.get_overlapping_bodies():
 		if body is RigidBody2D:
 			body.linear_velocity += (body.position - position).normalized() * 300
-		if body is Player:
-			body.take_damage(self, damage / 2.0)
+		if body.has_node("HealthComponent"):
+			body.get_node("HealthComponent").take_damage(self, damage / 2.0)

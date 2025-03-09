@@ -5,21 +5,21 @@ var max_HP: float
 var time_since_last_damage: int
 var last_damage: float
 
-var bound_player: Player
+var bound_health_component: HealthComponent
 
 @onready var box := $Box
 @onready var red := $Box/Red
 @onready var white := $Box/White
 @onready var dark := $Box/Dark
 
-func init(_max_HP: int, player: Player, color := Color(0.6, 0, 0)) -> void:
+func init(_max_HP: int, comp: HealthComponent, color := Color(0.6, 0, 0)) -> void:
 	red.modulate = color
 	dark.modulate = color
 	max_HP = _max_HP
-	HP = player.hit_points
+	HP = comp.hit_points
 	time_since_last_damage = 0
 	last_damage = 0
-	bound_player = player
+	bound_health_component = comp
 
 func damage_taken(damage: float) -> void:
 	last_damage += damage
@@ -34,10 +34,10 @@ func healing_recieved(amount: float) -> void:
 var timer: float
 
 func _process(delta: float) -> void:
-	if bound_player == null: return
+	if bound_health_component == null: return
 	if last_damage < 0: last_damage = 0
 	if HP < 0: HP = 0
-	visible = bound_player.sprite_base.visible and bound_player.visible
+	visible = bound_health_component.parent.visible
 	timer += delta
 	if timer >= 0.5:
 		timer -= 0.5

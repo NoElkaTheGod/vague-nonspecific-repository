@@ -16,9 +16,9 @@ func activate() -> void:
 	hit.global_position = ray.get_collision_point()
 	particles.emitting = true
 	line.points[1].x = (ray.get_collision_point() - position).length()
-	var collision = ray.get_collider()
-	if collision is Player:
-		collision.take_damage(hit, damage)
+	var collision: Node = ray.get_collider()
+	if collision.has_node("HealthComponent"):
+		collision.get_node("HealthComponent").take_damage(hit, damage)
 	elif collision is RigidBody2D:
 		collision.linear_velocity += ray.get_collision_normal().rotated(PI) * 50
 

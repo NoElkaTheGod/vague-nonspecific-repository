@@ -1,6 +1,5 @@
 class_name Player extends RigidBody2D
 
-var hit_points := 0.0
 var type_hit_points := [50.0, 40.0, 100.0, 30.0]
 var is_player_active := false
 var is_input_connected := false
@@ -23,16 +22,15 @@ var angular_velocity_target := 0.0
 @onready var death_particles := $DeathParticles
 @onready var alarm_sound_emitter := $AlarmSoundEmitter
 @onready var collision_sound_emitter: CollisionSoundEmitter = $CollisionSoundEmitter
-@onready var hurt_sound_emitter := $HurtSoundEmitter
 @onready var game_manager: GameManager = get_parent().get_parent()
 @onready var healing_particles := $HealingParticles
+@onready var health_component := $HealthComponent
 
 @onready var healthbar_scene: PackedScene = load("res://scenes/health_bar.tscn")
 @onready var cooldownbar_scene: PackedScene = load("res://scenes/cooldown_indicator.tscn")
 
 var bound_indicator_container: VBoxContainer
 var bound_player_selector: PlayerSelector
-var bound_health_bar: HealthBar
 var bound_cooldown_indicators: Array[CooldownIndicator]
 
 var input_device := -1
@@ -79,16 +77,14 @@ var projectile_component_classes: Array
 func set_active():
 	is_player_active = true
 	process_mode = PROCESS_MODE_INHERIT
-	sprite_base.visible = true
-	$ThrusterParticles.visible = true
+	visible = true
 	alive = true
 	reset_player_state()
 
 func set_inactive():
 	is_player_active = false
 	process_mode = PROCESS_MODE_DISABLED
-	sprite_base.visible = false
-	$ThrusterParticles.visible = false
+	visible = false
 	alive = false
 
 func reset_player_state():
@@ -102,12 +98,11 @@ func reset_player_state():
 	for i in range(5):
 		if menu_input_cd[i] > 0:
 			menu_input_cd[i] -= 1
-	hit_points = type_hit_points[character_type]
-	bound_health_bar.init(type_hit_points[character_type], self)
+	health_component.hit_points = type_hit_points[character_type]
+	health_component.healthbar.init(type_hit_points[character_type], health_component)
 
 func _ready() -> void:
-	$ThrusterParticles.visible = false
-	sprite_base.visible = false
+	visible = false
 	bound_indicator_container = VBoxContainer.new()
 	bound_indicator_container.z_index = 1
 	game_manager.get_node("HealthbarContainer").add_child(bound_indicator_container)
@@ -147,7 +142,7 @@ func change_player_type(type: int):
 	action_stack_copy.resize(amount_of_stacks)
 	stack_fire_cd.resize(amount_of_stacks)
 	reset_stat_offsets()
-	hit_points = type_hit_points[character_type]
+	health_component.hit_points = type_hit_points[character_type]
 	match type:
 		0:
 			inventory[0] = shot_item.new()
@@ -165,9 +160,9 @@ func change_player_type(type: int):
 			add_child(inventory[0])
 	for item in bound_indicator_container.get_children():
 		item.free()
-	bound_health_bar = healthbar_scene.instantiate()
-	bound_indicator_container.add_child(bound_health_bar)
-	bound_health_bar.init(type_hit_points[character_type], self)
+	health_component.healthbar = healthbar_scene.instantiate()
+	bound_indicator_container.add_child(health_component.healthbar)
+	health_component.healthbar.init(type_hit_points[character_type], health_component)
 	bound_cooldown_indicators.resize(amount_of_stacks)
 	for i in range(amount_of_stacks):
 		bound_cooldown_indicators[i] = cooldownbar_scene.instantiate()
@@ -192,7 +187,7 @@ func init(color: int, device: int) -> void:
 
 func _physics_process(delta: float) -> void:
 	bound_indicator_container.position = position + Vector2(0, -60) - (bound_indicator_container.size / 2)
-	healing_particles.emitting = character_type == 3 and death_timer == -1 and is_round_going and linear_velocity.length() <= 100 and hit_points < type_hit_points[character_type]
+	healing_particles.emitting = character_type == 3 and death_timer == -1 and is_round_going and linear_velocity.length() <= 100 and health_component.hit_points < type_hit_points[character_type]
 	if is_spawning: return
 	if not is_round_going:
 		linear_velocity = Vector2.ZERO
@@ -298,9 +293,9 @@ func handle_regeneration(delta: float) -> void:
 	if linear_velocity.length() > 100: return
 	if death_timer != -1: return
 	var healing = delta * 5
-	hit_points += healing
-	bound_health_bar.healing_recieved(healing)
-	if hit_points > type_hit_points[character_type]: hit_points = type_hit_points[character_type]
+	health_component.hit_points += healing
+	health_component.healthbar.healing_recieved(healing)
+	if health_component.hit_points > type_hit_points[character_type]: health_component.hit_points = type_hit_points[character_type]
 
 func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 	for i in range(state.get_contact_count()):
@@ -309,7 +304,7 @@ func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 			var collision_speed_coefficient: float = linear_velocity.length() * 0.02
 			var collision_direction_coefficient: float = linear_velocity.normalized().dot(state.get_contact_local_normal(i))
 			var collision_severity = collision_speed_coefficient * collision_direction_coefficient
-			if collision_severity >= 5.0: take_damage(state.get_contact_collider_object(i), collision_severity)
+			if collision_severity >= 5.0: health_component.take_damage(state.get_contact_collider_object(i), collision_severity)
 			continue
 		if state.get_contact_collider_object(i) is RigidBody2D:
 			var collision_speed_coefficient: float = (state.get_contact_collider_object(i).linear_velocity - linear_velocity).length() * 0.01
@@ -317,20 +312,7 @@ func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 			var collision_severity = collision_speed_coefficient * collision_mass_coefficient
 			collision_sound_emitter.play(2)
 			angular_velocity += pow(randf_range(-collision_severity, collision_severity), 2)
-			take_damage(state.get_contact_collider_object(i), collision_severity)
-
-func take_damage(body: Node2D = null, damage: float = 0):
-	bound_health_bar.damage_taken(damage)
-	hit_points -= damage
-	linear_velocity += (body.position - position).normalized() * -100
-	if hit_points > 0:
-		hurt_sound_emitter.play()
-		angular_velocity += pow(randf_range(-5, 5), 2)
-		return
-	if death_timer != -1: return
-	alarm_sound_emitter.play()
-	death_timer = 75
-	thruster_particles.emitting = false
+			health_component.take_damage(state.get_contact_collider_object(i), collision_severity)
 
 func fucking_die(_body: Node2D, funny_sound := false) -> void:
 	if funny_sound:
@@ -338,7 +320,7 @@ func fucking_die(_body: Node2D, funny_sound := false) -> void:
 	else:
 		death_sound_emitter.play()
 	death_particles.emitting = true
-	sprite_base.visible = false
+	visible = false
 	set_inactive()
 	game_manager.im_dead_lol(self)
 

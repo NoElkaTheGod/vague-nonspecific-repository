@@ -28,8 +28,8 @@ func _physics_process(delta: float) -> void:
 		queue_free()
 		if collision == null: return
 		custom_collision_behaviour(collision)
-		if collision.get_collider() is Player:
-			collision.get_collider().take_damage(self, damage)
+		if collision.get_collider().has_node("HealthComponent"):
+			collision.get_collider().get_node("HealthComponent").take_damage(self, damage)
 
 func custom_process_behaviour(_delta: float) -> void:
 	return
