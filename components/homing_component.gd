@@ -6,7 +6,6 @@ var sprite: Sprite2D
 var strength: float = 50
 var scale: float = 1.0
 var target: Node2D
-var actor: Node2D = null
 const content_path = "res://scenes/homing_component_content.tscn"
 
 func _ready() -> void:
@@ -30,7 +29,6 @@ func _physics_process(_delta: float) -> void:
 		parent.linear_velocity += (target.position - parent.position).normalized() * strength
 
 func target_detected(body: Node2D) -> void:
-	if actor == null: actor = body
 	if body is not Player: return
 	if body == actor: return
 	target = body

@@ -350,7 +350,9 @@ func fire_action_from_stack(stack := 0) -> void:
 	if action.item_type == Action.ITEM_TYPE.ACTION:
 		bound_cooldown_indicators[stack].action_fired()
 		for item in projectile_components:
-			action.add_component(item.duplicate())
+			var comp = item.duplicate()
+			comp.actor = self
+			action.add_component(comp)
 	fire_cd = max(ceili((action.action(self) + cooldown_offset) * cooldown_multiplier), fire_cd)
 	bound_cooldown_indicators[stack].start_cooldown(fire_cd)
 	reload_if_empty_stack(stack)
