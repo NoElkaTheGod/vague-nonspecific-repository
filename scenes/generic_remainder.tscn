@@ -1,0 +1,38 @@
+[gd_scene load_steps=7 format=3 uid="uid://c4xfq3llw1jld"]
+
+[ext_resource type="Script" uid="uid://dka70x3o1nrc0" path="res://scripts/weirdly_specific/bullet_remainder.gd" id="1_h0id4"]
+[ext_resource type="Texture2D" uid="uid://d1vdo56rpmjfw" path="res://sprites/amogi.png" id="2_q22b1"]
+[ext_resource type="AudioStream" uid="uid://b8rlhmt7ufxq6" path="res://sounds/collision3.wav" id="3_h0id4"]
+
+[sub_resource type="Curve" id="Curve_yrba5"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_o2vfw"]
+curve = SubResource("Curve_yrba5")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_cwp3t"]
+particle_flag_disable_z = true
+spread = 180.0
+initial_velocity_min = 200.0
+initial_velocity_max = 400.0
+gravity = Vector3(0, 0, 0)
+damping_min = 100.0
+damping_max = 100.0
+alpha_curve = SubResource("CurveTexture_o2vfw")
+
+[node name="GenericRamainder" type="Node2D"]
+script = ExtResource("1_h0id4")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+emitting = false
+amount = 64
+texture = ExtResource("2_q22b1")
+lifetime = 0.5
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_cwp3t")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_h0id4")
+volume_db = -10.0

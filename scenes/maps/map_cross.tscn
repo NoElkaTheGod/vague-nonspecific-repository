@@ -1,7 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://1exbhi41pf6y"]
+[gd_scene load_steps=10 format=3 uid="uid://1exbhi41pf6y"]
 
 [ext_resource type="Script" uid="uid://c0ld4q242a8qh" path="res://scripts/map_root.gd" id="1_ip2ub"]
 [ext_resource type="PackedScene" uid="uid://brmla0jhwlcbi" path="res://scenes/wormhole.tscn" id="2_64f4i"]
+[ext_resource type="PackedScene" uid="uid://ckskvtep302re" path="res://scenes/meteor.tscn" id="3_wx7lk"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_2iqby"]
 normal = Vector2(0, 1)
@@ -118,3 +119,18 @@ shape = SubResource("RectangleShape2D_slvmr")
 position = Vector2(960, 640)
 color = Color(1, 1, 1, 0.784314)
 polygon = PackedVector2Array(-840, -25, -25, -25, -25, -490, 25, -490, 25, -25, 840, -25, 840, 25, 25, 25, 25, 490, -26, 490, -25, 25, -840, 25)
+
+[node name="Meteor" parent="." instance=ExtResource("3_wx7lk")]
+position = Vector2(398, 935)
+
+[node name="Meteor2" parent="." instance=ExtResource("3_wx7lk")]
+position = Vector2(400, 383)
+
+[node name="Meteor3" parent="." instance=ExtResource("3_wx7lk")]
+position = Vector2(1250, 1157)
+
+[node name="Meteor4" parent="." instance=ExtResource("3_wx7lk")]
+position = Vector2(1184, 905)
+
+[node name="Meteor5" parent="." instance=ExtResource("3_wx7lk")]
+position = Vector2(1348, 325)

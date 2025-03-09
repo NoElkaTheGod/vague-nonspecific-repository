@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://c0ld4q242a8qh" path="res://scripts/map_root.gd" id="1_xxl0i"]
 [ext_resource type="Script" uid="uid://crkmhg6njnls8" path="res://scripts/weirdly_specific/rotatE.gd" id="2_sf74a"]
-[ext_resource type="PackedScene" uid="uid://dp1cbr33xuauf" path="res://scenes/rock.tscn" id="3_ah8pc"]
+[ext_resource type="PackedScene" uid="uid://ckskvtep302re" path="res://scenes/meteor.tscn" id="3_fm31w"]
 
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_2iqby"]
 normal = Vector2(0, 1)
@@ -185,14 +185,17 @@ position = Vector2(-613, -592)
 color = Color(1, 1, 1, 0.784314)
 polygon = PackedVector2Array(593, 442, 633, 442, 633, 742, 593, 742)
 
-[node name="Rock" parent="." instance=ExtResource("3_ah8pc")]
-position = Vector2(372, 911)
+[node name="Meteor" parent="." instance=ExtResource("3_fm31w")]
+position = Vector2(375, 941)
 
-[node name="Rock2" parent="." instance=ExtResource("3_ah8pc")]
-position = Vector2(1115, 378)
+[node name="Meteor2" parent="." instance=ExtResource("3_fm31w")]
+position = Vector2(1345, 511)
 
-[node name="Rock3" parent="." instance=ExtResource("3_ah8pc")]
-position = Vector2(1619, 717)
+[node name="Meteor3" parent="." instance=ExtResource("3_fm31w")]
+position = Vector2(1531, 1001)
 
-[node name="Rock4" parent="." instance=ExtResource("3_ah8pc")]
-position = Vector2(710, 518)
+[node name="Meteor4" parent="." instance=ExtResource("3_fm31w")]
+position = Vector2(544, 263)
+
+[node name="Meteor5" parent="." instance=ExtResource("3_fm31w")]
+position = Vector2(820, 1041)

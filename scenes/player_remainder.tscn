@@ -1,0 +1,44 @@
+[gd_scene load_steps=8 format=3 uid="uid://co1qar7bjtef0"]
+
+[ext_resource type="Script" uid="uid://dka70x3o1nrc0" path="res://scripts/weirdly_specific/bullet_remainder.gd" id="1_3181i"]
+[ext_resource type="Texture2D" uid="uid://d1vdo56rpmjfw" path="res://sprites/amogi.png" id="2_45uk4"]
+
+[sub_resource type="Curve" id="Curve_mqb6c"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.5, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_4jheo"]
+curve = SubResource("Curve_mqb6c")
+
+[sub_resource type="Gradient" id="Gradient_3181i"]
+colors = PackedColorArray(1, 1, 1, 1, 0.851344, 0.369971, 5.77569e-07, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_xm4lr"]
+gradient = SubResource("Gradient_3181i")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_45uk4"]
+particle_flag_disable_z = true
+angle_min = 1.07288e-05
+angle_max = 360.0
+spread = 180.0
+initial_velocity_min = 50.0
+initial_velocity_max = 300.0
+gravity = Vector3(0, 0, 0)
+scale_max = 2.0
+color = Color(0.999573, 0.98654, 0.952228, 1)
+color_ramp = SubResource("GradientTexture1D_xm4lr")
+alpha_curve = SubResource("CurveTexture_4jheo")
+
+[node name="PlayerRamainder" type="Node2D"]
+script = ExtResource("1_3181i")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+volume_db = -10.0
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+emitting = false
+amount = 128
+texture = ExtResource("2_45uk4")
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_45uk4")

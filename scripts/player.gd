@@ -18,8 +18,7 @@ var angular_velocity_target := 0.0
 @onready var thrust_sound_emitter := $ThrustSoundEmitter
 @onready var thruster_particles := $ThrusterParticles
 @onready var death_sound_emitter := $DeathSoundEmitter
-@onready var funny_death_sound_emitter := $DeathSoundEmitterFunny
-@onready var death_particles := $DeathParticles
+@onready var funny_death_sound_emitter := $DeathSoundEmitterFunnys
 @onready var alarm_sound_emitter := $AlarmSoundEmitter
 @onready var collision_sound_emitter: CollisionSoundEmitter = $CollisionSoundEmitter
 @onready var game_manager: GameManager = get_parent().get_parent()
@@ -90,7 +89,6 @@ func set_inactive():
 func reset_player_state():
 	sprite_base.position = Vector2(3, 0)
 	sprite_base.rotation = deg_to_rad(90)
-	$DeathParticles.position = Vector2(0, 0)
 	thruster_particles.emitting = false
 	angular_velocity = 0
 	linear_velocity = Vector2.ZERO
@@ -307,7 +305,7 @@ func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 			if collision_severity >= 5.0: health_component.take_damage(state.get_contact_collider_object(i), collision_severity)
 			continue
 		if state.get_contact_collider_object(i) is RigidBody2D:
-			var collision_speed_coefficient: float = (state.get_contact_collider_object(i).linear_velocity - linear_velocity).length() * 0.01
+			var collision_speed_coefficient: float = (state.get_contact_collider_object(i).linear_velocity - linear_velocity).length() * 0.04
 			var collision_mass_coefficient: float = sqrt(state.get_contact_collider_object(i).mass / mass)
 			var collision_severity = collision_speed_coefficient * collision_mass_coefficient
 			collision_sound_emitter.play(2)
@@ -319,7 +317,9 @@ func fucking_die(_body: Node2D, funny_sound := false) -> void:
 		funny_death_sound_emitter.play()
 	else:
 		death_sound_emitter.play()
-	death_particles.emitting = true
+	var remainder = load("res://scenes/player_remainder.tscn").instantiate()
+	game_manager.projectile_container.add_child(remainder)
+	remainder.position = position
 	visible = false
 	set_inactive()
 	game_manager.im_dead_lol(self)
