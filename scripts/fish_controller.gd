@@ -12,6 +12,7 @@ const SEGMENT_PADDING = 2
 @onready var visual_polygon: Polygon2D = $BodyPolygon
 @onready var parts_container: Node = $PartsContainer
 
+
 func _ready() -> void:
 	for child in physics_container.get_children():
 		#child.proxy_body = proxy_body
@@ -35,7 +36,7 @@ func _physics_process(_delta: float) -> void:
 		if i < segments.size() - 1:
 			var next_seg_pos: Vector2 = segments[i + 1].position
 			segments[i].rotation = prev_seg_pos.angle_to_point(next_seg_pos)
-		segments[i].position = segments[i].position.lerp(Vector2(cos(segments[i - 1].rotation), sin(segments[i - 1].rotation)) * prev_seg_size + prev_seg_pos, 0.5)
+		segments[i].position = segments[i].position.lerp(Vector2(cos(segments[i - 1].rotation), sin(segments[i - 1].rotation)) * prev_seg_size + prev_seg_pos, 0.8)
 
 const HEAD_VERTICIES = 7
 const TAIL_VERTICIES = 5

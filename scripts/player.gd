@@ -9,7 +9,7 @@ var move_cd := 0
 var fire_cd := 0
 var stack_fire_cd: Array[int]
 var max_move_cd := [5, 6, 8, 3]
-var turn_speed := [5, 5, 3, 6]
+var turn_speed := [4, 4, 3, 5]
 var death_timer := -1
 var alive := false
 var angular_velocity_target := 0.0
@@ -186,15 +186,13 @@ func init(color: int, device: int) -> void:
 	$SpawnSoundEmitter.play()
 	game_manager.player_finished_initialisation(self)
 
-var fish_head_offset := Vector2.ZERO
 var fish_scilator := 0.0
+var fish_wigglinator := 0.0
 
 func _physics_process(delta: float) -> void:
-	fish_scilator = fmod(delta * PI + fish_scilator, PI * 2) 
-	var fish_head_angle: float = fish.get_segment_rotation(0)
-	fish_head_offset = Vector2(cos(fish_head_angle * fish_scilator), sin(fish_head_angle * fish_scilator)) * 0
-	fish.set_position(position + fish_head_offset)
-	fish.set_head_rotation(rotation)
+	fish_scilator = fmod(delta * 10 + fish_scilator, PI * 2)
+	fish.set_position(position)
+	fish.set_head_rotation(rotation + fish_wigglinator * sin(fish_scilator) / 3)
 	bound_indicator_container.position = position + Vector2(0, -60) - (bound_indicator_container.size / 2)
 	healing_particles.emitting = character_type == 3 and death_timer == -1 and is_round_going and linear_velocity.length() <= 100 and health_component.hit_points < type_hit_points[character_type]
 	if is_spawning: return
@@ -280,13 +278,15 @@ func _physics_process(delta: float) -> void:
 				angular_velocity_target = 0.0
 		else:
 			angular_velocity_target = 0.0
-	angular_velocity = move_toward(angular_velocity, angular_velocity_target, 0.5)
-	if Input.is_action_pressed("Player" + str(input_device) + "Move") and move_cd == 0:
-		linear_velocity += Vector2(cos(rotation), sin(rotation)) * 70
-		thrust_sound_emitter.play()
-		move_cd = max_move_cd[character_type]
-	elif move_cd > 0:
-		move_cd -= 1
+	angular_velocity = lerp(angular_velocity, angular_velocity_target, 0.1)
+	if Input.is_action_pressed("Player" + str(input_device) + "Move"):
+		linear_velocity += Vector2(cos(rotation), sin(rotation)) * 10
+		if abs(angular_velocity_target) < 0.1:
+			fish_wigglinator = lerp(fish_wigglinator, 1.0, 0.1)
+		else:
+			fish_wigglinator = lerp(fish_wigglinator, 0.0, 0.1)
+	else:
+		fish_wigglinator = lerp(fish_wigglinator, 0.0, 0.1)
 	if Input.is_action_pressed("Player" + str(input_device) + "Fire"):
 		if stack_fire_cd[active_stack] <= 0 and fire_cd <= 0:
 			fire_action_from_stack(active_stack)
@@ -295,7 +295,6 @@ func _physics_process(delta: float) -> void:
 	for i in range(stack_fire_cd.size()):
 		if stack_fire_cd[i] > 0:
 			stack_fire_cd[i] -= 1
-	thruster_particles.emitting = Input.is_action_pressed("Player" + str(input_device) + "Move")
 
 func handle_regeneration(delta: float) -> void:
 	if character_type != 3: return
