@@ -28,6 +28,8 @@ var angular_velocity_target := 0.0
 @onready var healthbar_scene: PackedScene = load("res://scenes/health_bar.tscn")
 @onready var cooldownbar_scene: PackedScene = load("res://scenes/cooldown_indicator.tscn")
 
+@onready var fish := $Fish
+
 var bound_indicator_container: VBoxContainer
 var bound_player_selector: PlayerSelector
 var bound_cooldown_indicators: Array[CooldownIndicator]
@@ -87,6 +89,7 @@ func set_inactive():
 	alive = false
 
 func reset_player_state():
+	fish.set_complete_rotation(0)
 	sprite_base.position = Vector2(3, 0)
 	sprite_base.rotation = deg_to_rad(90)
 	thruster_particles.emitting = false
@@ -183,7 +186,15 @@ func init(color: int, device: int) -> void:
 	$SpawnSoundEmitter.play()
 	game_manager.player_finished_initialisation(self)
 
+var fish_head_offset := Vector2.ZERO
+var fish_scilator := 0.0
+
 func _physics_process(delta: float) -> void:
+	fish_scilator = fmod(delta * PI + fish_scilator, PI * 2) 
+	var fish_head_angle: float = fish.get_segment_rotation(0)
+	fish_head_offset = Vector2(cos(fish_head_angle * fish_scilator), sin(fish_head_angle * fish_scilator)) * 0
+	fish.set_position(position + fish_head_offset)
+	fish.set_head_rotation(rotation)
 	bound_indicator_container.position = position + Vector2(0, -60) - (bound_indicator_container.size / 2)
 	healing_particles.emitting = character_type == 3 and death_timer == -1 and is_round_going and linear_velocity.length() <= 100 and health_component.hit_points < type_hit_points[character_type]
 	if is_spawning: return
