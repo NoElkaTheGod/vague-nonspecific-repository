@@ -20,11 +20,10 @@ var angular_velocity_target := 0.0
 @onready var death_sound_emitter := $DeathSoundEmitter
 @onready var funny_death_sound_emitter := $DeathSoundEmitterFunny
 @onready var alarm_sound_emitter := $AlarmSoundEmitter
-@onready var collision_sound_emitter: CollisionSoundEmitter = $CollisionSoundEmitter
 @onready var game_manager: GameManager = get_parent().get_parent()
 @onready var healing_particles := $HealingParticles
 @onready var health_component := $HealthComponent
-
+@onready var collision_polygon := $CollisionPolygon2D
 @onready var healthbar_scene: PackedScene = load("res://scenes/health_bar.tscn")
 @onready var cooldownbar_scene: PackedScene = load("res://scenes/cooldown_indicator.tscn")
 
@@ -78,6 +77,7 @@ var projectile_component_classes: Array
 func set_active():
 	is_player_active = true
 	process_mode = PROCESS_MODE_INHERIT
+	fish.set_visibility(true)
 	visible = true
 	alive = true
 	reset_player_state()
@@ -85,6 +85,7 @@ func set_active():
 func set_inactive():
 	is_player_active = false
 	process_mode = PROCESS_MODE_DISABLED
+	fish.set_visibility(false)
 	visible = false
 	alive = false
 
@@ -103,6 +104,7 @@ func reset_player_state():
 	health_component.healthbar.init(type_hit_points[character_type], health_component)
 
 func _ready() -> void:
+	fish.set_visibility(false)
 	visible = false
 	bound_indicator_container = VBoxContainer.new()
 	bound_indicator_container.z_index = 1
@@ -190,7 +192,12 @@ var fish_scilator := 0.0
 var fish_wigglinator := 0.0
 
 func _physics_process(delta: float) -> void:
-	fish_scilator = fmod(delta * 10 + fish_scilator, PI * 2)
+	var fucked_polygon: PackedVector2Array
+	var unfucked_polygon: PackedVector2Array = fish.get_body_polygon(position, rotation)
+	for i in range(0, unfucked_polygon.size(), 2):
+		fucked_polygon.append(unfucked_polygon[i])
+	collision_polygon.polygon = fucked_polygon
+	fish_scilator = fmod(delta * 15 + fish_scilator, PI * 2)
 	fish.set_position(position)
 	fish.set_head_rotation(rotation + fish_wigglinator * sin(fish_scilator) / 3)
 	bound_indicator_container.position = position + Vector2(0, -60) - (bound_indicator_container.size / 2)
@@ -282,7 +289,7 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_pressed("Player" + str(input_device) + "Move"):
 		linear_velocity += Vector2(cos(rotation), sin(rotation)) * 10
 		if abs(angular_velocity_target) < 0.1:
-			fish_wigglinator = lerp(fish_wigglinator, 1.0, 0.1)
+			fish_wigglinator = lerp(fish_wigglinator, 0.7, 0.1)
 		else:
 			fish_wigglinator = lerp(fish_wigglinator, 0.0, 0.1)
 	else:
@@ -308,7 +315,6 @@ func handle_regeneration(delta: float) -> void:
 func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 	for i in range(state.get_contact_count()):
 		if state.get_contact_collider_object(i) is StaticBody2D:
-			collision_sound_emitter.play(0)
 			var collision_speed_coefficient: float = linear_velocity.length() * 0.02
 			var collision_direction_coefficient: float = linear_velocity.normalized().dot(state.get_contact_local_normal(i))
 			var collision_severity = collision_speed_coefficient * collision_direction_coefficient
@@ -318,8 +324,6 @@ func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 			var collision_speed_coefficient: float = (state.get_contact_collider_object(i).linear_velocity - linear_velocity).length() * 0.04
 			var collision_mass_coefficient: float = sqrt(state.get_contact_collider_object(i).mass / mass)
 			var collision_severity = collision_speed_coefficient * collision_mass_coefficient
-			collision_sound_emitter.play(2)
-			angular_velocity += pow(randf_range(-collision_severity, collision_severity), 2)
 			health_component.take_damage(state.get_contact_collider_object(i), collision_severity)
 
 func fucking_die(_body: Node2D, funny_sound := false) -> void:
@@ -330,6 +334,7 @@ func fucking_die(_body: Node2D, funny_sound := false) -> void:
 	var remainder = load("res://scenes/player_remainder.tscn").instantiate()
 	game_manager.projectile_container.add_child(remainder)
 	remainder.position = position
+	fish.set_visibility(false)
 	visible = false
 	set_inactive()
 	game_manager.im_dead_lol(self)

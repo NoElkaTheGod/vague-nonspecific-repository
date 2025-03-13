@@ -10,7 +10,10 @@ func take_damage(body: Node2D = null, damage: float = 0):
 	if healthbar != null:
 		healthbar.damage_taken(damage)
 	if parent is RigidBody2D:
-		parent.apply_central_impulse((body.position - parent.position).normalized() * -5 * damage)
+		if body != null:
+			parent.apply_impulse((body.position - parent.position).normalized() * -5 * damage, body.position)
+		else:
+			parent.apply_central_impulse((body.position - parent.position).normalized() * -5 * damage)
 	if hit_points > 0:
 		sound.play()
 	else:

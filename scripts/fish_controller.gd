@@ -68,8 +68,11 @@ func _process(_delta: float) -> void:
 	parts.get("FinRight").rotation = get_segment_rotation(2)
 	parts.get("FinTail").rotation = get_segment_rotation(segment_positions.size() - 1)
 
-func get_body_polygon() -> PackedVector2Array:
-	return body_polygon
+func get_body_polygon(position: Vector2, rotation: float) -> PackedVector2Array:
+	var result: PackedVector2Array
+	for i in body_polygon:
+		result.append((i - position).rotated(-rotation))
+	return result
 
 func set_visibility(visible: bool) -> void:
 	visual_polygon.visible = visible

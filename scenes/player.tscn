@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://ddtwhvu0d1psn"]
+[gd_scene load_steps=20 format=3 uid="uid://ddtwhvu0d1psn"]
 
 [ext_resource type="Script" uid="uid://bf1bts6cctvpg" path="res://scripts/player.gd" id="1_ngg73"]
 [ext_resource type="Texture2D" uid="uid://8084ru2awn7s" path="res://sprites/player.png" id="2_5kcq6"]
@@ -6,13 +6,8 @@
 [ext_resource type="Texture2D" uid="uid://d1vdo56rpmjfw" path="res://sprites/amogi.png" id="4_3h1j3"]
 [ext_resource type="AudioStream" uid="uid://bx2odwdl72ysg" path="res://sounds/dead.wav" id="5_4ftdm"]
 [ext_resource type="AudioStream" uid="uid://c15uvhl78i66y" path="res://sounds/fart-with-reverb.wav" id="5_f1ej7"]
-[ext_resource type="AudioStream" uid="uid://den1cg75s2y8m" path="res://sounds/collision.wav" id="7_2chic"]
 [ext_resource type="AudioStream" uid="uid://cn10qb75ar7hy" path="res://sounds/alarm.wav" id="7_3jieg"]
-[ext_resource type="Script" uid="uid://c38l8xuf51sl6" path="res://scripts/weirdly_specific/collision_sound_emitter.gd" id="7_lsnoe"]
-[ext_resource type="AudioStream" uid="uid://bc216qpmklpjs" path="res://sounds/collision1.wav" id="10_ox2nc"]
-[ext_resource type="AudioStream" uid="uid://bcct6j3y6757i" path="res://sounds/collision2.wav" id="11_34sp5"]
 [ext_resource type="AudioStream" uid="uid://hltyxioqe7er" path="res://sounds/player_spawn.wav" id="11_ypkmp"]
-[ext_resource type="AudioStream" uid="uid://b8rlhmt7ufxq6" path="res://sounds/collision3.wav" id="12_vwguv"]
 [ext_resource type="Script" uid="uid://bjyrgrh8mrm7l" path="res://scripts/health_component.gd" id="15_oprun"]
 [ext_resource type="PackedScene" uid="uid://bwg3d677nyhvo" path="res://scenes/fish.tscn" id="16_a8ls1"]
 [ext_resource type="AudioStream" uid="uid://bj0wfpqhof1kk" path="res://sounds/hurt.wav" id="16_ac8i2"]
@@ -20,9 +15,6 @@
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_bxxq3"]
 friction = 0.0
 bounce = 0.4
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_gfv2h"]
-radius = 20.0
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_vj7gw"]
 atlas = ExtResource("2_5kcq6")
@@ -77,8 +69,7 @@ max_contacts_reported = 8
 linear_damp = 1.0
 script = ExtResource("1_ngg73")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_gfv2h")
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
 
 [node name="SpriteBase" type="Sprite2D" parent="."]
 visible = false
@@ -132,25 +123,6 @@ volume_db = -10.0
 
 [node name="SpawnSoundEmitter" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("11_ypkmp")
-volume_db = -10.0
-
-[node name="CollisionSoundEmitter" type="Node" parent="."]
-script = ExtResource("7_lsnoe")
-
-[node name="WorldBound" type="AudioStreamPlayer" parent="CollisionSoundEmitter"]
-stream = ExtResource("7_2chic")
-volume_db = -10.0
-
-[node name="GeneralCollision1" type="AudioStreamPlayer" parent="CollisionSoundEmitter"]
-stream = ExtResource("10_ox2nc")
-volume_db = -10.0
-
-[node name="GeneralCollision2" type="AudioStreamPlayer" parent="CollisionSoundEmitter"]
-stream = ExtResource("11_34sp5")
-volume_db = -10.0
-
-[node name="GeneralCollision3" type="AudioStreamPlayer" parent="CollisionSoundEmitter"]
-stream = ExtResource("12_vwguv")
 volume_db = -10.0
 
 [node name="HealingParticles" type="GPUParticles2D" parent="."]
