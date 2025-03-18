@@ -23,9 +23,8 @@ bounce = 0.4
 [sub_resource type="CircleShape2D" id="CircleShape2D_gfv2h"]
 radius = 20.0
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_vj7gw"]
-atlas = ExtResource("2_5kcq6")
-region = Rect2(0, 0, 48, 48)
+[sub_resource type="CanvasTexture" id="CanvasTexture_oprun"]
+diffuse_texture = ExtResource("2_5kcq6")
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_f1ej7"]
 atlas = ExtResource("2_5kcq6")
@@ -80,13 +79,15 @@ script = ExtResource("1_ngg73")
 shape = SubResource("CircleShape2D_gfv2h")
 
 [node name="SpriteBase" type="Sprite2D" parent="."]
-texture_filter = 1
 position = Vector2(3, 0)
 rotation = 1.5708
-texture = SubResource("AtlasTexture_vj7gw")
+texture = SubResource("CanvasTexture_oprun")
+region_enabled = true
+region_rect = Rect2(0, 0, 48, 48)
+region_filter_clip_enabled = true
 
 [node name="SpriteMask" type="Sprite2D" parent="SpriteBase"]
-texture_filter = 1
+light_mask = 0
 texture = SubResource("AtlasTexture_f1ej7")
 
 [node name="ThrusterParticles" type="CPUParticles2D" parent="."]

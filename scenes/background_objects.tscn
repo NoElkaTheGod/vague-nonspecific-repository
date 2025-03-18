@@ -1,0 +1,101 @@
+[gd_scene load_steps=17 format=3 uid="uid://dsgrf4wpfnr0v"]
+
+[ext_resource type="Script" uid="uid://lekqg48c7bn5" path="res://scripts/background_objects.gd" id="1_oi1c0"]
+[ext_resource type="Texture2D" uid="uid://bm4nmdu7wval8" path="res://sprites/background/star.png" id="2_ngfla"]
+[ext_resource type="Texture2D" uid="uid://be2csvsgw7ufs" path="res://sprites/background/planet2.png" id="3_4dlx1"]
+[ext_resource type="Texture2D" uid="uid://wnteip8u4x7v" path="res://sprites/normals/planet2_n.png" id="4_pu8pm"]
+[ext_resource type="Texture2D" uid="uid://n2auxb8kp0rx" path="res://sprites/background/planet3.png" id="5_dm8c6"]
+[ext_resource type="Texture2D" uid="uid://b2tschlg1miuj" path="res://sprites/normals/planet3_n.png" id="6_dj1to"]
+[ext_resource type="Texture2D" uid="uid://bgufi5dg3mh15" path="res://sprites/background/planet4.png" id="7_2tacq"]
+[ext_resource type="Texture2D" uid="uid://bwufp61s2hwxr" path="res://sprites/normals/planet4_n.png" id="8_33yqu"]
+[ext_resource type="Texture2D" uid="uid://b13ftyjhbjimp" path="res://sprites/background/planet5.png" id="9_x25pd"]
+[ext_resource type="Texture2D" uid="uid://c13fvs5sh7y3c" path="res://sprites/normals/planet5_n.png" id="10_08ptg"]
+
+[sub_resource type="Gradient" id="Gradient_63qph"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_aqt1x"]
+gradient = SubResource("Gradient_63qph")
+width = 512
+height = 512
+fill = 1
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_2nffe"]
+diffuse_texture = ExtResource("3_4dlx1")
+normal_texture = ExtResource("4_pu8pm")
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_2vbl7"]
+diffuse_texture = ExtResource("5_dm8c6")
+normal_texture = ExtResource("6_dj1to")
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_de7nm"]
+diffuse_texture = ExtResource("7_2tacq")
+normal_texture = ExtResource("8_33yqu")
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_3tkhw"]
+diffuse_texture = ExtResource("9_x25pd")
+normal_texture = ExtResource("10_08ptg")
+
+[node name="BackgroundObjects" type="Node" node_paths=PackedStringArray("parallaxes", "sprites")]
+script = ExtResource("1_oi1c0")
+parallaxes = [NodePath("Node2D/Planet1"), NodePath("Node2D/Planet2"), NodePath("Node2D/Planet3"), NodePath("Node2D/Planet4")]
+sprites = [NodePath("Node2D/Planet1/Sprite2D"), NodePath("Node2D/Planet2/Sprite2D"), NodePath("Node2D/Planet3/Sprite2D"), NodePath("Node2D/Planet4/Sprite2D")]
+orbit_sizes = Array[Vector3]([Vector3(400, 100, 0.3), Vector3(700, 100, 0.1), Vector3(900, 200, 0.7), Vector3(1000, 300, 0.5)])
+
+[node name="Node2D" type="CanvasGroup" parent="."]
+self_modulate = Color(1, 1, 1, 0.501961)
+z_index = -1
+
+[node name="Star" type="Parallax2D" parent="Node2D"]
+scroll_scale = Vector2(0.5, 0.5)
+
+[node name="Sprite2D" type="Sprite2D" parent="Node2D/Star"]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_ngfla")
+
+[node name="PointLight2D" type="PointLight2D" parent="Node2D/Star"]
+scale = Vector2(8, 8)
+color = Color(1, 0.6, 0.6, 1)
+energy = 0.5
+texture = SubResource("GradientTexture2D_aqt1x")
+height = 20.0
+
+[node name="Planet1" type="Parallax2D" parent="Node2D"]
+rotation = -0.558295
+scroll_scale = Vector2(0.46537, 0.46537)
+
+[node name="Sprite2D" type="Sprite2D" parent="Node2D/Planet1"]
+position = Vector2(-242.606, 79.5072)
+rotation = 0.558295
+scale = Vector2(0.757665, 0.757665)
+texture = SubResource("CanvasTexture_2nffe")
+
+[node name="Planet2" type="Parallax2D" parent="Node2D"]
+rotation = -0.652495
+scroll_scale = Vector2(0.580034, 0.580034)
+
+[node name="Sprite2D" type="Sprite2D" parent="Node2D/Planet2"]
+position = Vector2(-685.664, -20.1346)
+rotation = 0.652495
+scale = Vector2(0.964061, 0.964061)
+texture = SubResource("CanvasTexture_2vbl7")
+
+[node name="Planet3" type="Parallax2D" parent="Node2D"]
+rotation = 0.150288
+scroll_scale = Vector2(0.543344, 0.543344)
+
+[node name="Sprite2D" type="Sprite2D" parent="Node2D/Planet3"]
+position = Vector2(663.005, -135.25)
+rotation = -0.150288
+scale = Vector2(0.898019, 0.898019)
+texture = SubResource("CanvasTexture_de7nm")
+
+[node name="Planet4" type="Parallax2D" parent="Node2D"]
+rotation = 0.966845
+scroll_scale = Vector2(0.43926, 0.43926)
+
+[node name="Sprite2D" type="Sprite2D" parent="Node2D/Planet4"]
+position = Vector2(-958.255, 85.7748)
+rotation = -0.966845
+scale = Vector2(0.710669, 0.710669)
+texture = SubResource("CanvasTexture_3tkhw")

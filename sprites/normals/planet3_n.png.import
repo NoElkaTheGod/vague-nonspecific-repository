@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d4b3170qpi5bv"
-path="res://.godot/imported/yoink.png-96bbdc058d907d8ae64993001e00724e.ctex"
+uid="uid://b2tschlg1miuj"
+path="res://.godot/imported/planet3_n.png-e75fca38dda1633b9ab6b8c7b2dd724b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/yoink.png"
-dest_files=["res://.godot/imported/yoink.png-96bbdc058d907d8ae64993001e00724e.ctex"]
+source_file="res://sprites/normals/planet3_n.png"
+dest_files=["res://.godot/imported/planet3_n.png-e75fca38dda1633b9ab6b8c7b2dd724b.ctex"]
 
 [params]
 

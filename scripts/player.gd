@@ -111,7 +111,7 @@ func bind_player_selector(node: PlayerSelector, lobby: bool = false) -> void:
 
 func change_appearence():
 	if not game_manager.is_lobby: return
-	sprite_base.texture.region = Rect2(0, character_type * 48, 48, 48)
+	sprite_base.region_rect = Rect2(0, character_type * 48, 48, 48)
 	sprite_mask.texture.region = Rect2(48, character_type * 48, 48, 48)
 	sprite_mask.modulate = character_colors[character_color]
 
@@ -171,9 +171,10 @@ func init(color: int, device: int) -> void:
 	is_input_connected = true
 	character_color = color
 	input_device = device
-	sprite_base.texture = AtlasTexture.new()
-	sprite_base.texture.atlas = load("res://sprites/player.png")
-	sprite_base.texture.region = Rect2(0, 0, 48, 48)
+	sprite_base.texture = CanvasTexture.new()
+	sprite_base.texture.diffuse_texture = load("res://sprites/player.png")
+	sprite_base.texture.normal_texture = load("res://sprites/normals/player_n.png")
+	sprite_base.region_rect = Rect2(0, 0, 48, 48)
 	sprite_mask.texture = AtlasTexture.new()
 	sprite_mask.texture.atlas = load("res://sprites/player.png")
 	sprite_mask.texture.region = Rect2(48, 0, 48, 48)

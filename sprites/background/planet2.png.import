@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c23aowqh5i7ib"
-path="res://.godot/imported/rock_item.png-57f961dbfa9971b0c98af0aecbafe4bd.ctex"
+uid="uid://be2csvsgw7ufs"
+path="res://.godot/imported/planet2.png-7981c907d192eeef7be8aea0877ec231.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites/items/rock_item.png"
-dest_files=["res://.godot/imported/rock_item.png-57f961dbfa9971b0c98af0aecbafe4bd.ctex"]
+source_file="res://sprites/background/planet2.png"
+dest_files=["res://.godot/imported/planet2.png-7981c907d192eeef7be8aea0877ec231.ctex"]
 
 [params]
 

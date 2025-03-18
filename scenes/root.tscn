@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://c7hmuu2lpdj4w" path="res://scenes/ui.tscn" id="2_tol41"]
 [ext_resource type="Script" uid="uid://xv6mydho0c2e" path="res://scripts/lootbox_system.gd" id="2_uw7ln"]
 [ext_resource type="Script" uid="uid://dqu4vf5by737h" path="res://scripts/map_loader.gd" id="3_c8yh4"]
-[ext_resource type="Texture2D" uid="uid://d4b3170qpi5bv" path="res://sprites/yoink.png" id="3_kxlrm"]
+[ext_resource type="PackedScene" uid="uid://dsgrf4wpfnr0v" path="res://scenes/background_objects.tscn" id="6_j287u"]
 [ext_resource type="PackedScene" uid="uid://b20u12x06cxjh" path="res://scenes/player_selector.tscn" id="7_poi6s"]
 
 [node name="GameManager" type="Node"]
@@ -29,36 +29,21 @@ script = ExtResource("2_lkdnu")
 
 [node name="UI" parent="Camera2D" instance=ExtResource("2_tol41")]
 offset_left = -576.0
-offset_top = -326.0
+offset_top = -324.0
 offset_right = -536.0
-offset_bottom = -286.0
+offset_bottom = -284.0
 
-[node name="Parallax2D" type="Parallax2D" parent="Camera2D"]
-scroll_scale = Vector2(0.2, 0.2)
-
-[node name="Background" type="Sprite2D" parent="Camera2D/Parallax2D"]
+[node name="Background" type="ColorRect" parent="Camera2D/UI"]
 z_index = -10
-position = Vector2(-1024, -1024)
-scale = Vector2(2, 2)
-texture = ExtResource("3_kxlrm")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.103744, 0.103744, 0.103744, 1)
 
-[node name="Background2" type="Sprite2D" parent="Camera2D/Parallax2D"]
-z_index = -10
-position = Vector2(-1024, 1024)
-scale = Vector2(2, 2)
-texture = ExtResource("3_kxlrm")
-
-[node name="Background3" type="Sprite2D" parent="Camera2D/Parallax2D"]
-z_index = -10
-position = Vector2(1024, -1024)
-scale = Vector2(2, 2)
-texture = ExtResource("3_kxlrm")
-
-[node name="Background4" type="Sprite2D" parent="Camera2D/Parallax2D"]
-z_index = -10
-position = Vector2(1024, 1024)
-scale = Vector2(2, 2)
-texture = ExtResource("3_kxlrm")
+[node name="BackgroundObjects" parent="Camera2D" instance=ExtResource("6_j287u")]
 
 [node name="PlayerSelectors" type="Control" parent="."]
 z_index = 4
@@ -113,3 +98,6 @@ offset_bottom = 0.0
 grow_horizontal = 0
 grow_vertical = 0
 pivot_offset = Vector2(116, 0)
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+color = Color(0.560955, 0.560955, 0.560955, 1)
