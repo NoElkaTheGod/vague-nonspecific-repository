@@ -26,4 +26,4 @@ func _process(delta: float) -> void:
 	line.width -= delta * 20
 	hit.modulate = Color(1, 1, 1, hit.modulate.a - delta * 2)
 	if line.width <= 0:
-		free()
+		queue_free()

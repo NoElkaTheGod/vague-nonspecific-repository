@@ -23,6 +23,10 @@ window/size/mode=2
 
 project/assembly_name="The ylyl"
 
+[editor]
+
+export/convert_text_resources_to_binary=false
+
 [input]
 
 Player0Fire={
@@ -339,5 +343,4 @@ Player7Right={
 
 [rendering]
 
-renderer/rendering_method="gl_compatibility"
-renderer/rendering_method.mobile="gl_compatibility"
+renderer/rendering_method="mobile"

@@ -11,6 +11,7 @@ func get_map_pool_size() -> int:
 func _ready() -> void:
 	var map_scene_names = DirAccess.get_files_at("res://scenes/maps/")
 	for scene in map_scene_names:
+		if scene.ends_with(".remap"): continue
 		map_pool.append(load("res://scenes/maps/" + scene))
 	lobby_map = load("res://scenes/map_lobby.tscn")
 

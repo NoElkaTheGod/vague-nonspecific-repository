@@ -33,4 +33,4 @@ func _physics_process(_delta: float) -> void:
 	else:
 		sprite.modulate.a -= 0.05
 		if timer == 0:
-			free()
+			queue_free()

@@ -8,7 +8,7 @@ var modifiers_total_weight: float
 func _ready() -> void:
 	var item_names = DirAccess.get_files_at("res://items")
 	for item in item_names:
-		if item.ends_with(".uid"): continue
+		if item.ends_with(".uid") or item.ends_with(".remap"): continue
 		var new_item: Action = load("res://items/" + item).new()
 		add_child(new_item)
 		new_item._ready()
